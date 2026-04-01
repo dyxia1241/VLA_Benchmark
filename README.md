@@ -1,0 +1,20 @@
+# GM-100 Benchmark
+
+GM-100 的多模态评测仓库，聚焦机械臂任务上的数据构建、抽帧评测与结果分析。
+
+## 目录
+
+- `benchmark/`：主工作区（GT 构建、采样、抽帧、评测、评分）。
+- `gm100-cobotmagic-lerobot/`：原始数据集（本地使用，不建议入库）。
+- `GM100_bimanual_fullscan_20260318/`：任务分型与元数据。
+
+## 快速开始
+
+```bash
+cd benchmark
+./run_v1_pipeline.sh --help
+```
+
+## 说明
+
+大体量产物（抽帧、评测结果、full GT）默认不建议提交到 Git。

@@ -1,0 +1,14 @@
+# folder
+GM100_bimanual_fullscan_20260318/
+GM100_eda_plots_20260318/
+gm100-cobotmagic-lerobot/
+benchmark/legacy_collision_vqa/
+benchmark/previous_results/
+benchmark/benchmark_v1_frames_t6binary_20260324/
+benchmark/benchmark_v1_frames_tbinary_20260330/
+benchmark/manual_audit/
+
+
+# cache
+__pycache__/
+*/__pycache__/

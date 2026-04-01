@@ -1,0 +1,2 @@
+template,n,acc,gt_dist,pred_dist
+"across these time-ordered frames, is the robot arm actively moving or stationary?",1499,0.675784,"{""B"": 746, ""A"": 753}","{""B"": 816, ""A"": 683}"
