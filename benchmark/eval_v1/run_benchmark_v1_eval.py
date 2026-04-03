@@ -25,7 +25,7 @@ DEFAULT_INPUT_JSONL = (
 DEFAULT_OUTPUT_JSONL = (
     BENCHMARK_DIR
     / "eval_results_v1"
-    / "benchmark_v1_gpt_4o_full.jsonl"
+    / "benchmark_v1_qwen25vl32b_full.jsonl"
 )
 DEFAULT_FRAME_DIR = BENCHMARK_DIR / "benchmark_v1_frames_tbinary_20260330"
 
@@ -33,7 +33,7 @@ DEFAULT_FRAME_DIR = BENCHMARK_DIR / "benchmark_v1_frames_tbinary_20260330"
 # Full benchmark-v1 defaults.
 run_pilot_eval.DEFAULT_INPUT_JSONL = str(DEFAULT_INPUT_JSONL)
 run_pilot_eval.DEFAULT_OUTPUT_JSONL = str(DEFAULT_OUTPUT_JSONL)
-run_pilot_eval.DEFAULT_MODEL = "gpt-4o"
+run_pilot_eval.DEFAULT_MODEL = "Qwen/Qwen2.5-VL-32B-Instruct"
 run_pilot_eval.DEFAULT_CONCURRENCY = 16
 
 # Use the latest root-release frame directory (includes T_binary v2 coverage).

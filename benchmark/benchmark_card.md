@@ -89,14 +89,14 @@ BiManip-Bench supports the following specific claim: *VLMs differ systematically
 ### 3.4 Score interpretation
 - read per-task scores first, then overall score
 - always compare against random baseline
-- report arm-type and task-family breakdowns
+- report arm-type and task-type breakdowns first; use auxiliary taxonomy breakdowns only where metadata is available
 - treat `T_temporal` as protocol-sensitive diagnostic in v1, not headline metric
 
 ## 4. Intended Use
 
 - diagnostic evaluation of VLM perception for manipulation
 - model comparison under robotics-relevant visual probes
-- failure mode analysis by task family / arm type
+- failure mode analysis by task type / arm type, with optional auxiliary taxonomy slices
 - ablation on protocol design, parser robustness, and sampling strategy
 
 ## 5. Out-of-Scope Use
@@ -129,7 +129,7 @@ Each item contains:
 - natural-language question
 - multiple-choice options or temporal-label protocol fields
 - ground-truth answer
-- metadata (task id, episode id, task family, and optional arm info)
+- metadata (task id, episode id, task type, and optional arm info)
 
 ### 7.2 Task inventory (current implemented v1)
 
@@ -146,11 +146,11 @@ Each item contains:
 
 ### 7.3 Scale (current root release)
 
-**Current root release** (`benchmark_v1_curated.jsonl`, 8-family):
+**Current root release** (`benchmark_v1_curated.jsonl`, 8 task types):
 
 - total curated items: `15,500`
 - source task coverage: `106` tasks
-- task-family distribution:
+- task-type distribution:
   - `T1=3000`
   - `T2=1000`
   - `T3=2500`
@@ -173,6 +173,14 @@ Each item contains:
   - final curated: `15,500`
 - source snapshot backing the current root release:
   - `previous_results/manual_checks_20260320/full_gt_task00001_00110_live_20260331_tbinary_v2/benchmark_v1_curated.jsonl`
+
+### 7.4 Auxiliary metadata (non-core, ongoing)
+- the repository also contains task-level semantic / affordance annotation work under `benchmark/manual_audit/semantic_affordance_audit/`
+- these files are intended for auxiliary analysis such as primitive-level semantic, coordination-pattern, common-vs-long-tail, or affordance-conditioned breakdowns
+- these taxonomy labels are benchmark-side analytic metadata, not official GM-100 labels
+- if a higher-level family aggregation is introduced later, it should be treated as a benchmark-side layer derived from adjudicated primitive annotations rather than as a core benchmark label
+- they are **not** part of the core v1 benchmark label schema and are not required to run `benchmark_v1_curated.jsonl` or compute official v1 scores
+- current repository status: seed tables and templates exist, but final adjudicated taxonomy metadata is still in progress
 
 ## 8. Ground-Truth Construction
 
@@ -267,18 +275,26 @@ All GT labels are automatically constructed from robot-side signals and task met
   - runtime returns `ERROR` and `MISSING_FRAME` where applicable
   - scorer ignores `INVALID/ERROR/MISSING_FRAME` by default (`--keep-invalid` to include)
 
-### 9.2 Manual audit (current status)
-- completed targeted audits:
+### 9.2 Manual audit (current repository status)
+- formal stratified audit package already exists under `benchmark/manual_audit/gt_audit/full_audit_v1/`
+  - total selected items: `470`
+  - task-type quotas: `T1=80`, `T2=60`, `T3=60`, `T4=60`, `T6=60`, `T_binary=50`, `T_progress=50`, `T_temporal=50`
+  - rendered audit cards: `470`
+  - `T_binary` evidence is embedded directly into the reviewer-facing audit cards
+  - each audit card now places the task-level meta description, image(s), question, choices, and benchmark GT on the same page for reviewer-facing inspection
+- historical targeted audits are still retained:
   - `T3` directional sanity checks on manually exported samples (`manual_checks_20260318`), including z-direction wrist-view sanity sample
   - `T_temporal` error-pack generation (`manual_checks_20260325/t_temporal_wrong_review_sample_100.csv`)
-- current submission blocker:
-  - the multi-annotator audit table is not finalized yet; annotator count, agreement rate, and kappa statistics must be added before paper submission
-  - the temporal 100-sample review sheet exists, but the aggregated human-audit summary is not yet finalized in the repository
-  - `T_binary` has passed automatic health checks, but no dedicated human audit slice has been added yet
+- current unfinished part:
+  - the dual-annotator CSV templates exist, but the repository does not yet contain completed annotations
+  - annotator count, agreement rate, Cohen's kappa, and adjudication statistics are therefore still pending
+- current interpretation boundary:
+  - the current root release already applies boundary filtering in curation, but this should still be treated as a first-pass visibility mitigation rather than a completed answerability solution
+  - formal audit adjudication is the current mechanism for validating whether residual `T3/T4/T6/T_temporal/T_binary` items remain visually answerable
 - planned completion criteria before submission:
-  - report annotator count and sampling protocol
+  - report annotator count and stratified sampling protocol
   - report agreement / Cohen's kappa (or Fleiss' kappa if more than two annotators are used)
-  - report per-task audit slices for at least the most ambiguity-prone task families (`T2`, `T3`, `T_temporal`, `T_binary`, and `T_progress`)
+  - report adjudicated error categories and per-task audit slices for the most ambiguity-prone task types
 
 ### 9.3 Known task-specific caveats (current v1)
 - `T2`: visual observability may be weaker near contact boundaries; mitigation uses margin filtering but ambiguity remains.
@@ -294,9 +310,10 @@ All GT labels are automatically constructed from robot-side signals and task met
 - input:
   - item JSONL: `benchmark_v1_curated.jsonl`
   - frame dir: `benchmark_v1_frames_tbinary_20260330`
-- prompting:
+- prompting (default benchmark protocol):
   - multiple-choice tasks: answer with single letter
   - `T_temporal`: answer with 3-letter permutation over item-provided labels (`X/Y/Z` by default)
+  - no task-level episode meta description is prepended by default
 - parsing:
   - robust parser supports direct labels, cue-based text, and structured temporal outputs
   - unresolved parse returns `INVALID`
@@ -315,18 +332,37 @@ All GT labels are automatically constructed from robot-side signals and task met
     - `T_binary=0.50`
     - `T_progress=0.20`
 
-### 10.2 Required reporting (recommended minimum)
+### 10.2 Optional task-meta prompt augmentation (non-default)
+- available in `benchmark/eval_v1/run_pilot_eval.py` and inherited by `benchmark/eval_v1/run_benchmark_v1_eval.py`
+- enable with `--prepend-task-meta`; task descriptions are resolved from `benchmark/GM100 List.xlsx` by default, with dataset `tasks.jsonl` fallback where needed
+- augmented prompt format provides episode-level task context as background and explicitly instructs the model to answer from visual evidence rather than task name alone
+- current exact prepend template:
+```text
+You are given image(s) from a robot manipulation episode.
+
+Task context: The overall task in this episode is "<task_meta>".
+
+This task context is provided only as background. Do not rely on the task name alone. Answer based on the visual evidence in the provided image(s).
+
+Now answer the following question:
+<prompt_body>
+```
+- here `<prompt_body>` is the original task-specific question block that would otherwise be sent without task-meta prepending
+- intended use: prompt ablation / diagnostic analysis of whether high-level task context changes model behavior
+- this is **not** part of the default benchmark protocol; results produced with this flag should be reported separately from main benchmark numbers
+
+### 10.3 Required reporting (recommended minimum)
 - per-task accuracy with valid-N
 - random-baseline delta by task
 - overall valid-only accuracy + invalid count
 - arm-type breakdown (and explicit unknown bucket if schema has missing arm_type)
 - per-task distribution sanity (answer/label histograms)
 
-### 10.3 Recommended auxiliary analyses
+### 10.4 Recommended auxiliary analyses
 - class-balanced metrics for `T2/T6`
 - protocol sensitivity and order-bias analysis for `T_temporal`
 - item-level error taxonomy for `T3` and `T_temporal`
-- common-vs-long-tail breakdown by task families (where metadata is available)
+- common-vs-long-tail breakdown by primitive-level semantic and coordination-pattern slices (where auxiliary metadata is available)
 
 ## 11. Limitations and Threats to Validity
 
@@ -334,7 +370,7 @@ All GT labels are automatically constructed from robot-side signals and task met
 - **Single source dataset**: all items are derived from GM-100 only.  
   *Mitigation: benchmark reporting is explicitly framed as within-distribution diagnosis rather than cross-dataset generalization.*
 - **Single robot platform subset**: v1 uses the Agilex Cobot Magic subset only.  
-  *Mitigation: task-family diversity and arm-type coverage partially compensate for platform homogeneity; cross-platform extension is reserved for v2.*
+  *Mitigation: task-type diversity and arm-type coverage partially compensate for platform homogeneity; cross-platform extension is reserved for v2.*
 - **Single-lab collection style**: demonstrations come from one collection environment and teleoperation setup.  
   *Mitigation: the benchmark avoids broad transfer claims and requires per-task reporting instead of a single headline number only.*
 - **Success-demonstration skew**: the source trajectories are successful demonstrations, not failure-rich datasets.  
@@ -361,7 +397,7 @@ All GT labels are automatically constructed from robot-side signals and task met
 ### 11.4 Interpretation limitations
 - **Overall score is not sufficient alone**: per-task differences can be larger than overall differences.  
   *Mitigation: the recommended reporting protocol requires task-level and arm-type breakdowns.*
-- **Strong score on one family does not imply broad manipulation competence**: models may specialize in motion-state cues while failing on direction, contact, or temporal ordering.  
+- **Strong score on one task type or auxiliary taxonomy slice does not imply broad manipulation competence**: models may specialize in motion-state cues while failing on direction, contact, or temporal ordering.  
   *Mitigation: score interpretation is intentionally diagnostic and multi-axis rather than leaderboard-only.*
 - **Benchmark score is not a deployment guarantee**: visual benchmark success does not imply closed-loop VLA success or safety.  
   *Mitigation: out-of-scope uses are stated explicitly and causal VLA-transfer claims are disallowed without separate control experiments.*
@@ -405,14 +441,16 @@ All GT labels are automatically constructed from robot-side signals and task met
 ## 13. Release Notes
 
 ### v1.1 (current root working release, 2026-03-31)
-- promoted the root `benchmark_v1_curated.jsonl` to the latest 8-family release (`15,500` items)
+- promoted the root `benchmark_v1_curated.jsonl` to the latest 8-task-type release (`15,500` items)
 - adopted `T_binary v2` in the root release with `composite_panel_v2` presentation and `X/Y` answer protocol
 - updated the root frame cache reference to `benchmark_v1_frames_tbinary_20260330` (`34,312` images, `0` failures)
 - updated default eval/sampling/pipeline entrypoints to the latest source snapshot under `previous_results/manual_checks_20260320/full_gt_task00001_00110_live_20260331_tbinary_v2/`
-- archived the former 7-family root release under `previous_results/root_release_snapshots/benchmark_v1_root_7family_20260331_before_latest_promotion/`
+- added optional task-context prompt augmentation to the eval runner via `--prepend-task-meta`
+- exported the formal `manual_audit/gt_audit/full_audit_v1` package (`470` items, including `T_binary=50`) and re-rendered audit cards with task meta on-card
+- archived the former 7-task-type root release under `previous_results/root_release_snapshots/benchmark_v1_root_7family_20260331_before_latest_promotion/`
 
-### v1.0 (historical 7-family root freeze, 2026-03-26)
-- 7-family benchmark curation pipeline finalized (`14,000` items)
+### v1.0 (historical 7-task-type root freeze, 2026-03-26)
+- 7-task-type benchmark curation pipeline finalized (`14,000` items)
 - top-view frame extraction completed (`31,382` images, `0` failures)
 - benchmark eval/scoring wrappers consolidated under `eval_v1/`
 - `T_temporal` protocol hardened to `X/Y/Z` labels and robust parser
@@ -422,9 +460,9 @@ All GT labels are automatically constructed from robot-side signals and task met
 
 For full evaluation results across multiple models, see the accompanying paper and release artifacts.
 
-A complete full-model rerun on the **current root release** (`15,500` items, including `T_binary v2`) is still pending. The previously reported single-model Qwen sanity-check run was produced on the historical 7-family root release and should not be interpreted as a result for the current root release.
+A complete full-model rerun on the **current root release** (`15,500` items, including `T_binary v2`) is still pending. The previously reported single-model Qwen sanity-check run was produced on the historical 7-task-type root release and should not be interpreted as a result for the current root release.
 
-Legacy 7-family sanity-check result path:
+Legacy 7-task-type sanity-check result path:
 - `benchmark/eval_results_v1/benchmark_v1_qwen3vl8b_instruct_full.jsonl`
 
 Current-status note:

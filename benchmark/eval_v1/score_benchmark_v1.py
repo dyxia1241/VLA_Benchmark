@@ -20,7 +20,7 @@ BENCHMARK_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_RESULTS_JSONL = (
     BENCHMARK_DIR
     / "eval_results_v1"
-    / "benchmark_v1_qwen3vl8b_instruct_full.jsonl"
+    / "benchmark_v1_qwen25vl32b_full.jsonl"
 )
 
 

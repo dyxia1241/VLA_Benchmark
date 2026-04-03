@@ -30,10 +30,13 @@ from tqdm.asyncio import tqdm_asyncio
 # Centralized hyperparameter/config entry points.
 # You can edit these defaults directly in-file, and still override via CLI args.
 BENCHMARK_DIR = Path(__file__).resolve().parent.parent
+REPO_ROOT = BENCHMARK_DIR.parent
+DATASET_ROOT = REPO_ROOT / "gm100-cobotmagic-lerobot"
 PILOT_ARTIFACT_DIR = BENCHMARK_DIR / "previous_results" / "manual_checks_20260319"
 
 DEFAULT_INPUT_JSONL = str(PILOT_ARTIFACT_DIR / "pilot_qa_raw_filtered.jsonl")
 DEFAULT_OUTPUT_JSONL = str(BENCHMARK_DIR / "eval_results_v1" / "pilot_results_qwen3vl.jsonl")
+DEFAULT_TASK_META_XLSX = str(BENCHMARK_DIR / "GM100 List.xlsx")
 
 DEFAULT_API_BASE = "http://35.220.164.252:3888/v1/"
 DEFAULT_MODEL = "gpt-4o"
@@ -59,6 +62,7 @@ T4_CHOICES = {
     "D": "both arms are idle",
 }
 T4_LABEL_ID_TO_ANSWER = {0: "A", 1: "B", 2: "C", 3: "D"}
+SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)+$")
 
 
 def img_to_b64(path: Path) -> str:
@@ -247,6 +251,78 @@ def _pick_first_existing(paths: list[Path]) -> Path:
     return paths[0]
 
 
+def normalize_text(value: Any) -> str:
+    if value is None:
+        return ""
+    text = str(value).replace("\u3000", " ").strip()
+    return " ".join(text.split())
+
+
+def pretty_task_name(task_name: str) -> str:
+    return str(task_name or "").replace("-", " ").strip()
+
+
+def is_slug_like(text: str) -> bool:
+    return bool(SLUG_RE.fullmatch(normalize_text(text)))
+
+
+def load_dataset_task_names() -> dict[str, str]:
+    task_names: dict[str, str] = {}
+    for meta_path in sorted(DATASET_ROOT.glob("task_*/meta/tasks.jsonl")):
+        task_id = meta_path.parts[-3]
+        with meta_path.open("r", encoding="utf-8") as f:
+            first = next((line for line in f if line.strip()), "")
+        if not first:
+            continue
+        obj = json.loads(first)
+        task_name = pretty_task_name(str(obj.get("task", "")).strip())
+        if task_name:
+            task_names[task_id] = task_name
+    return task_names
+
+
+def load_task_meta_descriptions(xlsx_path: Path) -> dict[str, str]:
+    try:
+        from openpyxl import load_workbook
+    except ImportError as e:  # pragma: no cover - depends on local env
+        raise RuntimeError(
+            "Task-meta prompting requires openpyxl. Install it or disable --prepend-task-meta."
+        ) from e
+
+    if not xlsx_path.exists():
+        raise FileNotFoundError(f"Task-meta workbook not found: {xlsx_path}")
+
+    workbook = load_workbook(xlsx_path, read_only=True, data_only=True)
+    if "link" not in workbook.sheetnames:
+        raise ValueError(f'Workbook {xlsx_path} does not contain sheet "link".')
+
+    descriptions_by_task: dict[str, list[str]] = {}
+    sheet = workbook["link"]
+    for row in sheet.iter_rows(min_row=2, values_only=True):
+        raw_task_id = row[0]
+        raw_description = row[1]
+        if raw_task_id is None:
+            continue
+        task_id = f"task_{int(raw_task_id):05d}"
+        description = normalize_text(raw_description)
+        if description:
+            descriptions_by_task.setdefault(task_id, []).append(description)
+
+    dataset_fallback = load_dataset_task_names()
+    task_ids = sorted(set(descriptions_by_task) | set(dataset_fallback))
+    resolved: dict[str, str] = {}
+    for task_id in task_ids:
+        candidates = list(dict.fromkeys(descriptions_by_task.get(task_id, [])))
+        natural = next((x for x in candidates if not is_slug_like(x)), "")
+        slug = next((x for x in candidates if is_slug_like(x)), "")
+        chosen = natural or pretty_task_name(slug) or dataset_fallback.get(task_id, "")
+        if not chosen and task_id in dataset_fallback:
+            chosen = dataset_fallback[task_id]
+        if chosen:
+            resolved[task_id] = chosen
+    return resolved
+
+
 def parse_offsets_csv(text: str) -> list[int]:
     vals: list[int] = []
     for part in str(text).split(","):
@@ -403,29 +479,31 @@ def format_prompt(item: dict[str, Any]) -> str:
     question = str(item.get("question", "")).strip()
     choices = item.get("choices", {})
 
+    prompt_body = ""
     if task_type == "T_binary":
         labels = sorted(set(_t_binary_display_labels(item, num_panels=2)))
         first = labels[0] if len(labels) >= 1 else "X"
         second = labels[1] if len(labels) >= 2 else "Y"
         choice_keys = {str(k).upper() for k in item.get("choices", {}).keys()}
         if choice_keys == {"YES", "NO"}:
-            return (
+            prompt_body = (
                 "A single comparison image shows two labeled robot-manipulation panels from the same episode.\n"
                 "The left-right placement of the panels and the labels are arbitrary identifiers and do not indicate temporal order.\n"
                 f"Is the following statement true: Image {first} happened earlier than Image {second}?\n"
                 "Answer with only YES or NO."
             )
-        return (
-            "A single comparison image shows two labeled robot-manipulation panels from the same episode.\n"
-            "The left-right placement of the panels and the labels are arbitrary identifiers and do not indicate temporal order.\n"
-            f"Which labeled panel happened earlier in the real manipulation sequence, {first} or {second}?\n"
-            f"Answer with only one letter: {first} or {second}."
-        )
+        else:
+            prompt_body = (
+                "A single comparison image shows two labeled robot-manipulation panels from the same episode.\n"
+                "The left-right placement of the panels and the labels are arbitrary identifiers and do not indicate temporal order.\n"
+                f"Which labeled panel happened earlier in the real manipulation sequence, {first} or {second}?\n"
+                f"Answer with only one letter: {first} or {second}."
+            )
 
-    if task_type == "T_temporal":
+    elif task_type == "T_temporal":
         labels = [str(x).upper() for x in item.get("shuffled_labels", ["X", "Y", "Z"])]
         ex = f"{labels[1]}{labels[0]}{labels[2]}"
-        return (
+        prompt_body = (
             "You are shown 3 frames from a robot manipulation task.\n"
             f"The frames are labeled {labels[0]}, {labels[1]}, {labels[2]} "
             "(these labels are arbitrary identifiers, not positional, and not time-ordered).\n"
@@ -435,11 +513,25 @@ def format_prompt(item: dict[str, Any]) -> str:
             f"{labels[1]} happened first, then {labels[0]}, then {labels[2]}."
         )
 
-    if isinstance(choices, dict) and choices:
+    elif isinstance(choices, dict) and choices:
         choices_text = "\n".join(f"{k}: {v}" for k, v in choices.items())
-        return f"{question}\n\n{choices_text}\n\nAnswer with only the letter."
+        prompt_body = f"{question}\n\n{choices_text}\n\nAnswer with only the letter."
 
-    return f"{question}\n\nAnswer briefly."
+    else:
+        prompt_body = f"{question}\n\nAnswer briefly."
+
+    task_meta = normalize_text(item.get("task_meta_description", ""))
+    if not task_meta:
+        return prompt_body
+
+    return (
+        "You are given image(s) from a robot manipulation episode.\n\n"
+        f'Task context: The overall task in this episode is "{task_meta}".\n\n'
+        "This task context is provided only as background. Do not rely on the task name alone. "
+        "Answer based on the visual evidence in the provided image(s).\n\n"
+        "Now answer the following question:\n"
+        f"{prompt_body}"
+    )
 
 def parse_answer(raw: str, item: dict[str, Any]) -> str:
     task_type = str(item["task_type"])
@@ -780,10 +872,18 @@ async def run_eval(args: argparse.Namespace) -> None:
             raise FileNotFoundError(f"Frame dir missing ({k}): {v}")
 
     items: list[dict[str, Any]] = []
+    task_meta_map: dict[str, str] = {}
+    if args.prepend_task_meta:
+        task_meta_map = load_task_meta_descriptions(Path(args.task_meta_xlsx).resolve())
+
     with open(args.input, "r", encoding="utf-8") as f:
         for line in f:
             if line.strip():
-                items.append(json.loads(line))
+                item = json.loads(line)
+                if args.prepend_task_meta:
+                    task_id = str(item.get("task_id", "")).strip()
+                    item["task_meta_description"] = task_meta_map.get(task_id, "")
+                items.append(item)
 
     if args.limit > 0:
         items = items[: args.limit]
@@ -822,6 +922,10 @@ async def run_eval(args: argparse.Namespace) -> None:
 
     valid = [r for r in results if r["vlm_answer"] not in {"MISSING_FRAME", "ERROR", "INVALID"}]
     acc = (sum(1 for r in valid if r["correct"]) / len(valid)) if valid else 0.0
+    task_meta_attached_items = sum(1 for x in items if normalize_text(x.get("task_meta_description", "")))
+    task_meta_missing_task_ids = sorted(
+        {str(x.get("task_id", "")).strip() for x in items if not normalize_text(x.get("task_meta_description", ""))}
+    )
     summary = {
         "input": args.input,
         "output": str(out_path),
@@ -829,6 +933,10 @@ async def run_eval(args: argparse.Namespace) -> None:
         "num_items": len(items),
         "num_valid": len(valid),
         "overall_acc_valid_only": acc,
+        "prepend_task_meta": bool(args.prepend_task_meta),
+        "task_meta_xlsx": str(Path(args.task_meta_xlsx).resolve()) if args.prepend_task_meta else "",
+        "task_meta_attached_items": task_meta_attached_items,
+        "task_meta_missing_task_ids": task_meta_missing_task_ids if args.prepend_task_meta else [],
         "t3_offsets": t3_offsets,
         "t3_randomize_choices": bool(args.t3_randomize_choices),
         "t3_randomize_seed": int(args.t3_randomize_seed),
@@ -845,6 +953,16 @@ def build_argparser() -> argparse.ArgumentParser:
     p.add_argument("--api-base", default=DEFAULT_API_BASE)
     p.add_argument("--api-key", default="")
     p.add_argument("--model", default=DEFAULT_MODEL)
+    p.add_argument(
+        "--prepend-task-meta",
+        action="store_true",
+        help="Prepend task-level meta description to each prompt as episode background.",
+    )
+    p.add_argument(
+        "--task-meta-xlsx",
+        default=DEFAULT_TASK_META_XLSX,
+        help='Workbook used to resolve task meta descriptions (expects sheet "link").',
+    )
 
     p.add_argument("--concurrency", type=int, default=DEFAULT_CONCURRENCY)
     p.add_argument("--max-tokens", type=int, default=DEFAULT_MAX_TOKENS)
