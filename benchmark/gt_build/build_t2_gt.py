@@ -241,7 +241,7 @@ def main() -> None:
     parser.add_argument("--dataset-root", default="/data/projects/GM-100/gm100-cobotmagic-lerobot")
     parser.add_argument(
         "--annotation-csv",
-        default="/data/projects/GM-100/GM100_bimanual_fullscan_20260318/task_type_annotation.csv",
+        default=str(Path(__file__).resolve().with_name("task_type_annotation.csv")),
     )
     parser.add_argument("--output-jsonl", default="/data/projects/GM-100/benchmark/t2_gt_items.jsonl")
     parser.add_argument("--output-summary-json", default="/data/projects/GM-100/benchmark/t2_gt_summary.json")

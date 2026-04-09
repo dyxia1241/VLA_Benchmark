@@ -1,6 +1,6 @@
 # GM-100 Benchmark Next Steps
 
-更新时间：2026-04-03  
+更新时间：2026-04-08  
 适用范围：`/data/projects/GM-100/benchmark`
 
 定位说明：
@@ -28,13 +28,18 @@
 
 1. 正式推进 `manual_audit/gt_audit/full_audit_v1/` 的双人独立标注，并在标完后跑 agreement / GT correctness / error category 汇总。
 2. 如果 `T3/T4/T6/T_temporal` 的 `visual_answerability=not_answerable` 仍明显偏高，就不要只继续调 head/tail 秒数，而是进入第二层 `visibility / answerability gate` 设计。
-3. 启动 semantic pilot：
-   - 从当前 `106` 个 semantic seed task 中选约 `20` 个 task
-   - 覆盖 common / long-tail、single-arm / bimanual 和主要 primitive 区域（如 open-access / insert-attach / transfer / tool-mediated / deformable）
-4. 启动 affordance pilot 前置准备：
-   - 先基于 `object_inventory_raw + task_name_raw` 生成 affordance seed candidates
-   - 再选 `15-20` 个 task 做 pilot
-5. 如果要做 `task-meta` prompt 实验，结果必须单独命名、单独汇报，不能替代默认 benchmark 主结果。
+3. 启动 `semantic + affordance` 的双人 pilot：
+   - 从当前 `110` 个 task 位点中选 `15-20` 个 `metadata_ready` task
+   - 覆盖 common / long-tail、single-arm / bimanual、以及主要 primitive 区域（如 open-access / insert-attach / transfer / tool-mediated / deformable）
+   - pilot 目标先看 agreement，不直接追求 full coverage
+4. `segment trace` 只做 process supervision pilot，不做全量 rollout：
+   - 只在 semantic / affordance pilot 之后再选 `15-20` 个 task
+   - 重点看 boundary / primitive / interface / constraint agreement
+   - agreement 不稳时，先缩 schema / 词表，不扩任务量
+5. 如果要做 adaptation：
+   - 必须先定义 task-disjoint `train / dev / held-out eval` split，避免 benchmark leakage
+   - `task-meta` / instruction 版结果必须单独命名、单独汇报，不能替代默认 benchmark 主结果
+   - 第一阶段优先做 structured SFT，不把 RL 作为主线
 
 ## 3) 文档分工约定
 
@@ -179,6 +184,8 @@
   - `benchmark/manual_audit/semantic_affordance_audit/task_affordance_annotation_annotator_a_v1.csv`
   - `benchmark/manual_audit/semantic_affordance_audit/task_affordance_annotation_annotator_a_v1.xlsx`
   - `benchmark/manual_audit/semantic_affordance_audit/task_object_inventory_v1.json`
+  - `benchmark/manual_audit/semantic_affordance_audit/build_task_object_inventory_denoised_md.py`
+  - `benchmark/manual_audit/semantic_affordance_audit/task_object_inventory_denoised_v1.md`
 - 已落地的 annotator package：
   - `benchmark/manual_audit/semantic_affordance_audit/annotator_packages/task_taxonomy_v1_annotator_a/`
   - 当前仓库快照只保留了 annotator A package；annotator B sidecar 尚未随这次路径重构同步检入
@@ -194,7 +201,7 @@
   - 不是 annotator 直接填写的字段定义，也不是外部数据集官方 primitive ground truth
 - 当前 seed 来源：
   - `gm100-cobotmagic-lerobot/task_*/meta/tasks.jsonl`
-  - `GM100_bimanual_fullscan_20260318/task_type_annotation.csv`
+  - `benchmark/gt_build/task_type_annotation.csv`
 - 当前 semantic 覆盖范围：
   - 已成功生成 `106` 个 task 的 primitive seed 标注包
   - 其余 `4` 个 task 暂缺 `meta/tasks.jsonl`，因此未进入 semantic 首版 seed：
@@ -230,10 +237,10 @@
     - `task_00059`
     - `task_00089`
 - 当前 affordance ontology 已固定为 4 个字段轴：
-  - `object_affordance_tags`
+  - `physical_material_tags`
   - `interface_affordance_tags`
-  - `constraint_affordance_tags`
-  - `role_tags`
+  - `kinematic_constraint_tags`
+  - `semantic_role_tags`
 - 当前 annotate guideline 已做一致性补齐（已完成）
   - `README_FOR_SEMANTIC_ANNOTATOR.md`
   - `README_FOR_AFFORDANCE_ANNOTATOR.md`
@@ -262,12 +269,107 @@
   - 基于 `object_inventory_raw + task_name_raw` 先生成一版 affordance seed candidates
   - 再选 `15-20` 个 task 做 affordance pilot
   - pilot 重点看：
-    - `object_affordance_tags`
+    - `physical_material_tags`
     - `interface_affordance_tags`
-    - `constraint_affordance_tags`
-    - `role_tags`
+    - `kinematic_constraint_tags`
+    - `semantic_role_tags`
 - 根据 semantic / affordance 两个 pilot 的冲突情况，再决定是否需要补 primitive 词表、改 primitive rule、或重写 affordance ontology 边界。
 - family aggregation 是否进入下一步，取决于 primitive pilot 的一致性结果，而不是先验拍板。
+
+### AI. task taxonomy -> process supervision / SFT adaptation 收缩方案（2026-04-07）
+
+1. 当前判断
+- 这条线值得继续，但当前 task taxonomy / affordance ontology **不应原样扩展成 dense per-timestep 全量重标**。
+- 更稳的主线是：
+  - 保留现有 task-level static layer
+  - 如果进入时序监督，只做 `primitive segment` 级 trace，不做逐帧全量标签
+- 对外叙述更准确的说法是：
+  - 这是一层 benchmark-side structured process supervision
+  - 不是 GM-100 官方 action CoT 数据集
+  - 第一阶段目标是 `process-state supervision`，不是自由长 CoT 生成
+
+2. 现有字段的用途收缩
+- task/object-static：
+  - `physical_material_tags`
+  - 大部分 `semantic_role_tags`
+  - `object_inventory_raw`
+- segment-level active / process：
+  - `primary_primitive`
+  - `auxiliary_primitive`（可空）
+  - `coordination_pattern`
+  - `primary_interface`
+  - `secondary_interface`（可空）
+  - `primary_constraint`
+  - `subprogress_bucket`
+- 约束：
+  - 不要求 annotator 在每个 segment 里重复填写所有 static tags
+  - `interface` 只标当前 segment 真正生效的 active interface
+  - `constraint` 只标当前 segment 最关键的主约束
+
+3. 需要明确保留的风险判断
+- 文献支持的是“中间过程监督可能有效”，**不等于** 当前 ontology 原样时序化就会有效。
+- 比 schema 名称更大的风险是：
+  - `segment boundary` 一致性差
+  - `task_meta` 泄漏导致模型只背任务脚本，不看视觉过程
+- 因此如果做 process supervision，必须单独检查：
+  - boundary agreement
+  - primitive agreement
+  - interface agreement
+  - constraint agreement
+- 如果这些 agreement 不稳，不应直接进入 SFT。
+
+4. segment trace 最小 schema v1
+- 建议新增一层 `segment_trace`，字段只保留：
+  - `task_id`
+  - `segment_id`
+  - `start_keyframe`
+  - `end_keyframe`
+  - `primary_primitive`
+  - `auxiliary_primitive`
+  - `active_objects`
+  - `primary_interface`
+  - `secondary_interface`
+  - `primary_constraint`
+  - `coordination_pattern`
+  - `subprogress_bucket`
+  - `notes`
+- 不要把现有 `physical_material_tags / semantic_role_tags` 按 segment 整段重打一遍。
+- 在引入这层标注前，需要先给高频 primitive 补 `segment start/end` 的完成判据。
+
+5. process supervision pilot 的执行顺序
+- 不启动全量 dense temporal annotation。
+- 当前顺序应调整为：
+  - 先完成现有 task-level semantic / affordance pilot
+  - 再从中选一个小规模 `segment trace pilot`
+- segment pilot 建议只覆盖 `15-20` 个 task，优先：
+  - long-tail
+  - bimanual / coordination-heavy
+  - progress-sensitive
+  - 明显依赖 active interface / precision constraint 的任务
+- 只有当 segment-level agreement 可接受时，才值得继续扩大。
+
+6. SFT adaptation 的最小训练目标
+- 第一阶段不做自由文本长 CoT。
+- 最小可训练输出建议只保留：
+  - `current_primitive`
+  - `coordination_pattern`
+  - `active_interface`
+  - `subprogress_bucket`
+- `next_primitive` 可以作为第二阶段扩展。
+- `constraint tags` 和短 rationale 也应放在第二阶段，而不是第一版一并上。
+
+7. 实验设计约束
+- 如果做 adaptation，至少要有：
+  - `task-meta only` baseline
+  - `image only` baseline
+  - `image + task-meta` 主实验
+  - held-out task split
+- benchmark 侧更值得关注的提升不是简单 overall gain，而是：
+  - progress-sensitive
+  - temporal / ordering-sensitive
+  - coordination-heavy
+  - long-tail task 子集
+- 如果提升只集中在最容易被 task prior 解决的题，不足以支持 process supervision 的主张。
 
 ### AH. manual audit + boundary filter 当前状态（2026-04-01）
 
@@ -611,3 +713,100 @@ Now answer the following question:
 - 在 `task_taxonomy` 的人工标签完成前：
   - `common vs long-tail` 只能写成 proxy analysis
   - 不应把它写成正式 benchmark-side confirmed label result
+
+### AL. benchmark-side structured process supervision / SFT 主线收敛（2026-04-08）
+
+1. superseding note
+- 本节覆盖本文件中仍残留的旧版 task-taxonomy 口径，尤其是：
+  - semantic 仍按 `primitive_1 / primitive_2 / primitive_3` 叙述的部分
+  - affordance 仍按 task-level 四轴（`physical / interface / constraint / role`）叙述的部分
+- 当前实际发包、workbook 和 annotator guideline 以：
+  - `benchmark/manual_audit/semantic_affordance_audit/task_semantic_guideline_v1.md`
+  - `benchmark/manual_audit/semantic_affordance_audit/annotator_packages/`
+  为准。
+
+2. 当前论文主线
+- `benchmark_v1` 仍是默认主评测口径；semantic / affordance / segment trace 不回写默认 GT 与默认评分协议。
+- 更准确的论文结构是：
+  - frozen benchmark / eval backbone
+  - benchmark manual audit
+  - benchmark-side structured process supervision layer
+  - 一个小规模但可验证的 SFT adaptation case study
+- 不把这条线写成：
+  - GM-100 官方 action CoT 数据集
+  - 以 RL 为主的 policy paper
+
+3. 当前 schema 的收敛版本
+- 当前明确拆成三层：
+  - `task-level semantic`：按时间顺序填写 `ordered primitive chain`
+  - `task-level affordance`：只保留静态 object / material / role
+  - `segment trace`：只做 dynamic process pilot
+- 当前静态字段：
+  - `object_inventory_core`
+  - `physical_material_tags`
+  - `semantic_role_tags`
+  - `task_static_summary`
+- 当前动态字段：
+  - task-level：`primitive_step_1..5`、`coordination_pattern`
+  - segment-level：`start_keyframe`、`end_keyframe`、`primary_primitive`、`auxiliary_primitive`、`active_objects`、`primary_interface`、`secondary_interface`、`primary_constraint`、`coordination_pattern`、`subprogress_bucket`
+- 当前 sidecar analytic 字段：
+  - `common_vs_long_tail`
+  - `droid_overlap`
+  - `long_tail_rationale`
+- 约束：
+  - 不做 dense per-frame 全量重标
+  - 不把 static tags 在每个 segment 重复打满
+  - `primary_interface` 只写当前 segment 真正生效的 active interface
+  - `primary_constraint` 只写当前 segment 最关键的主约束
+
+4. 当前最需要保留的风险判断
+- 最大风险不只是 schema 过重，而是：
+  - benchmark leakage：adaptation 与 benchmark 共用 task 时，容易把 in-domain supervision 误报成 benchmark gain
+  - segment boundary 不稳：不同 annotator 对起止帧和 primitive 切分容易不一致
+  - object binding 不足：当前还是 task-level bag-of-tags，尚未形成稳定的 object-slot / object-id 绑定层
+  - task-meta 压过视觉证据：模型可能背 task script，而不是读当前过程
+- 因此如果做 adaptation，必须：
+  - task-disjoint split
+  - image-only / task-meta-only / image+task-meta 分开汇报
+  - 不把 task-meta 版结果替代默认 benchmark 主结果
+
+5. 对 SFT / RL 路径的当前判断
+- 第一阶段主线是 structured SFT，不是 RL。
+- 第一阶段最小训练目标只保留：
+  - `current_primary_primitive`
+  - `local_coordination_pattern`
+  - `active_interface`
+  - `subprogress_bucket`
+- 第二阶段才考虑：
+  - `next_primitive`
+  - `primary_constraint`
+  - 短结构化 rationale
+- `common_vs_long_tail`、`droid_overlap`、`long_tail_rationale`、自由文本 `notes` 当前不应作为第一版训练目标。
+
+6. 对 paper claim 的约束
+- 最安全的 headline 不是“我们有一套完整 action CoT 数据集”，而是：
+  - 我们在 frozen benchmark 旁边构建了一层 benchmark-side structured process supervision
+  - 并验证它是否能为 process-aware, goal-conditioned adaptation 提供有效监督
+- 如果 adaptation 有效，更值得重点看的 slice 是：
+  - `T_progress`
+  - `T_temporal`
+  - coordination-heavy / bimanual 子集
+  - long-tail 子集
+- 如果收益只来自最容易被 task prior 解决的题，不足以支持强 process supervision claim。
+
+7. 下一步具体动作
+- 文档层：
+  - 继续把 `ARCHITECTURE_MAP.md` 与其他仍残留旧 schema 的说明同步到当前三层口径
+- 数据层：
+  - 在 static layer 之上补一个 `object_slots / object binding` 导出格式，避免后续训练只拿到 bag-of-tags
+  - 设计 canonical `json/jsonl` 导出，不直接把 workbook 表头当训练格式
+- 标注层：
+  - 先做 `semantic + affordance` dual-annotation pilot
+  - 建议 gate：
+    - semantic 首步 primitive exact-match 约 `>= 0.8`
+    - static tag jaccard 约 `>= 0.8`
+    - segment `primary_primitive` agreement 约 `>= 0.75`
+  - 若 agreement 低于预期，先缩词表 / 改规则，不扩量
+- adaptation 层：
+  - 先定义 task-disjoint split，再决定哪些标注可以进入 SFT
+  - 第一版只做 structured output SFT；RL 只保留为后续可能扩展，不进入当前主线

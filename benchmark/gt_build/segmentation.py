@@ -285,7 +285,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--annotation-csv",
-        default="/home/dayu/projects/GM-100/GM100_bimanual_fullscan_20260318/task_type_annotation.csv",
+        default=str(Path(__file__).resolve().with_name("task_type_annotation.csv")),
     )
     parser.add_argument("--task-id", default="task_00046")
     parser.add_argument("--episode-index", type=int, default=129)

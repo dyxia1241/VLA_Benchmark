@@ -18,8 +18,7 @@ GM-100/
 │       ├── data/chunk-000/episode_XXXXXX.parquet
 │       ├── videos/chunk-000/observation.images.camera_*/episode_XXXXXX.mp4
 │       └── meta/{info.json,episodes.jsonl,tasks.jsonl}
-├── GM100_bimanual_fullscan_20260318/                  # task 元数据与分型
-│   └── task_type_annotation.csv
+├── GM100_bimanual_fullscan_20260318/                  # 早期 fullscan / 分型 provenance
 ├── GM100_eda_plots_20260318/                          # 早期 EDA 可视化
 └── benchmark/
     ├── GM100 List.xlsx                                # task 描述 + object inventory 工作簿
@@ -32,6 +31,7 @@ GM-100/
     │   ├── score_pilot.py                             # 通用评分器
     │   └── score_benchmark_v1.py                      # benchmark_v1 评分入口（T6 baseline=0.5）
     ├── gt_build/                                      # GT 构建、采样、抽帧主链路
+    │   ├── task_type_annotation.csv                   # 当前主线 task 元数据
     │   ├── segmentation.py
     │   ├── build_t1_gt.py / build_t2_gt.py / ...
     │   ├── build_sampling_pipeline.py
@@ -68,7 +68,7 @@ GM-100/
 ### 2.1 benchmark_v1 主评测链
 
 ```text
-task_type_annotation.csv
+benchmark/gt_build/task_type_annotation.csv
         +
 gm100-cobotmagic-lerobot(task parquet/mp4)
         |
@@ -146,7 +146,7 @@ agreement / gt_correctness / error category 汇总
 ```text
 gm100-cobotmagic-lerobot/task_*/meta/tasks.jsonl
         +
-GM100_bimanual_fullscan_20260318/task_type_annotation.csv
+benchmark/gt_build/task_type_annotation.csv
         +
 benchmark/GM100 List.xlsx
         |
@@ -215,7 +215,7 @@ legacy_collision_vqa/detect_collision_multitask.py
 | `gt_build/extract_frames.py` | 批量抽取单帧/多帧 JPEG | `benchmark_v1_curated.jsonl` + mp4 | `benchmark_v1_frames*/**.jpg`, `extract_summary.json` |
 | `manual_audit/gt_audit/export_audit_subset.py` | 从 curated benchmark 分层抽样并导出审计包 | curated jsonl + frame dir + quota config | audit csv/jsonl, `audit_cards/*.jpg`, `audit_summary.json` |
 | `manual_audit/gt_audit/score_audit_annotations.py` | 合并 annotator CSV 并统计 agreement / error 分布 | annotator A/B csv | 审计统计摘要、冲突项汇总 |
-| `manual_audit/semantic_affordance_audit/build_task_semantic_seed.py` | 生成 semantic seed 标注表 | `tasks.jsonl` + `task_type_annotation.csv` | semantic 主表与 annotator sidecar 表 |
+| `manual_audit/semantic_affordance_audit/build_task_semantic_seed.py` | 生成 semantic seed 标注表 | `tasks.jsonl` + `benchmark/gt_build/task_type_annotation.csv` | semantic 主表与 annotator sidecar 表 |
 | `manual_audit/semantic_affordance_audit/build_task_affordance_template.py` | 生成 affordance 标注模板 | dataset task dirs + semantic seed csv | affordance 主表与 annotator sidecar 表 |
 | `manual_audit/semantic_affordance_audit/import_gm100_list_inventory.py` | 从 `GM100 List.xlsx` 导入 object inventory | `GM100 List.xlsx` + affordance csv | 回填后的 affordance csv + `task_object_inventory_v1.json` |
 | `eval_v1/run_pilot_eval.py` | 通用推理执行器，支持 parse/retry/preflight 和可选 task-meta prepend | input jsonl + frame dir + api/model/key + task-meta xlsx | 结果 JSONL + 汇总统计 |
