@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BENCHMARK_DIR="$SCRIPT_DIR"
 
-GT_DIR_DEFAULT="$BENCHMARK_DIR/previous_results/manual_checks_20260320/full_gt_task00001_00110_live_20260331_tbinary_v2"
+GT_DIR_DEFAULT="$BENCHMARK_DIR/previous_results/manual_checks_20260320/root_release_source_20260414_tprogress_v2"
 MODEL_DEFAULT="qwen3-vl-plus"
 
 GT_DIR="$GT_DIR_DEFAULT"
@@ -26,7 +26,7 @@ Usage:
 
 Options:
   --gt-dir PATH            GT directory containing t*_gt_items.jsonl
-                           default: benchmark/previous_results/manual_checks_20260320/full_gt_task00001_00110_live_20260331_tbinary_v2
+                           default: benchmark/previous_results/manual_checks_20260320/root_release_source_20260414_tprogress_v2
   --model NAME             VLM model name
                            default: qwen3-vl-plus
   --run-tag TAG            Run tag used for frame/result naming

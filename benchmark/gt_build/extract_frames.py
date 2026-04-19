@@ -78,7 +78,7 @@ def parse_item_to_requests(
                 suffix = "t0" if off == 0 else f"t{off:+d}"
                 add_one(ep, fi2, suffix=suffix)
         elif task_type == "T3" and t3_context_radius > 0:
-            # Default T3 context now uses a wider temporal span to make motion visible.
+            # T3 v2 uses a wider ordered context to make planar motion visually answerable.
             # If --t3-offsets is provided, it overrides radius-based offsets.
             offsets = t3_offsets if t3_offsets else list(range(-t3_context_radius, t3_context_radius))
             for off in offsets:
@@ -87,6 +87,10 @@ def parse_item_to_requests(
                     continue
                 suffix = "t0" if off == 0 else f"t{off:+d}"
                 add_one(ep, fi2, suffix=suffix)
+        elif task_type in {"T4", "T_progress"} and isinstance(item.get("frame_indices"), list):
+            # T4 consumes an ordered 4-frame window; T_progress v2 consumes an ordered 5-frame window.
+            for fi2 in item["frame_indices"]:
+                add_one(ep, int(fi2))
         else:
             add_one(ep, fi)
 
@@ -98,8 +102,8 @@ def parse_item_to_requests(
         fb = item["frame_B"]
         add_one(int(fb["episode_id"]), int(fb["frame_index"]))
 
-    # T_temporal triplet
-    if "frame_indices" in item and "episode_id" in item and not (task_type == "T6" and t6_context):
+    # Multi-frame tasks that use raw frame filenames without suffixes.
+    if task_type in {"T_temporal", "T_binary"} and "frame_indices" in item and "episode_id" in item:
         ep = int(item["episode_id"])
         for fi in item["frame_indices"]:
             add_one(ep, int(fi))
@@ -122,8 +126,8 @@ def main() -> None:
     parser.add_argument("--t3-context-radius", type=int, default=0, help="For T3, additionally extract +/-N neighboring frames.")
     parser.add_argument(
         "--t3-offsets",
-        default="-6,-3,0,3",
-        help="Comma-separated T3 offsets when --t3-context-radius > 0; default widens span to 0.4s at 30fps.",
+        default="-10,-5,0,5",
+        help="Comma-separated T3 offsets when --t3-context-radius > 0; T3 v2 default is -10,-5,0,+5.",
     )
     parser.add_argument("--t6-context", action="store_true", help="For T6, extract fixed 5-frame context: t-6,t-3,t0,t+3,t+6.")
     parser.add_argument(

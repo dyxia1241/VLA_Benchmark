@@ -1,0 +1,85 @@
+{
+  "camera": "036422060215",
+  "source_annotation_sheet": "benchmark/rh20t_t3_direction_calibration_v0/annotation_sheet.csv",
+  "context_offsets": [
+    -20,
+    -10,
+    0,
+    10
+  ],
+  "allowed_human_labels": [
+    "left",
+    "right",
+    "top",
+    "bottom"
+  ],
+  "mapping": {
+    "left": "bottom",
+    "right": "top",
+    "top": "left",
+    "bottom": "right"
+  },
+  "filtered_buckets": [],
+  "calibration_counts": {
+    "left": {
+      "counts": {
+        "top": 1,
+        "bottom": 4,
+        "right": 3
+      },
+      "selected_label": "bottom",
+      "support": 8,
+      "top_count": 4,
+      "second_count": 3,
+      "margin": 1,
+      "confidence": 0.5
+    },
+    "right": {
+      "counts": {
+        "top": 4,
+        "left": 2,
+        "right": 1
+      },
+      "selected_label": "top",
+      "support": 7,
+      "top_count": 4,
+      "second_count": 2,
+      "margin": 2,
+      "confidence": 0.571429
+    },
+    "top": {
+      "counts": {
+        "left": 8
+      },
+      "selected_label": "left",
+      "support": 8,
+      "top_count": 8,
+      "second_count": 0,
+      "margin": 8,
+      "confidence": 1.0
+    },
+    "bottom": {
+      "counts": {
+        "right": 8
+      },
+      "selected_label": "right",
+      "support": 8,
+      "top_count": 8,
+      "second_count": 0,
+      "margin": 8,
+      "confidence": 1.0
+    }
+  },
+  "summary": {
+    "num_rows_total": 32,
+    "num_rows_used": 31,
+    "num_unclear_skipped": 1,
+    "num_invalid_skipped": 0,
+    "total_by_auto_tcp_direction": {
+      "bottom": 8,
+      "top": 8,
+      "left": 8,
+      "right": 8
+    }
+  }
+}

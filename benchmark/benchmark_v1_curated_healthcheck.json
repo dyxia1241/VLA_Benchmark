@@ -1,9 +1,9 @@
 {
   "config": {
     "dataset_root": "/data/projects/GM-100/gm100-cobotmagic-lerobot",
-    "gt_dir": "benchmark/previous_results/manual_checks_20260320/full_gt_task00001_00110_live_20260331_tbinary_v2",
-    "output_jsonl": "benchmark/benchmark_v1_curated.jsonl",
-    "output_per_type_dir": "benchmark/benchmark_v1_curated_by_type",
+    "gt_dir": "benchmark/previous_results/manual_checks_20260320/root_release_source_20260414_tprogress_v2",
+    "output_jsonl": "/data/projects/GM-100/benchmark/benchmark_v1_curated.jsonl",
+    "output_per_type_dir": "/data/projects/GM-100/benchmark/benchmark_v1_curated_by_type",
     "seed": 42,
     "targets": {
       "T1": 3000,
@@ -42,13 +42,13 @@
       "T_binary",
       "T_temporal"
     ],
-    "head_guard_frames": 30,
-    "tail_guard_frames": 30,
+    "head_guard_frames": 90,
+    "tail_guard_frames": 90,
     "t3_context_offsets": [
-      -6,
-      -3,
+      -10,
+      -5,
       0,
-      3
+      5
     ],
     "t6_context_offsets": [
       -6,
@@ -60,44 +60,44 @@
   },
   "counts": {
     "raw_by_type": {
-      "T1": 360800,
-      "T2": 141492,
-      "T3": 380010,
-      "T4": 115450,
-      "T6": 85416,
-      "T_temporal": 68870,
-      "T_binary": 67320,
-      "T_progress": 304064
+      "T1": 3000,
+      "T2": 1000,
+      "T3": 2500,
+      "T4": 1500,
+      "T6": 1500,
+      "T_temporal": 2000,
+      "T_binary": 1500,
+      "T_progress": 72360
     },
     "after_video_filter_by_type": {
-      "T1": 113980,
-      "T2": 45362,
-      "T3": 120613,
-      "T4": 36590,
-      "T6": 26929,
-      "T_temporal": 21725,
-      "T_binary": 21151,
-      "T_progress": 96003
+      "T1": 3000,
+      "T2": 1000,
+      "T3": 2500,
+      "T4": 1500,
+      "T6": 1500,
+      "T_temporal": 2000,
+      "T_binary": 1500,
+      "T_progress": 23298
     },
     "removed_by_boundary_guard_by_type": {
       "T1": 0,
       "T2": 0,
-      "T3": 881,
-      "T4": 1851,
-      "T6": 1434,
-      "T_temporal": 4461,
-      "T_binary": 1819,
+      "T3": 0,
+      "T4": 0,
+      "T6": 0,
+      "T_temporal": 0,
+      "T_binary": 0,
       "T_progress": 0
     },
     "after_boundary_filter_by_type": {
-      "T1": 113980,
-      "T2": 45362,
-      "T3": 119732,
-      "T4": 34739,
-      "T6": 25495,
-      "T_temporal": 17264,
-      "T_binary": 19332,
-      "T_progress": 96003
+      "T1": 3000,
+      "T2": 1000,
+      "T3": 2500,
+      "T4": 1500,
+      "T6": 1500,
+      "T_temporal": 2000,
+      "T_binary": 1500,
+      "T_progress": 23298
     },
     "sampled_by_type": {
       "T1": 3000,
@@ -130,14 +130,14 @@
       "T_progress": 0
     },
     "missing_video_by_type": {
-      "T1": 246820,
-      "T2": 96130,
-      "T3": 259397,
-      "T4": 78860,
-      "T6": 58487,
-      "T_temporal": 47145,
-      "T_binary": 46169,
-      "T_progress": 208061
+      "T1": 0,
+      "T2": 0,
+      "T3": 0,
+      "T4": 0,
+      "T6": 0,
+      "T_temporal": 0,
+      "T_binary": 0,
+      "T_progress": 49062
     },
     "missing_episode_id_by_type": {
       "T1": 0,
@@ -149,10 +149,10 @@
       "T_binary": 0,
       "T_progress": 0
     },
-    "total_raw": 1523422,
-    "total_after_video_filter": 482353,
-    "total_removed_by_boundary_guard": 10446,
-    "total_after_boundary_filter": 471907,
+    "total_raw": 85360,
+    "total_after_video_filter": 36298,
+    "total_removed_by_boundary_guard": 0,
+    "total_after_boundary_filter": 36298,
     "total_sampled": 15500,
     "total_target": 15500
   },
@@ -163,9 +163,9 @@
       "T3": 106,
       "T4": 21,
       "T6": 106,
-      "T_temporal": 106,
+      "T_temporal": 102,
       "T_binary": 106,
-      "T_progress": 106
+      "T_progress": 96
     },
     "tasks_with_items_after_sample_by_type": {
       "T1": 106,
@@ -173,9 +173,9 @@
       "T3": 106,
       "T4": 21,
       "T6": 106,
-      "T_temporal": 106,
+      "T_temporal": 102,
       "T_binary": 106,
-      "T_progress": 106
+      "T_progress": 96
     },
     "zero_tasks_after_filter_by_type": {
       "T1": [],
@@ -280,9 +280,25 @@
         "task_00110"
       ],
       "T6": [],
-      "T_temporal": [],
+      "T_temporal": [
+        "task_00009",
+        "task_00018",
+        "task_00093",
+        "task_00101"
+      ],
       "T_binary": [],
-      "T_progress": []
+      "T_progress": [
+        "task_00001",
+        "task_00003",
+        "task_00009",
+        "task_00015",
+        "task_00018",
+        "task_00060",
+        "task_00061",
+        "task_00076",
+        "task_00093",
+        "task_00101"
+      ]
     },
     "zero_tasks_after_sample_by_type": {
       "T1": [],
@@ -387,131 +403,143 @@
         "task_00110"
       ],
       "T6": [],
-      "T_temporal": [],
+      "T_temporal": [
+        "task_00009",
+        "task_00018",
+        "task_00093",
+        "task_00101"
+      ],
       "T_binary": [],
-      "T_progress": []
+      "T_progress": [
+        "task_00001",
+        "task_00003",
+        "task_00009",
+        "task_00015",
+        "task_00018",
+        "task_00060",
+        "task_00061",
+        "task_00076",
+        "task_00093",
+        "task_00101"
+      ]
     }
   },
   "distributions": {
     "answer_filtered_by_type": {
       "T1": {
-        "C": 28433,
-        "D": 28464,
-        "A": 28681,
-        "B": 28402
+        "B": 688,
+        "A": 803,
+        "C": 759,
+        "D": 750
       },
       "T2": {
-        "A": 22749,
-        "B": 22613
+        "A": 512,
+        "B": 488
       },
       "T3": {
-        "A": 29928,
-        "D": 29881,
-        "B": 29959,
-        "C": 29964
+        "C": 588,
+        "A": 651,
+        "D": 644,
+        "B": 617
       },
       "T4": {},
       "T6": {
-        "B": 12667,
-        "A": 12828
+        "B": 751,
+        "A": 749
       },
       "T_temporal": {
-        "XZY": 2861,
-        "YZX": 2883,
-        "ZYX": 2875,
-        "XYZ": 2838,
-        "YXZ": 2936,
-        "ZXY": 2871
+        "ZYX": 339,
+        "YXZ": 349,
+        "YZX": 344,
+        "XZY": 313,
+        "XYZ": 307,
+        "ZXY": 348
       },
       "T_binary": {
-        "X": 9637,
-        "Y": 9695
+        "X": 743,
+        "Y": 757
       },
       "T_progress": {
-        "A": 16088,
-        "B": 19789,
-        "D": 20533,
-        "E": 21833,
-        "C": 17760
+        "A": 7766,
+        "B": 7766,
+        "C": 7766
       }
     },
     "answer_sampled_by_type": {
       "T1": {
         "A": 803,
-        "D": 750,
         "B": 688,
+        "D": 750,
         "C": 759
       },
       "T2": {
-        "B": 488,
-        "A": 512
+        "A": 512,
+        "B": 488
       },
       "T3": {
-        "C": 627,
-        "B": 625,
-        "A": 624,
-        "D": 624
+        "C": 588,
+        "D": 644,
+        "B": 617,
+        "A": 651
       },
       "T4": {},
       "T6": {
-        "A": 743,
-        "B": 757
+        "A": 749,
+        "B": 751
       },
       "T_temporal": {
-        "ZXY": 336,
-        "YZX": 329,
-        "XZY": 329,
-        "XYZ": 325,
-        "ZYX": 337,
-        "YXZ": 344
+        "YXZ": 349,
+        "XZY": 313,
+        "ZXY": 348,
+        "XYZ": 307,
+        "ZYX": 339,
+        "YZX": 344
       },
       "T_binary": {
-        "X": 764,
-        "Y": 736
+        "X": 743,
+        "Y": 757
       },
       "T_progress": {
-        "B": 527,
-        "E": 564,
-        "C": 436,
-        "D": 534,
-        "A": 439
+        "A": 894,
+        "B": 809,
+        "C": 797
       }
     },
     "t4_label_filtered": {
-      "both_active": 8026,
-      "left_only": 8903,
-      "right_only": 9348,
-      "both_idle": 8462
+      "left_only": 407,
+      "right_only": 342,
+      "both_idle": 438,
+      "both_active": 313
     },
     "t4_label_sampled": {
-      "left_only": 413,
-      "both_idle": 375,
-      "both_active": 316,
-      "right_only": 396
+      "left_only": 407,
+      "both_idle": 438,
+      "right_only": 342,
+      "both_active": 313
     },
     "temporal_perm_filtered": {
-      "XZY": 2861,
-      "YZX": 2883,
-      "ZYX": 2875,
-      "XYZ": 2838,
-      "YXZ": 2936,
-      "ZXY": 2871
+      "ZYX": 339,
+      "YXZ": 349,
+      "YZX": 344,
+      "XZY": 313,
+      "XYZ": 307,
+      "ZXY": 348
     },
     "temporal_perm_sampled": {
-      "ZXY": 336,
-      "YZX": 329,
-      "XZY": 329,
-      "XYZ": 325,
-      "ZYX": 337,
-      "YXZ": 344
+      "YXZ": 349,
+      "XZY": 313,
+      "ZXY": 348,
+      "XYZ": 307,
+      "ZYX": 339,
+      "YZX": 344
     },
     "t6_speed_label_filtered": {
-      "actively_moving": 12808,
-      "stationary": 12687
+      "actively_moving": 765,
+      "stationary": 735
     },
     "t6_speed_label_sampled": {
-      "stationary": 753,
-      "actively_moving": 747
+      "stationary": 735,
+      "actively_moving": 765
     }
   }
 }

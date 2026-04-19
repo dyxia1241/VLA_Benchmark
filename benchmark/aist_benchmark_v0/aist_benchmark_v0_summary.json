@@ -1,0 +1,22 @@
+{
+  "selected_root": "/data/projects/GM-100/aist-bimanip/selected20",
+  "output_dir": "/data/projects/GM-100/benchmark/aist_benchmark_v0",
+  "num_episodes": 200,
+  "pool_counts": {
+    "T3": 3041,
+    "T4": 1977,
+    "T6": 1595,
+    "T9": 600
+  },
+  "quota": "all",
+  "curated_counts": {
+    "T3": 3041,
+    "T4": 1977,
+    "T6": 1595,
+    "T9": 600
+  },
+  "direction_mapping": "/data/projects/GM-100/benchmark/gt_build/aist/aist_t3_direction_mapping_cam_high.json",
+  "curated_total": 7213,
+  "pool_jsonl": "/data/projects/GM-100/benchmark/aist_benchmark_v0/aist_benchmark_v0_pool.jsonl",
+  "curated_jsonl": "/data/projects/GM-100/benchmark/aist_benchmark_v0/aist_benchmark_v0_curated.jsonl"
+}

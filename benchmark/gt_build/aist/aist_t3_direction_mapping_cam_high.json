@@ -1,0 +1,40 @@
+{
+  "camera": "cam_high",
+  "source_annotation_sheet": "/data/projects/GM-100/benchmark/aist_t3_direction_calibration_v0/annotation_sheet.csv",
+  "context_offsets": [-30, -15, 0, 15],
+  "allowed_human_labels": ["left", "right", "top", "bottom"],
+  "mapping": {
+    "left": {
+      "bottom": "right",
+      "left": "bottom",
+      "right": "top"
+    },
+    "right": {
+      "bottom": "right",
+      "left": "top",
+      "right": "bottom",
+      "top": "left"
+    }
+  },
+  "filtered_buckets": [
+    {
+      "query_arm": "left",
+      "auto_qpos_direction_raw": "top",
+      "reason": "Human labels conflict after excluding unclear: left=1, right=2."
+    }
+  ],
+  "calibration_counts": {
+    "left": {
+      "bottom": {"right": 2, "unclear": 1},
+      "left": {"bottom": 3},
+      "right": {"top": 3},
+      "top": {"left": 1, "right": 2}
+    },
+    "right": {
+      "bottom": {"right": 3},
+      "left": {"top": 2, "unclear": 1},
+      "right": {"bottom": 3},
+      "top": {"left": 3}
+    }
+  }
+}

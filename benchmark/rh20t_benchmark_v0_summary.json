@@ -1,0 +1,2482 @@
+{
+  "dataset": "RH20T",
+  "source_dir": "benchmark/rh20t_cfg2_expanded_v0/pools",
+  "tasks": [
+    "T1",
+    "T2",
+    "T3",
+    "T7",
+    "T_progress",
+    "T6",
+    "T_temporal",
+    "T_binary"
+  ],
+  "targets": {
+    "T1": 2000,
+    "T2": 1500,
+    "T3": 1800,
+    "T7": 4000,
+    "T_progress": 2300,
+    "T6": 1500,
+    "T_temporal": 1200,
+    "T_binary": 1500
+  },
+  "min_rating": 4,
+  "max_calib_quality": 3,
+  "max_per_scene": 80,
+  "max_per_group": 1,
+  "counts": {
+    "raw_by_type": {
+      "T1": 6522,
+      "T2": 4044,
+      "T3": 3647,
+      "T7": 4000,
+      "T_progress": 4677,
+      "T6": 2037,
+      "T_temporal": 1267,
+      "T_binary": 2608
+    },
+    "quality_filtered_by_type": {
+      "T1": 6522,
+      "T2": 4044,
+      "T3": 3647,
+      "T7": 4000,
+      "T_progress": 4677,
+      "T6": 2037,
+      "T_temporal": 1267,
+      "T_binary": 2608
+    },
+    "sampled_by_type": {
+      "T1": 2000,
+      "T2": 1500,
+      "T3": 1800,
+      "T7": 4000,
+      "T_progress": 2300,
+      "T6": 1500,
+      "T_temporal": 1200,
+      "T_binary": 1500
+    },
+    "shortfall_by_type": {
+      "T1": 0,
+      "T2": 0,
+      "T3": 0,
+      "T7": 0,
+      "T_progress": 0,
+      "T6": 0,
+      "T_temporal": 0,
+      "T_binary": 0
+    },
+    "total_sampled": 15800,
+    "total_target": 15800
+  },
+  "coverage": {
+    "unique_scenes_by_type": {
+      "T1": 146,
+      "T2": 176,
+      "T3": 243,
+      "T7": 596,
+      "T_progress": 254,
+      "T6": 344,
+      "T_temporal": 445,
+      "T_binary": 289
+    },
+    "unique_task_ids_by_type": {
+      "T1": 49,
+      "T2": 50,
+      "T3": 58,
+      "T7": 76,
+      "T_progress": 63,
+      "T6": 72,
+      "T_temporal": 74,
+      "T_binary": 68
+    },
+    "unique_scenes_total": 596,
+    "unique_task_ids_total": 76
+  },
+  "scene_list": [
+    {
+      "scene_dir": "task_0001_user_0002_scene_0007_cfg_0002",
+      "task_id": "task_0001"
+    },
+    {
+      "scene_dir": "task_0001_user_0002_scene_0009_cfg_0002",
+      "task_id": "task_0001"
+    },
+    {
+      "scene_dir": "task_0001_user_0002_scene_0010_cfg_0002",
+      "task_id": "task_0001"
+    },
+    {
+      "scene_dir": "task_0001_user_0003_scene_0003_cfg_0002",
+      "task_id": "task_0001"
+    },
+    {
+      "scene_dir": "task_0001_user_0006_scene_0001_cfg_0002",
+      "task_id": "task_0001"
+    },
+    {
+      "scene_dir": "task_0001_user_0006_scene_0003_cfg_0002",
+      "task_id": "task_0001"
+    },
+    {
+      "scene_dir": "task_0001_user_0006_scene_0005_cfg_0002",
+      "task_id": "task_0001"
+    },
+    {
+      "scene_dir": "task_0001_user_0006_scene_0009_cfg_0002",
+      "task_id": "task_0001"
+    },
+    {
+      "scene_dir": "task_0001_user_0007_scene_0001_cfg_0002",
+      "task_id": "task_0001"
+    },
+    {
+      "scene_dir": "task_0001_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0001"
+    },
+    {
+      "scene_dir": "task_0001_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0001"
+    },
+    {
+      "scene_dir": "task_0001_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0001"
+    },
+    {
+      "scene_dir": "task_0001_user_0013_scene_0001_cfg_0002",
+      "task_id": "task_0001"
+    },
+    {
+      "scene_dir": "task_0001_user_0013_scene_0004_cfg_0002",
+      "task_id": "task_0001"
+    },
+    {
+      "scene_dir": "task_0001_user_0013_scene_0005_cfg_0002",
+      "task_id": "task_0001"
+    },
+    {
+      "scene_dir": "task_0001_user_0013_scene_0010_cfg_0002",
+      "task_id": "task_0001"
+    },
+    {
+      "scene_dir": "task_0002_user_0002_scene_0005_cfg_0002",
+      "task_id": "task_0002"
+    },
+    {
+      "scene_dir": "task_0002_user_0002_scene_0009_cfg_0002",
+      "task_id": "task_0002"
+    },
+    {
+      "scene_dir": "task_0002_user_0003_scene_0005_cfg_0002",
+      "task_id": "task_0002"
+    },
+    {
+      "scene_dir": "task_0002_user_0003_scene_0010_cfg_0002",
+      "task_id": "task_0002"
+    },
+    {
+      "scene_dir": "task_0002_user_0006_scene_0005_cfg_0002",
+      "task_id": "task_0002"
+    },
+    {
+      "scene_dir": "task_0002_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0002"
+    },
+    {
+      "scene_dir": "task_0002_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0002"
+    },
+    {
+      "scene_dir": "task_0002_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0002"
+    },
+    {
+      "scene_dir": "task_0002_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0002"
+    },
+    {
+      "scene_dir": "task_0002_user_0013_scene_0001_cfg_0002",
+      "task_id": "task_0002"
+    },
+    {
+      "scene_dir": "task_0002_user_0013_scene_0002_cfg_0002",
+      "task_id": "task_0002"
+    },
+    {
+      "scene_dir": "task_0002_user_0013_scene_0003_cfg_0002",
+      "task_id": "task_0002"
+    },
+    {
+      "scene_dir": "task_0002_user_0013_scene_0004_cfg_0002",
+      "task_id": "task_0002"
+    },
+    {
+      "scene_dir": "task_0002_user_0013_scene_0005_cfg_0002",
+      "task_id": "task_0002"
+    },
+    {
+      "scene_dir": "task_0002_user_0013_scene_0006_cfg_0002",
+      "task_id": "task_0002"
+    },
+    {
+      "scene_dir": "task_0002_user_0013_scene_0007_cfg_0002",
+      "task_id": "task_0002"
+    },
+    {
+      "scene_dir": "task_0002_user_0013_scene_0008_cfg_0002",
+      "task_id": "task_0002"
+    },
+    {
+      "scene_dir": "task_0002_user_0013_scene_0009_cfg_0002",
+      "task_id": "task_0002"
+    },
+    {
+      "scene_dir": "task_0003_user_0002_scene_0002_cfg_0002",
+      "task_id": "task_0003"
+    },
+    {
+      "scene_dir": "task_0003_user_0002_scene_0005_cfg_0002",
+      "task_id": "task_0003"
+    },
+    {
+      "scene_dir": "task_0003_user_0002_scene_0009_cfg_0002",
+      "task_id": "task_0003"
+    },
+    {
+      "scene_dir": "task_0003_user_0003_scene_0008_cfg_0002",
+      "task_id": "task_0003"
+    },
+    {
+      "scene_dir": "task_0003_user_0006_scene_0007_cfg_0002",
+      "task_id": "task_0003"
+    },
+    {
+      "scene_dir": "task_0003_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0003"
+    },
+    {
+      "scene_dir": "task_0003_user_0013_scene_0001_cfg_0002",
+      "task_id": "task_0003"
+    },
+    {
+      "scene_dir": "task_0003_user_0013_scene_0003_cfg_0002",
+      "task_id": "task_0003"
+    },
+    {
+      "scene_dir": "task_0003_user_0013_scene_0004_cfg_0002",
+      "task_id": "task_0003"
+    },
+    {
+      "scene_dir": "task_0003_user_0013_scene_0006_cfg_0002",
+      "task_id": "task_0003"
+    },
+    {
+      "scene_dir": "task_0003_user_0013_scene_0007_cfg_0002",
+      "task_id": "task_0003"
+    },
+    {
+      "scene_dir": "task_0003_user_0013_scene_0008_cfg_0002",
+      "task_id": "task_0003"
+    },
+    {
+      "scene_dir": "task_0003_user_0013_scene_0009_cfg_0002",
+      "task_id": "task_0003"
+    },
+    {
+      "scene_dir": "task_0004_user_0002_scene_0006_cfg_0002",
+      "task_id": "task_0004"
+    },
+    {
+      "scene_dir": "task_0004_user_0006_scene_0009_cfg_0002",
+      "task_id": "task_0004"
+    },
+    {
+      "scene_dir": "task_0004_user_0006_scene_0010_cfg_0002",
+      "task_id": "task_0004"
+    },
+    {
+      "scene_dir": "task_0004_user_0007_scene_0002_cfg_0002",
+      "task_id": "task_0004"
+    },
+    {
+      "scene_dir": "task_0004_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0004"
+    },
+    {
+      "scene_dir": "task_0004_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0004"
+    },
+    {
+      "scene_dir": "task_0004_user_0013_scene_0001_cfg_0002",
+      "task_id": "task_0004"
+    },
+    {
+      "scene_dir": "task_0004_user_0013_scene_0002_cfg_0002",
+      "task_id": "task_0004"
+    },
+    {
+      "scene_dir": "task_0004_user_0013_scene_0003_cfg_0002",
+      "task_id": "task_0004"
+    },
+    {
+      "scene_dir": "task_0004_user_0013_scene_0004_cfg_0002",
+      "task_id": "task_0004"
+    },
+    {
+      "scene_dir": "task_0004_user_0013_scene_0006_cfg_0002",
+      "task_id": "task_0004"
+    },
+    {
+      "scene_dir": "task_0004_user_0013_scene_0007_cfg_0002",
+      "task_id": "task_0004"
+    },
+    {
+      "scene_dir": "task_0004_user_0013_scene_0010_cfg_0002",
+      "task_id": "task_0004"
+    },
+    {
+      "scene_dir": "task_0005_user_0002_scene_0004_cfg_0002",
+      "task_id": "task_0005"
+    },
+    {
+      "scene_dir": "task_0005_user_0002_scene_0007_cfg_0002",
+      "task_id": "task_0005"
+    },
+    {
+      "scene_dir": "task_0005_user_0002_scene_0008_cfg_0002",
+      "task_id": "task_0005"
+    },
+    {
+      "scene_dir": "task_0005_user_0002_scene_0010_cfg_0002",
+      "task_id": "task_0005"
+    },
+    {
+      "scene_dir": "task_0005_user_0007_scene_0003_cfg_0002",
+      "task_id": "task_0005"
+    },
+    {
+      "scene_dir": "task_0005_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0005"
+    },
+    {
+      "scene_dir": "task_0005_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0005"
+    },
+    {
+      "scene_dir": "task_0005_user_0007_scene_0007_cfg_0002",
+      "task_id": "task_0005"
+    },
+    {
+      "scene_dir": "task_0005_user_0013_scene_0001_cfg_0002",
+      "task_id": "task_0005"
+    },
+    {
+      "scene_dir": "task_0005_user_0013_scene_0002_cfg_0002",
+      "task_id": "task_0005"
+    },
+    {
+      "scene_dir": "task_0005_user_0013_scene_0003_cfg_0002",
+      "task_id": "task_0005"
+    },
+    {
+      "scene_dir": "task_0005_user_0013_scene_0004_cfg_0002",
+      "task_id": "task_0005"
+    },
+    {
+      "scene_dir": "task_0005_user_0013_scene_0005_cfg_0002",
+      "task_id": "task_0005"
+    },
+    {
+      "scene_dir": "task_0005_user_0013_scene_0006_cfg_0002",
+      "task_id": "task_0005"
+    },
+    {
+      "scene_dir": "task_0005_user_0013_scene_0007_cfg_0002",
+      "task_id": "task_0005"
+    },
+    {
+      "scene_dir": "task_0005_user_0013_scene_0008_cfg_0002",
+      "task_id": "task_0005"
+    },
+    {
+      "scene_dir": "task_0005_user_0013_scene_0009_cfg_0002",
+      "task_id": "task_0005"
+    },
+    {
+      "scene_dir": "task_0005_user_0013_scene_0010_cfg_0002",
+      "task_id": "task_0005"
+    },
+    {
+      "scene_dir": "task_0006_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0006"
+    },
+    {
+      "scene_dir": "task_0006_user_0007_scene_0007_cfg_0002",
+      "task_id": "task_0006"
+    },
+    {
+      "scene_dir": "task_0006_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0006"
+    },
+    {
+      "scene_dir": "task_0006_user_0013_scene_0001_cfg_0002",
+      "task_id": "task_0006"
+    },
+    {
+      "scene_dir": "task_0006_user_0013_scene_0002_cfg_0002",
+      "task_id": "task_0006"
+    },
+    {
+      "scene_dir": "task_0006_user_0013_scene_0003_cfg_0002",
+      "task_id": "task_0006"
+    },
+    {
+      "scene_dir": "task_0006_user_0013_scene_0005_cfg_0002",
+      "task_id": "task_0006"
+    },
+    {
+      "scene_dir": "task_0006_user_0013_scene_0006_cfg_0002",
+      "task_id": "task_0006"
+    },
+    {
+      "scene_dir": "task_0006_user_0013_scene_0007_cfg_0002",
+      "task_id": "task_0006"
+    },
+    {
+      "scene_dir": "task_0006_user_0013_scene_0008_cfg_0002",
+      "task_id": "task_0006"
+    },
+    {
+      "scene_dir": "task_0006_user_0013_scene_0009_cfg_0002",
+      "task_id": "task_0006"
+    },
+    {
+      "scene_dir": "task_0006_user_0013_scene_0010_cfg_0002",
+      "task_id": "task_0006"
+    },
+    {
+      "scene_dir": "task_0007_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0007"
+    },
+    {
+      "scene_dir": "task_0007_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0007"
+    },
+    {
+      "scene_dir": "task_0007_user_0013_scene_0001_cfg_0002",
+      "task_id": "task_0007"
+    },
+    {
+      "scene_dir": "task_0007_user_0013_scene_0002_cfg_0002",
+      "task_id": "task_0007"
+    },
+    {
+      "scene_dir": "task_0007_user_0013_scene_0003_cfg_0002",
+      "task_id": "task_0007"
+    },
+    {
+      "scene_dir": "task_0007_user_0013_scene_0005_cfg_0002",
+      "task_id": "task_0007"
+    },
+    {
+      "scene_dir": "task_0007_user_0013_scene_0006_cfg_0002",
+      "task_id": "task_0007"
+    },
+    {
+      "scene_dir": "task_0007_user_0013_scene_0008_cfg_0002",
+      "task_id": "task_0007"
+    },
+    {
+      "scene_dir": "task_0007_user_0013_scene_0009_cfg_0002",
+      "task_id": "task_0007"
+    },
+    {
+      "scene_dir": "task_0007_user_0013_scene_0010_cfg_0002",
+      "task_id": "task_0007"
+    },
+    {
+      "scene_dir": "task_0008_user_0002_scene_0009_cfg_0002",
+      "task_id": "task_0008"
+    },
+    {
+      "scene_dir": "task_0008_user_0007_scene_0002_cfg_0002",
+      "task_id": "task_0008"
+    },
+    {
+      "scene_dir": "task_0008_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0008"
+    },
+    {
+      "scene_dir": "task_0008_user_0013_scene_0002_cfg_0002",
+      "task_id": "task_0008"
+    },
+    {
+      "scene_dir": "task_0008_user_0013_scene_0003_cfg_0002",
+      "task_id": "task_0008"
+    },
+    {
+      "scene_dir": "task_0008_user_0013_scene_0004_cfg_0002",
+      "task_id": "task_0008"
+    },
+    {
+      "scene_dir": "task_0008_user_0013_scene_0006_cfg_0002",
+      "task_id": "task_0008"
+    },
+    {
+      "scene_dir": "task_0008_user_0013_scene_0009_cfg_0002",
+      "task_id": "task_0008"
+    },
+    {
+      "scene_dir": "task_0008_user_0013_scene_0010_cfg_0002",
+      "task_id": "task_0008"
+    },
+    {
+      "scene_dir": "task_0009_user_0007_scene_0001_cfg_0002",
+      "task_id": "task_0009"
+    },
+    {
+      "scene_dir": "task_0009_user_0007_scene_0002_cfg_0002",
+      "task_id": "task_0009"
+    },
+    {
+      "scene_dir": "task_0009_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0009"
+    },
+    {
+      "scene_dir": "task_0009_user_0013_scene_0001_cfg_0002",
+      "task_id": "task_0009"
+    },
+    {
+      "scene_dir": "task_0009_user_0013_scene_0002_cfg_0002",
+      "task_id": "task_0009"
+    },
+    {
+      "scene_dir": "task_0009_user_0013_scene_0003_cfg_0002",
+      "task_id": "task_0009"
+    },
+    {
+      "scene_dir": "task_0009_user_0013_scene_0005_cfg_0002",
+      "task_id": "task_0009"
+    },
+    {
+      "scene_dir": "task_0009_user_0013_scene_0006_cfg_0002",
+      "task_id": "task_0009"
+    },
+    {
+      "scene_dir": "task_0009_user_0013_scene_0007_cfg_0002",
+      "task_id": "task_0009"
+    },
+    {
+      "scene_dir": "task_0009_user_0013_scene_0008_cfg_0002",
+      "task_id": "task_0009"
+    },
+    {
+      "scene_dir": "task_0009_user_0013_scene_0009_cfg_0002",
+      "task_id": "task_0009"
+    },
+    {
+      "scene_dir": "task_0009_user_0013_scene_0010_cfg_0002",
+      "task_id": "task_0009"
+    },
+    {
+      "scene_dir": "task_0010_user_0003_scene_0008_cfg_0002",
+      "task_id": "task_0010"
+    },
+    {
+      "scene_dir": "task_0010_user_0007_scene_0002_cfg_0002",
+      "task_id": "task_0010"
+    },
+    {
+      "scene_dir": "task_0010_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0010"
+    },
+    {
+      "scene_dir": "task_0010_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0010"
+    },
+    {
+      "scene_dir": "task_0010_user_0013_scene_0002_cfg_0002",
+      "task_id": "task_0010"
+    },
+    {
+      "scene_dir": "task_0011_user_0013_scene_0001_cfg_0002",
+      "task_id": "task_0011"
+    },
+    {
+      "scene_dir": "task_0011_user_0013_scene_0003_cfg_0002",
+      "task_id": "task_0011"
+    },
+    {
+      "scene_dir": "task_0011_user_0013_scene_0008_cfg_0002",
+      "task_id": "task_0011"
+    },
+    {
+      "scene_dir": "task_0011_user_0013_scene_0009_cfg_0002",
+      "task_id": "task_0011"
+    },
+    {
+      "scene_dir": "task_0011_user_0013_scene_0010_cfg_0002",
+      "task_id": "task_0011"
+    },
+    {
+      "scene_dir": "task_0012_user_0006_scene_0003_cfg_0002",
+      "task_id": "task_0012"
+    },
+    {
+      "scene_dir": "task_0012_user_0006_scene_0005_cfg_0002",
+      "task_id": "task_0012"
+    },
+    {
+      "scene_dir": "task_0012_user_0006_scene_0007_cfg_0002",
+      "task_id": "task_0012"
+    },
+    {
+      "scene_dir": "task_0012_user_0007_scene_0001_cfg_0002",
+      "task_id": "task_0012"
+    },
+    {
+      "scene_dir": "task_0012_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0012"
+    },
+    {
+      "scene_dir": "task_0012_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0012"
+    },
+    {
+      "scene_dir": "task_0014_user_0006_scene_0004_cfg_0002",
+      "task_id": "task_0014"
+    },
+    {
+      "scene_dir": "task_0014_user_0006_scene_0007_cfg_0002",
+      "task_id": "task_0014"
+    },
+    {
+      "scene_dir": "task_0014_user_0006_scene_0008_cfg_0002",
+      "task_id": "task_0014"
+    },
+    {
+      "scene_dir": "task_0016_user_0003_scene_0004_cfg_0002",
+      "task_id": "task_0016"
+    },
+    {
+      "scene_dir": "task_0016_user_0006_scene_0002_cfg_0002",
+      "task_id": "task_0016"
+    },
+    {
+      "scene_dir": "task_0016_user_0006_scene_0009_cfg_0002",
+      "task_id": "task_0016"
+    },
+    {
+      "scene_dir": "task_0022_user_0003_scene_0008_cfg_0002",
+      "task_id": "task_0022"
+    },
+    {
+      "scene_dir": "task_0022_user_0007_scene_0001_cfg_0002",
+      "task_id": "task_0022"
+    },
+    {
+      "scene_dir": "task_0022_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0022"
+    },
+    {
+      "scene_dir": "task_0023_user_0007_scene_0001_cfg_0002",
+      "task_id": "task_0023"
+    },
+    {
+      "scene_dir": "task_0023_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0023"
+    },
+    {
+      "scene_dir": "task_0023_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0023"
+    },
+    {
+      "scene_dir": "task_0023_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0023"
+    },
+    {
+      "scene_dir": "task_0024_user_0007_scene_0001_cfg_0002",
+      "task_id": "task_0024"
+    },
+    {
+      "scene_dir": "task_0024_user_0007_scene_0007_cfg_0002",
+      "task_id": "task_0024"
+    },
+    {
+      "scene_dir": "task_0024_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0024"
+    },
+    {
+      "scene_dir": "task_0034_user_0003_scene_0002_cfg_0002",
+      "task_id": "task_0034"
+    },
+    {
+      "scene_dir": "task_0034_user_0003_scene_0010_cfg_0002",
+      "task_id": "task_0034"
+    },
+    {
+      "scene_dir": "task_0035_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0035"
+    },
+    {
+      "scene_dir": "task_0035_user_0007_scene_0007_cfg_0002",
+      "task_id": "task_0035"
+    },
+    {
+      "scene_dir": "task_0035_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0035"
+    },
+    {
+      "scene_dir": "task_0035_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0035"
+    },
+    {
+      "scene_dir": "task_0035_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0035"
+    },
+    {
+      "scene_dir": "task_0037_user_0007_scene_0002_cfg_0002",
+      "task_id": "task_0037"
+    },
+    {
+      "scene_dir": "task_0037_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0037"
+    },
+    {
+      "scene_dir": "task_0037_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0037"
+    },
+    {
+      "scene_dir": "task_0037_user_0007_scene_0007_cfg_0002",
+      "task_id": "task_0037"
+    },
+    {
+      "scene_dir": "task_0037_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0037"
+    },
+    {
+      "scene_dir": "task_0037_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0037"
+    },
+    {
+      "scene_dir": "task_0041_user_0007_scene_0002_cfg_0002",
+      "task_id": "task_0041"
+    },
+    {
+      "scene_dir": "task_0041_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0041"
+    },
+    {
+      "scene_dir": "task_0041_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0041"
+    },
+    {
+      "scene_dir": "task_0041_user_0007_scene_0007_cfg_0002",
+      "task_id": "task_0041"
+    },
+    {
+      "scene_dir": "task_0041_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0041"
+    },
+    {
+      "scene_dir": "task_0041_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0041"
+    },
+    {
+      "scene_dir": "task_0042_user_0007_scene_0003_cfg_0002",
+      "task_id": "task_0042"
+    },
+    {
+      "scene_dir": "task_0042_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0042"
+    },
+    {
+      "scene_dir": "task_0042_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0042"
+    },
+    {
+      "scene_dir": "task_0042_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0042"
+    },
+    {
+      "scene_dir": "task_0042_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0042"
+    },
+    {
+      "scene_dir": "task_0043_user_0007_scene_0001_cfg_0002",
+      "task_id": "task_0043"
+    },
+    {
+      "scene_dir": "task_0043_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0043"
+    },
+    {
+      "scene_dir": "task_0043_user_0007_scene_0007_cfg_0002",
+      "task_id": "task_0043"
+    },
+    {
+      "scene_dir": "task_0043_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0043"
+    },
+    {
+      "scene_dir": "task_0044_user_0007_scene_0001_cfg_0002",
+      "task_id": "task_0044"
+    },
+    {
+      "scene_dir": "task_0044_user_0007_scene_0002_cfg_0002",
+      "task_id": "task_0044"
+    },
+    {
+      "scene_dir": "task_0044_user_0007_scene_0003_cfg_0002",
+      "task_id": "task_0044"
+    },
+    {
+      "scene_dir": "task_0044_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0044"
+    },
+    {
+      "scene_dir": "task_0044_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0044"
+    },
+    {
+      "scene_dir": "task_0044_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0044"
+    },
+    {
+      "scene_dir": "task_0044_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0044"
+    },
+    {
+      "scene_dir": "task_0045_user_0007_scene_0001_cfg_0002",
+      "task_id": "task_0045"
+    },
+    {
+      "scene_dir": "task_0045_user_0007_scene_0003_cfg_0002",
+      "task_id": "task_0045"
+    },
+    {
+      "scene_dir": "task_0045_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0045"
+    },
+    {
+      "scene_dir": "task_0045_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0045"
+    },
+    {
+      "scene_dir": "task_0045_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0045"
+    },
+    {
+      "scene_dir": "task_0046_user_0007_scene_0001_cfg_0002",
+      "task_id": "task_0046"
+    },
+    {
+      "scene_dir": "task_0046_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0046"
+    },
+    {
+      "scene_dir": "task_0046_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0046"
+    },
+    {
+      "scene_dir": "task_0046_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0046"
+    },
+    {
+      "scene_dir": "task_0046_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0046"
+    },
+    {
+      "scene_dir": "task_0046_user_0016_scene_0005_cfg_0002",
+      "task_id": "task_0046"
+    },
+    {
+      "scene_dir": "task_0046_user_0016_scene_0009_cfg_0002",
+      "task_id": "task_0046"
+    },
+    {
+      "scene_dir": "task_0046_user_0016_scene_0010_cfg_0002",
+      "task_id": "task_0046"
+    },
+    {
+      "scene_dir": "task_0047_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0047"
+    },
+    {
+      "scene_dir": "task_0047_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0047"
+    },
+    {
+      "scene_dir": "task_0047_user_0016_scene_0004_cfg_0002",
+      "task_id": "task_0047"
+    },
+    {
+      "scene_dir": "task_0047_user_0016_scene_0005_cfg_0002",
+      "task_id": "task_0047"
+    },
+    {
+      "scene_dir": "task_0047_user_0016_scene_0007_cfg_0002",
+      "task_id": "task_0047"
+    },
+    {
+      "scene_dir": "task_0047_user_0016_scene_0008_cfg_0002",
+      "task_id": "task_0047"
+    },
+    {
+      "scene_dir": "task_0047_user_0016_scene_0009_cfg_0002",
+      "task_id": "task_0047"
+    },
+    {
+      "scene_dir": "task_0047_user_0016_scene_0010_cfg_0002",
+      "task_id": "task_0047"
+    },
+    {
+      "scene_dir": "task_0048_user_0016_scene_0003_cfg_0002",
+      "task_id": "task_0048"
+    },
+    {
+      "scene_dir": "task_0048_user_0016_scene_0004_cfg_0002",
+      "task_id": "task_0048"
+    },
+    {
+      "scene_dir": "task_0048_user_0016_scene_0006_cfg_0002",
+      "task_id": "task_0048"
+    },
+    {
+      "scene_dir": "task_0048_user_0016_scene_0007_cfg_0002",
+      "task_id": "task_0048"
+    },
+    {
+      "scene_dir": "task_0048_user_0016_scene_0009_cfg_0002",
+      "task_id": "task_0048"
+    },
+    {
+      "scene_dir": "task_0048_user_0016_scene_0010_cfg_0002",
+      "task_id": "task_0048"
+    },
+    {
+      "scene_dir": "task_0049_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0049"
+    },
+    {
+      "scene_dir": "task_0049_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0049"
+    },
+    {
+      "scene_dir": "task_0049_user_0007_scene_0007_cfg_0002",
+      "task_id": "task_0049"
+    },
+    {
+      "scene_dir": "task_0049_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0049"
+    },
+    {
+      "scene_dir": "task_0049_user_0016_scene_0004_cfg_0002",
+      "task_id": "task_0049"
+    },
+    {
+      "scene_dir": "task_0049_user_0016_scene_0006_cfg_0002",
+      "task_id": "task_0049"
+    },
+    {
+      "scene_dir": "task_0049_user_0016_scene_0007_cfg_0002",
+      "task_id": "task_0049"
+    },
+    {
+      "scene_dir": "task_0049_user_0016_scene_0008_cfg_0002",
+      "task_id": "task_0049"
+    },
+    {
+      "scene_dir": "task_0049_user_0016_scene_0009_cfg_0002",
+      "task_id": "task_0049"
+    },
+    {
+      "scene_dir": "task_0049_user_0016_scene_0010_cfg_0002",
+      "task_id": "task_0049"
+    },
+    {
+      "scene_dir": "task_0050_user_0007_scene_0001_cfg_0002",
+      "task_id": "task_0050"
+    },
+    {
+      "scene_dir": "task_0050_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0050"
+    },
+    {
+      "scene_dir": "task_0050_user_0013_scene_0001_cfg_0002",
+      "task_id": "task_0050"
+    },
+    {
+      "scene_dir": "task_0050_user_0016_scene_0007_cfg_0002",
+      "task_id": "task_0050"
+    },
+    {
+      "scene_dir": "task_0050_user_0016_scene_0008_cfg_0002",
+      "task_id": "task_0050"
+    },
+    {
+      "scene_dir": "task_0050_user_0016_scene_0009_cfg_0002",
+      "task_id": "task_0050"
+    },
+    {
+      "scene_dir": "task_0050_user_0016_scene_0010_cfg_0002",
+      "task_id": "task_0050"
+    },
+    {
+      "scene_dir": "task_0051_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0051"
+    },
+    {
+      "scene_dir": "task_0051_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0051"
+    },
+    {
+      "scene_dir": "task_0051_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0051"
+    },
+    {
+      "scene_dir": "task_0051_user_0013_scene_0001_cfg_0002",
+      "task_id": "task_0051"
+    },
+    {
+      "scene_dir": "task_0051_user_0016_scene_0001_cfg_0002",
+      "task_id": "task_0051"
+    },
+    {
+      "scene_dir": "task_0051_user_0016_scene_0002_cfg_0002",
+      "task_id": "task_0051"
+    },
+    {
+      "scene_dir": "task_0051_user_0016_scene_0003_cfg_0002",
+      "task_id": "task_0051"
+    },
+    {
+      "scene_dir": "task_0051_user_0016_scene_0004_cfg_0002",
+      "task_id": "task_0051"
+    },
+    {
+      "scene_dir": "task_0051_user_0016_scene_0005_cfg_0002",
+      "task_id": "task_0051"
+    },
+    {
+      "scene_dir": "task_0051_user_0016_scene_0006_cfg_0002",
+      "task_id": "task_0051"
+    },
+    {
+      "scene_dir": "task_0051_user_0016_scene_0007_cfg_0002",
+      "task_id": "task_0051"
+    },
+    {
+      "scene_dir": "task_0051_user_0016_scene_0008_cfg_0002",
+      "task_id": "task_0051"
+    },
+    {
+      "scene_dir": "task_0051_user_0016_scene_0009_cfg_0002",
+      "task_id": "task_0051"
+    },
+    {
+      "scene_dir": "task_0052_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0052"
+    },
+    {
+      "scene_dir": "task_0052_user_0016_scene_0001_cfg_0002",
+      "task_id": "task_0052"
+    },
+    {
+      "scene_dir": "task_0052_user_0016_scene_0002_cfg_0002",
+      "task_id": "task_0052"
+    },
+    {
+      "scene_dir": "task_0052_user_0016_scene_0003_cfg_0002",
+      "task_id": "task_0052"
+    },
+    {
+      "scene_dir": "task_0052_user_0016_scene_0004_cfg_0002",
+      "task_id": "task_0052"
+    },
+    {
+      "scene_dir": "task_0052_user_0016_scene_0005_cfg_0002",
+      "task_id": "task_0052"
+    },
+    {
+      "scene_dir": "task_0052_user_0016_scene_0007_cfg_0002",
+      "task_id": "task_0052"
+    },
+    {
+      "scene_dir": "task_0052_user_0016_scene_0008_cfg_0002",
+      "task_id": "task_0052"
+    },
+    {
+      "scene_dir": "task_0052_user_0016_scene_0009_cfg_0002",
+      "task_id": "task_0052"
+    },
+    {
+      "scene_dir": "task_0052_user_0016_scene_0010_cfg_0002",
+      "task_id": "task_0052"
+    },
+    {
+      "scene_dir": "task_0053_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0053"
+    },
+    {
+      "scene_dir": "task_0053_user_0007_scene_0011_cfg_0002",
+      "task_id": "task_0053"
+    },
+    {
+      "scene_dir": "task_0054_user_0007_scene_0001_cfg_0002",
+      "task_id": "task_0054"
+    },
+    {
+      "scene_dir": "task_0054_user_0007_scene_0002_cfg_0002",
+      "task_id": "task_0054"
+    },
+    {
+      "scene_dir": "task_0054_user_0007_scene_0003_cfg_0002",
+      "task_id": "task_0054"
+    },
+    {
+      "scene_dir": "task_0054_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0054"
+    },
+    {
+      "scene_dir": "task_0054_user_0016_scene_0002_cfg_0002",
+      "task_id": "task_0054"
+    },
+    {
+      "scene_dir": "task_0054_user_0016_scene_0003_cfg_0002",
+      "task_id": "task_0054"
+    },
+    {
+      "scene_dir": "task_0054_user_0016_scene_0004_cfg_0002",
+      "task_id": "task_0054"
+    },
+    {
+      "scene_dir": "task_0054_user_0016_scene_0006_cfg_0002",
+      "task_id": "task_0054"
+    },
+    {
+      "scene_dir": "task_0054_user_0016_scene_0007_cfg_0002",
+      "task_id": "task_0054"
+    },
+    {
+      "scene_dir": "task_0054_user_0016_scene_0008_cfg_0002",
+      "task_id": "task_0054"
+    },
+    {
+      "scene_dir": "task_0054_user_0016_scene_0009_cfg_0002",
+      "task_id": "task_0054"
+    },
+    {
+      "scene_dir": "task_0054_user_0016_scene_0010_cfg_0002",
+      "task_id": "task_0054"
+    },
+    {
+      "scene_dir": "task_0055_user_0007_scene_0001_cfg_0002",
+      "task_id": "task_0055"
+    },
+    {
+      "scene_dir": "task_0055_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0055"
+    },
+    {
+      "scene_dir": "task_0055_user_0016_scene_0001_cfg_0002",
+      "task_id": "task_0055"
+    },
+    {
+      "scene_dir": "task_0055_user_0016_scene_0002_cfg_0002",
+      "task_id": "task_0055"
+    },
+    {
+      "scene_dir": "task_0055_user_0016_scene_0003_cfg_0002",
+      "task_id": "task_0055"
+    },
+    {
+      "scene_dir": "task_0055_user_0016_scene_0004_cfg_0002",
+      "task_id": "task_0055"
+    },
+    {
+      "scene_dir": "task_0055_user_0016_scene_0005_cfg_0002",
+      "task_id": "task_0055"
+    },
+    {
+      "scene_dir": "task_0055_user_0016_scene_0006_cfg_0002",
+      "task_id": "task_0055"
+    },
+    {
+      "scene_dir": "task_0055_user_0016_scene_0007_cfg_0002",
+      "task_id": "task_0055"
+    },
+    {
+      "scene_dir": "task_0055_user_0016_scene_0008_cfg_0002",
+      "task_id": "task_0055"
+    },
+    {
+      "scene_dir": "task_0055_user_0016_scene_0009_cfg_0002",
+      "task_id": "task_0055"
+    },
+    {
+      "scene_dir": "task_0055_user_0016_scene_0010_cfg_0002",
+      "task_id": "task_0055"
+    },
+    {
+      "scene_dir": "task_0056_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0056"
+    },
+    {
+      "scene_dir": "task_0056_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0056"
+    },
+    {
+      "scene_dir": "task_0057_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0057"
+    },
+    {
+      "scene_dir": "task_0057_user_0016_scene_0001_cfg_0002",
+      "task_id": "task_0057"
+    },
+    {
+      "scene_dir": "task_0057_user_0016_scene_0002_cfg_0002",
+      "task_id": "task_0057"
+    },
+    {
+      "scene_dir": "task_0057_user_0016_scene_0003_cfg_0002",
+      "task_id": "task_0057"
+    },
+    {
+      "scene_dir": "task_0057_user_0016_scene_0004_cfg_0002",
+      "task_id": "task_0057"
+    },
+    {
+      "scene_dir": "task_0057_user_0016_scene_0005_cfg_0002",
+      "task_id": "task_0057"
+    },
+    {
+      "scene_dir": "task_0057_user_0016_scene_0006_cfg_0002",
+      "task_id": "task_0057"
+    },
+    {
+      "scene_dir": "task_0057_user_0016_scene_0007_cfg_0002",
+      "task_id": "task_0057"
+    },
+    {
+      "scene_dir": "task_0057_user_0016_scene_0008_cfg_0002",
+      "task_id": "task_0057"
+    },
+    {
+      "scene_dir": "task_0057_user_0016_scene_0009_cfg_0002",
+      "task_id": "task_0057"
+    },
+    {
+      "scene_dir": "task_0057_user_0016_scene_0010_cfg_0002",
+      "task_id": "task_0057"
+    },
+    {
+      "scene_dir": "task_0058_user_0007_scene_0002_cfg_0002",
+      "task_id": "task_0058"
+    },
+    {
+      "scene_dir": "task_0058_user_0007_scene_0003_cfg_0002",
+      "task_id": "task_0058"
+    },
+    {
+      "scene_dir": "task_0058_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0058"
+    },
+    {
+      "scene_dir": "task_0058_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0058"
+    },
+    {
+      "scene_dir": "task_0058_user_0016_scene_0002_cfg_0002",
+      "task_id": "task_0058"
+    },
+    {
+      "scene_dir": "task_0058_user_0016_scene_0003_cfg_0002",
+      "task_id": "task_0058"
+    },
+    {
+      "scene_dir": "task_0058_user_0016_scene_0006_cfg_0002",
+      "task_id": "task_0058"
+    },
+    {
+      "scene_dir": "task_0058_user_0016_scene_0007_cfg_0002",
+      "task_id": "task_0058"
+    },
+    {
+      "scene_dir": "task_0058_user_0016_scene_0008_cfg_0002",
+      "task_id": "task_0058"
+    },
+    {
+      "scene_dir": "task_0058_user_0016_scene_0009_cfg_0002",
+      "task_id": "task_0058"
+    },
+    {
+      "scene_dir": "task_0059_user_0007_scene_0001_cfg_0002",
+      "task_id": "task_0059"
+    },
+    {
+      "scene_dir": "task_0059_user_0007_scene_0003_cfg_0002",
+      "task_id": "task_0059"
+    },
+    {
+      "scene_dir": "task_0059_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0059"
+    },
+    {
+      "scene_dir": "task_0059_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0059"
+    },
+    {
+      "scene_dir": "task_0059_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0059"
+    },
+    {
+      "scene_dir": "task_0060_user_0007_scene_0002_cfg_0002",
+      "task_id": "task_0060"
+    },
+    {
+      "scene_dir": "task_0060_user_0007_scene_0003_cfg_0002",
+      "task_id": "task_0060"
+    },
+    {
+      "scene_dir": "task_0060_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0060"
+    },
+    {
+      "scene_dir": "task_0060_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0060"
+    },
+    {
+      "scene_dir": "task_0060_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0060"
+    },
+    {
+      "scene_dir": "task_0060_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0060"
+    },
+    {
+      "scene_dir": "task_0061_user_0007_scene_0001_cfg_0002",
+      "task_id": "task_0061"
+    },
+    {
+      "scene_dir": "task_0061_user_0007_scene_0003_cfg_0002",
+      "task_id": "task_0061"
+    },
+    {
+      "scene_dir": "task_0061_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0061"
+    },
+    {
+      "scene_dir": "task_0061_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0061"
+    },
+    {
+      "scene_dir": "task_0061_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0061"
+    },
+    {
+      "scene_dir": "task_0064_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0064"
+    },
+    {
+      "scene_dir": "task_0064_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0064"
+    },
+    {
+      "scene_dir": "task_0064_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0064"
+    },
+    {
+      "scene_dir": "task_0065_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0065"
+    },
+    {
+      "scene_dir": "task_0065_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0065"
+    },
+    {
+      "scene_dir": "task_0065_user_0007_scene_0007_cfg_0002",
+      "task_id": "task_0065"
+    },
+    {
+      "scene_dir": "task_0065_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0065"
+    },
+    {
+      "scene_dir": "task_0065_user_0007_scene_0018_cfg_0002",
+      "task_id": "task_0065"
+    },
+    {
+      "scene_dir": "task_0065_user_0007_scene_0019_cfg_0002",
+      "task_id": "task_0065"
+    },
+    {
+      "scene_dir": "task_0066_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0066"
+    },
+    {
+      "scene_dir": "task_0066_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0066"
+    },
+    {
+      "scene_dir": "task_0066_user_0014_scene_0001_cfg_0002",
+      "task_id": "task_0066"
+    },
+    {
+      "scene_dir": "task_0066_user_0014_scene_0003_cfg_0002",
+      "task_id": "task_0066"
+    },
+    {
+      "scene_dir": "task_0066_user_0014_scene_0005_cfg_0002",
+      "task_id": "task_0066"
+    },
+    {
+      "scene_dir": "task_0066_user_0014_scene_0006_cfg_0002",
+      "task_id": "task_0066"
+    },
+    {
+      "scene_dir": "task_0066_user_0014_scene_0007_cfg_0002",
+      "task_id": "task_0066"
+    },
+    {
+      "scene_dir": "task_0066_user_0014_scene_0008_cfg_0002",
+      "task_id": "task_0066"
+    },
+    {
+      "scene_dir": "task_0066_user_0014_scene_0009_cfg_0002",
+      "task_id": "task_0066"
+    },
+    {
+      "scene_dir": "task_0066_user_0014_scene_0010_cfg_0002",
+      "task_id": "task_0066"
+    },
+    {
+      "scene_dir": "task_0067_user_0014_scene_0001_cfg_0002",
+      "task_id": "task_0067"
+    },
+    {
+      "scene_dir": "task_0067_user_0014_scene_0002_cfg_0002",
+      "task_id": "task_0067"
+    },
+    {
+      "scene_dir": "task_0067_user_0014_scene_0003_cfg_0002",
+      "task_id": "task_0067"
+    },
+    {
+      "scene_dir": "task_0067_user_0014_scene_0004_cfg_0002",
+      "task_id": "task_0067"
+    },
+    {
+      "scene_dir": "task_0067_user_0014_scene_0005_cfg_0002",
+      "task_id": "task_0067"
+    },
+    {
+      "scene_dir": "task_0067_user_0014_scene_0006_cfg_0002",
+      "task_id": "task_0067"
+    },
+    {
+      "scene_dir": "task_0067_user_0014_scene_0007_cfg_0002",
+      "task_id": "task_0067"
+    },
+    {
+      "scene_dir": "task_0067_user_0014_scene_0008_cfg_0002",
+      "task_id": "task_0067"
+    },
+    {
+      "scene_dir": "task_0067_user_0014_scene_0009_cfg_0002",
+      "task_id": "task_0067"
+    },
+    {
+      "scene_dir": "task_0067_user_0014_scene_0010_cfg_0002",
+      "task_id": "task_0067"
+    },
+    {
+      "scene_dir": "task_0068_user_0014_scene_0001_cfg_0002",
+      "task_id": "task_0068"
+    },
+    {
+      "scene_dir": "task_0068_user_0014_scene_0004_cfg_0002",
+      "task_id": "task_0068"
+    },
+    {
+      "scene_dir": "task_0068_user_0014_scene_0005_cfg_0002",
+      "task_id": "task_0068"
+    },
+    {
+      "scene_dir": "task_0068_user_0014_scene_0006_cfg_0002",
+      "task_id": "task_0068"
+    },
+    {
+      "scene_dir": "task_0068_user_0014_scene_0008_cfg_0002",
+      "task_id": "task_0068"
+    },
+    {
+      "scene_dir": "task_0068_user_0014_scene_0009_cfg_0002",
+      "task_id": "task_0068"
+    },
+    {
+      "scene_dir": "task_0068_user_0014_scene_0010_cfg_0002",
+      "task_id": "task_0068"
+    },
+    {
+      "scene_dir": "task_0069_user_0007_scene_0002_cfg_0002",
+      "task_id": "task_0069"
+    },
+    {
+      "scene_dir": "task_0069_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0069"
+    },
+    {
+      "scene_dir": "task_0069_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0069"
+    },
+    {
+      "scene_dir": "task_0069_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0069"
+    },
+    {
+      "scene_dir": "task_0069_user_0014_scene_0001_cfg_0002",
+      "task_id": "task_0069"
+    },
+    {
+      "scene_dir": "task_0069_user_0014_scene_0002_cfg_0002",
+      "task_id": "task_0069"
+    },
+    {
+      "scene_dir": "task_0069_user_0014_scene_0003_cfg_0002",
+      "task_id": "task_0069"
+    },
+    {
+      "scene_dir": "task_0069_user_0014_scene_0004_cfg_0002",
+      "task_id": "task_0069"
+    },
+    {
+      "scene_dir": "task_0069_user_0014_scene_0005_cfg_0002",
+      "task_id": "task_0069"
+    },
+    {
+      "scene_dir": "task_0069_user_0014_scene_0007_cfg_0002",
+      "task_id": "task_0069"
+    },
+    {
+      "scene_dir": "task_0069_user_0014_scene_0008_cfg_0002",
+      "task_id": "task_0069"
+    },
+    {
+      "scene_dir": "task_0069_user_0014_scene_0010_cfg_0002",
+      "task_id": "task_0069"
+    },
+    {
+      "scene_dir": "task_0070_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0070"
+    },
+    {
+      "scene_dir": "task_0070_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0070"
+    },
+    {
+      "scene_dir": "task_0070_user_0014_scene_0001_cfg_0002",
+      "task_id": "task_0070"
+    },
+    {
+      "scene_dir": "task_0070_user_0014_scene_0003_cfg_0002",
+      "task_id": "task_0070"
+    },
+    {
+      "scene_dir": "task_0070_user_0014_scene_0004_cfg_0002",
+      "task_id": "task_0070"
+    },
+    {
+      "scene_dir": "task_0070_user_0014_scene_0005_cfg_0002",
+      "task_id": "task_0070"
+    },
+    {
+      "scene_dir": "task_0070_user_0014_scene_0006_cfg_0002",
+      "task_id": "task_0070"
+    },
+    {
+      "scene_dir": "task_0070_user_0014_scene_0007_cfg_0002",
+      "task_id": "task_0070"
+    },
+    {
+      "scene_dir": "task_0070_user_0014_scene_0008_cfg_0002",
+      "task_id": "task_0070"
+    },
+    {
+      "scene_dir": "task_0070_user_0014_scene_0009_cfg_0002",
+      "task_id": "task_0070"
+    },
+    {
+      "scene_dir": "task_0070_user_0014_scene_0010_cfg_0002",
+      "task_id": "task_0070"
+    },
+    {
+      "scene_dir": "task_0071_user_0007_scene_0003_cfg_0002",
+      "task_id": "task_0071"
+    },
+    {
+      "scene_dir": "task_0071_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0071"
+    },
+    {
+      "scene_dir": "task_0071_user_0014_scene_0001_cfg_0002",
+      "task_id": "task_0071"
+    },
+    {
+      "scene_dir": "task_0071_user_0014_scene_0003_cfg_0002",
+      "task_id": "task_0071"
+    },
+    {
+      "scene_dir": "task_0071_user_0014_scene_0004_cfg_0002",
+      "task_id": "task_0071"
+    },
+    {
+      "scene_dir": "task_0071_user_0014_scene_0005_cfg_0002",
+      "task_id": "task_0071"
+    },
+    {
+      "scene_dir": "task_0071_user_0014_scene_0007_cfg_0002",
+      "task_id": "task_0071"
+    },
+    {
+      "scene_dir": "task_0071_user_0014_scene_0008_cfg_0002",
+      "task_id": "task_0071"
+    },
+    {
+      "scene_dir": "task_0071_user_0014_scene_0009_cfg_0002",
+      "task_id": "task_0071"
+    },
+    {
+      "scene_dir": "task_0071_user_0014_scene_0010_cfg_0002",
+      "task_id": "task_0071"
+    },
+    {
+      "scene_dir": "task_0072_user_0007_scene_0003_cfg_0002",
+      "task_id": "task_0072"
+    },
+    {
+      "scene_dir": "task_0072_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0072"
+    },
+    {
+      "scene_dir": "task_0072_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0072"
+    },
+    {
+      "scene_dir": "task_0072_user_0007_scene_0018_cfg_0002",
+      "task_id": "task_0072"
+    },
+    {
+      "scene_dir": "task_0072_user_0014_scene_0001_cfg_0002",
+      "task_id": "task_0072"
+    },
+    {
+      "scene_dir": "task_0072_user_0014_scene_0002_cfg_0002",
+      "task_id": "task_0072"
+    },
+    {
+      "scene_dir": "task_0072_user_0014_scene_0003_cfg_0002",
+      "task_id": "task_0072"
+    },
+    {
+      "scene_dir": "task_0072_user_0014_scene_0004_cfg_0002",
+      "task_id": "task_0072"
+    },
+    {
+      "scene_dir": "task_0072_user_0014_scene_0005_cfg_0002",
+      "task_id": "task_0072"
+    },
+    {
+      "scene_dir": "task_0072_user_0014_scene_0006_cfg_0002",
+      "task_id": "task_0072"
+    },
+    {
+      "scene_dir": "task_0072_user_0014_scene_0007_cfg_0002",
+      "task_id": "task_0072"
+    },
+    {
+      "scene_dir": "task_0072_user_0014_scene_0008_cfg_0002",
+      "task_id": "task_0072"
+    },
+    {
+      "scene_dir": "task_0072_user_0014_scene_0009_cfg_0002",
+      "task_id": "task_0072"
+    },
+    {
+      "scene_dir": "task_0072_user_0014_scene_0010_cfg_0002",
+      "task_id": "task_0072"
+    },
+    {
+      "scene_dir": "task_0073_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0073"
+    },
+    {
+      "scene_dir": "task_0073_user_0014_scene_0001_cfg_0002",
+      "task_id": "task_0073"
+    },
+    {
+      "scene_dir": "task_0073_user_0014_scene_0002_cfg_0002",
+      "task_id": "task_0073"
+    },
+    {
+      "scene_dir": "task_0073_user_0014_scene_0003_cfg_0002",
+      "task_id": "task_0073"
+    },
+    {
+      "scene_dir": "task_0073_user_0014_scene_0004_cfg_0002",
+      "task_id": "task_0073"
+    },
+    {
+      "scene_dir": "task_0073_user_0014_scene_0005_cfg_0002",
+      "task_id": "task_0073"
+    },
+    {
+      "scene_dir": "task_0073_user_0014_scene_0006_cfg_0002",
+      "task_id": "task_0073"
+    },
+    {
+      "scene_dir": "task_0073_user_0014_scene_0007_cfg_0002",
+      "task_id": "task_0073"
+    },
+    {
+      "scene_dir": "task_0073_user_0014_scene_0008_cfg_0002",
+      "task_id": "task_0073"
+    },
+    {
+      "scene_dir": "task_0073_user_0014_scene_0009_cfg_0002",
+      "task_id": "task_0073"
+    },
+    {
+      "scene_dir": "task_0073_user_0014_scene_0010_cfg_0002",
+      "task_id": "task_0073"
+    },
+    {
+      "scene_dir": "task_0074_user_0014_scene_0001_cfg_0002",
+      "task_id": "task_0074"
+    },
+    {
+      "scene_dir": "task_0074_user_0014_scene_0002_cfg_0002",
+      "task_id": "task_0074"
+    },
+    {
+      "scene_dir": "task_0074_user_0014_scene_0003_cfg_0002",
+      "task_id": "task_0074"
+    },
+    {
+      "scene_dir": "task_0074_user_0014_scene_0004_cfg_0002",
+      "task_id": "task_0074"
+    },
+    {
+      "scene_dir": "task_0074_user_0014_scene_0005_cfg_0002",
+      "task_id": "task_0074"
+    },
+    {
+      "scene_dir": "task_0074_user_0014_scene_0006_cfg_0002",
+      "task_id": "task_0074"
+    },
+    {
+      "scene_dir": "task_0074_user_0014_scene_0007_cfg_0002",
+      "task_id": "task_0074"
+    },
+    {
+      "scene_dir": "task_0074_user_0014_scene_0008_cfg_0002",
+      "task_id": "task_0074"
+    },
+    {
+      "scene_dir": "task_0074_user_0014_scene_0009_cfg_0002",
+      "task_id": "task_0074"
+    },
+    {
+      "scene_dir": "task_0074_user_0014_scene_0010_cfg_0002",
+      "task_id": "task_0074"
+    },
+    {
+      "scene_dir": "task_0075_user_0007_scene_0001_cfg_0002",
+      "task_id": "task_0075"
+    },
+    {
+      "scene_dir": "task_0075_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0075"
+    },
+    {
+      "scene_dir": "task_0075_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0075"
+    },
+    {
+      "scene_dir": "task_0075_user_0014_scene_0001_cfg_0002",
+      "task_id": "task_0075"
+    },
+    {
+      "scene_dir": "task_0075_user_0014_scene_0002_cfg_0002",
+      "task_id": "task_0075"
+    },
+    {
+      "scene_dir": "task_0075_user_0014_scene_0003_cfg_0002",
+      "task_id": "task_0075"
+    },
+    {
+      "scene_dir": "task_0075_user_0014_scene_0004_cfg_0002",
+      "task_id": "task_0075"
+    },
+    {
+      "scene_dir": "task_0075_user_0014_scene_0005_cfg_0002",
+      "task_id": "task_0075"
+    },
+    {
+      "scene_dir": "task_0075_user_0014_scene_0006_cfg_0002",
+      "task_id": "task_0075"
+    },
+    {
+      "scene_dir": "task_0075_user_0014_scene_0007_cfg_0002",
+      "task_id": "task_0075"
+    },
+    {
+      "scene_dir": "task_0075_user_0014_scene_0008_cfg_0002",
+      "task_id": "task_0075"
+    },
+    {
+      "scene_dir": "task_0075_user_0014_scene_0009_cfg_0002",
+      "task_id": "task_0075"
+    },
+    {
+      "scene_dir": "task_0075_user_0014_scene_0010_cfg_0002",
+      "task_id": "task_0075"
+    },
+    {
+      "scene_dir": "task_0076_user_0007_scene_0001_cfg_0002",
+      "task_id": "task_0076"
+    },
+    {
+      "scene_dir": "task_0076_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0076"
+    },
+    {
+      "scene_dir": "task_0076_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0076"
+    },
+    {
+      "scene_dir": "task_0076_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0076"
+    },
+    {
+      "scene_dir": "task_0076_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0076"
+    },
+    {
+      "scene_dir": "task_0076_user_0014_scene_0001_cfg_0002",
+      "task_id": "task_0076"
+    },
+    {
+      "scene_dir": "task_0076_user_0014_scene_0002_cfg_0002",
+      "task_id": "task_0076"
+    },
+    {
+      "scene_dir": "task_0076_user_0014_scene_0003_cfg_0002",
+      "task_id": "task_0076"
+    },
+    {
+      "scene_dir": "task_0076_user_0014_scene_0004_cfg_0002",
+      "task_id": "task_0076"
+    },
+    {
+      "scene_dir": "task_0076_user_0014_scene_0005_cfg_0002",
+      "task_id": "task_0076"
+    },
+    {
+      "scene_dir": "task_0076_user_0014_scene_0006_cfg_0002",
+      "task_id": "task_0076"
+    },
+    {
+      "scene_dir": "task_0076_user_0014_scene_0007_cfg_0002",
+      "task_id": "task_0076"
+    },
+    {
+      "scene_dir": "task_0076_user_0014_scene_0008_cfg_0002",
+      "task_id": "task_0076"
+    },
+    {
+      "scene_dir": "task_0076_user_0014_scene_0009_cfg_0002",
+      "task_id": "task_0076"
+    },
+    {
+      "scene_dir": "task_0076_user_0014_scene_0010_cfg_0002",
+      "task_id": "task_0076"
+    },
+    {
+      "scene_dir": "task_0077_user_0007_scene_0003_cfg_0002",
+      "task_id": "task_0077"
+    },
+    {
+      "scene_dir": "task_0077_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0077"
+    },
+    {
+      "scene_dir": "task_0077_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0077"
+    },
+    {
+      "scene_dir": "task_0077_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0077"
+    },
+    {
+      "scene_dir": "task_0077_user_0014_scene_0001_cfg_0002",
+      "task_id": "task_0077"
+    },
+    {
+      "scene_dir": "task_0077_user_0014_scene_0002_cfg_0002",
+      "task_id": "task_0077"
+    },
+    {
+      "scene_dir": "task_0077_user_0014_scene_0004_cfg_0002",
+      "task_id": "task_0077"
+    },
+    {
+      "scene_dir": "task_0077_user_0014_scene_0006_cfg_0002",
+      "task_id": "task_0077"
+    },
+    {
+      "scene_dir": "task_0077_user_0014_scene_0007_cfg_0002",
+      "task_id": "task_0077"
+    },
+    {
+      "scene_dir": "task_0077_user_0014_scene_0009_cfg_0002",
+      "task_id": "task_0077"
+    },
+    {
+      "scene_dir": "task_0078_user_0007_scene_0002_cfg_0002",
+      "task_id": "task_0078"
+    },
+    {
+      "scene_dir": "task_0078_user_0007_scene_0003_cfg_0002",
+      "task_id": "task_0078"
+    },
+    {
+      "scene_dir": "task_0078_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0078"
+    },
+    {
+      "scene_dir": "task_0078_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0078"
+    },
+    {
+      "scene_dir": "task_0078_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0078"
+    },
+    {
+      "scene_dir": "task_0078_user_0007_scene_0007_cfg_0002",
+      "task_id": "task_0078"
+    },
+    {
+      "scene_dir": "task_0078_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0078"
+    },
+    {
+      "scene_dir": "task_0078_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0078"
+    },
+    {
+      "scene_dir": "task_0078_user_0014_scene_0003_cfg_0002",
+      "task_id": "task_0078"
+    },
+    {
+      "scene_dir": "task_0078_user_0014_scene_0005_cfg_0002",
+      "task_id": "task_0078"
+    },
+    {
+      "scene_dir": "task_0078_user_0014_scene_0007_cfg_0002",
+      "task_id": "task_0078"
+    },
+    {
+      "scene_dir": "task_0078_user_0014_scene_0009_cfg_0002",
+      "task_id": "task_0078"
+    },
+    {
+      "scene_dir": "task_0078_user_0014_scene_0010_cfg_0002",
+      "task_id": "task_0078"
+    },
+    {
+      "scene_dir": "task_0079_user_0007_scene_0003_cfg_0002",
+      "task_id": "task_0079"
+    },
+    {
+      "scene_dir": "task_0079_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0079"
+    },
+    {
+      "scene_dir": "task_0079_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0079"
+    },
+    {
+      "scene_dir": "task_0079_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0079"
+    },
+    {
+      "scene_dir": "task_0079_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0079"
+    },
+    {
+      "scene_dir": "task_0079_user_0014_scene_0001_cfg_0002",
+      "task_id": "task_0079"
+    },
+    {
+      "scene_dir": "task_0079_user_0014_scene_0002_cfg_0002",
+      "task_id": "task_0079"
+    },
+    {
+      "scene_dir": "task_0079_user_0014_scene_0005_cfg_0002",
+      "task_id": "task_0079"
+    },
+    {
+      "scene_dir": "task_0079_user_0014_scene_0006_cfg_0002",
+      "task_id": "task_0079"
+    },
+    {
+      "scene_dir": "task_0079_user_0014_scene_0008_cfg_0002",
+      "task_id": "task_0079"
+    },
+    {
+      "scene_dir": "task_0079_user_0014_scene_0009_cfg_0002",
+      "task_id": "task_0079"
+    },
+    {
+      "scene_dir": "task_0079_user_0014_scene_0010_cfg_0002",
+      "task_id": "task_0079"
+    },
+    {
+      "scene_dir": "task_0080_user_0007_scene_0001_cfg_0002",
+      "task_id": "task_0080"
+    },
+    {
+      "scene_dir": "task_0080_user_0014_scene_0001_cfg_0002",
+      "task_id": "task_0080"
+    },
+    {
+      "scene_dir": "task_0080_user_0014_scene_0003_cfg_0002",
+      "task_id": "task_0080"
+    },
+    {
+      "scene_dir": "task_0080_user_0014_scene_0004_cfg_0002",
+      "task_id": "task_0080"
+    },
+    {
+      "scene_dir": "task_0080_user_0014_scene_0006_cfg_0002",
+      "task_id": "task_0080"
+    },
+    {
+      "scene_dir": "task_0080_user_0014_scene_0007_cfg_0002",
+      "task_id": "task_0080"
+    },
+    {
+      "scene_dir": "task_0080_user_0014_scene_0009_cfg_0002",
+      "task_id": "task_0080"
+    },
+    {
+      "scene_dir": "task_0080_user_0014_scene_0010_cfg_0002",
+      "task_id": "task_0080"
+    },
+    {
+      "scene_dir": "task_0081_user_0014_scene_0001_cfg_0002",
+      "task_id": "task_0081"
+    },
+    {
+      "scene_dir": "task_0081_user_0014_scene_0002_cfg_0002",
+      "task_id": "task_0081"
+    },
+    {
+      "scene_dir": "task_0081_user_0014_scene_0003_cfg_0002",
+      "task_id": "task_0081"
+    },
+    {
+      "scene_dir": "task_0081_user_0014_scene_0004_cfg_0002",
+      "task_id": "task_0081"
+    },
+    {
+      "scene_dir": "task_0081_user_0014_scene_0005_cfg_0002",
+      "task_id": "task_0081"
+    },
+    {
+      "scene_dir": "task_0081_user_0014_scene_0006_cfg_0002",
+      "task_id": "task_0081"
+    },
+    {
+      "scene_dir": "task_0081_user_0014_scene_0009_cfg_0002",
+      "task_id": "task_0081"
+    },
+    {
+      "scene_dir": "task_0081_user_0014_scene_0010_cfg_0002",
+      "task_id": "task_0081"
+    },
+    {
+      "scene_dir": "task_0082_user_0007_scene_0001_cfg_0002",
+      "task_id": "task_0082"
+    },
+    {
+      "scene_dir": "task_0082_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0082"
+    },
+    {
+      "scene_dir": "task_0082_user_0007_scene_0007_cfg_0002",
+      "task_id": "task_0082"
+    },
+    {
+      "scene_dir": "task_0082_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0082"
+    },
+    {
+      "scene_dir": "task_0082_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0082"
+    },
+    {
+      "scene_dir": "task_0082_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0082"
+    },
+    {
+      "scene_dir": "task_0082_user_0014_scene_0001_cfg_0002",
+      "task_id": "task_0082"
+    },
+    {
+      "scene_dir": "task_0082_user_0014_scene_0002_cfg_0002",
+      "task_id": "task_0082"
+    },
+    {
+      "scene_dir": "task_0082_user_0014_scene_0004_cfg_0002",
+      "task_id": "task_0082"
+    },
+    {
+      "scene_dir": "task_0082_user_0014_scene_0005_cfg_0002",
+      "task_id": "task_0082"
+    },
+    {
+      "scene_dir": "task_0082_user_0014_scene_0006_cfg_0002",
+      "task_id": "task_0082"
+    },
+    {
+      "scene_dir": "task_0082_user_0014_scene_0007_cfg_0002",
+      "task_id": "task_0082"
+    },
+    {
+      "scene_dir": "task_0082_user_0014_scene_0008_cfg_0002",
+      "task_id": "task_0082"
+    },
+    {
+      "scene_dir": "task_0082_user_0014_scene_0009_cfg_0002",
+      "task_id": "task_0082"
+    },
+    {
+      "scene_dir": "task_0082_user_0014_scene_0010_cfg_0002",
+      "task_id": "task_0082"
+    },
+    {
+      "scene_dir": "task_0083_user_0007_scene_0003_cfg_0002",
+      "task_id": "task_0083"
+    },
+    {
+      "scene_dir": "task_0083_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0083"
+    },
+    {
+      "scene_dir": "task_0083_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0083"
+    },
+    {
+      "scene_dir": "task_0083_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0083"
+    },
+    {
+      "scene_dir": "task_0083_user_0007_scene_0007_cfg_0002",
+      "task_id": "task_0083"
+    },
+    {
+      "scene_dir": "task_0083_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0083"
+    },
+    {
+      "scene_dir": "task_0083_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0083"
+    },
+    {
+      "scene_dir": "task_0083_user_0014_scene_0001_cfg_0002",
+      "task_id": "task_0083"
+    },
+    {
+      "scene_dir": "task_0083_user_0014_scene_0003_cfg_0002",
+      "task_id": "task_0083"
+    },
+    {
+      "scene_dir": "task_0083_user_0014_scene_0004_cfg_0002",
+      "task_id": "task_0083"
+    },
+    {
+      "scene_dir": "task_0083_user_0014_scene_0005_cfg_0002",
+      "task_id": "task_0083"
+    },
+    {
+      "scene_dir": "task_0083_user_0014_scene_0006_cfg_0002",
+      "task_id": "task_0083"
+    },
+    {
+      "scene_dir": "task_0083_user_0014_scene_0008_cfg_0002",
+      "task_id": "task_0083"
+    },
+    {
+      "scene_dir": "task_0084_user_0007_scene_0001_cfg_0002",
+      "task_id": "task_0084"
+    },
+    {
+      "scene_dir": "task_0084_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0084"
+    },
+    {
+      "scene_dir": "task_0084_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0084"
+    },
+    {
+      "scene_dir": "task_0084_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0084"
+    },
+    {
+      "scene_dir": "task_0084_user_0007_scene_0007_cfg_0002",
+      "task_id": "task_0084"
+    },
+    {
+      "scene_dir": "task_0084_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0084"
+    },
+    {
+      "scene_dir": "task_0084_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0084"
+    },
+    {
+      "scene_dir": "task_0084_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0084"
+    },
+    {
+      "scene_dir": "task_0084_user_0014_scene_0001_cfg_0002",
+      "task_id": "task_0084"
+    },
+    {
+      "scene_dir": "task_0084_user_0014_scene_0003_cfg_0002",
+      "task_id": "task_0084"
+    },
+    {
+      "scene_dir": "task_0084_user_0014_scene_0004_cfg_0002",
+      "task_id": "task_0084"
+    },
+    {
+      "scene_dir": "task_0084_user_0014_scene_0005_cfg_0002",
+      "task_id": "task_0084"
+    },
+    {
+      "scene_dir": "task_0084_user_0014_scene_0007_cfg_0002",
+      "task_id": "task_0084"
+    },
+    {
+      "scene_dir": "task_0085_user_0007_scene_0002_cfg_0002",
+      "task_id": "task_0085"
+    },
+    {
+      "scene_dir": "task_0085_user_0007_scene_0003_cfg_0002",
+      "task_id": "task_0085"
+    },
+    {
+      "scene_dir": "task_0085_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0085"
+    },
+    {
+      "scene_dir": "task_0085_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0085"
+    },
+    {
+      "scene_dir": "task_0085_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0085"
+    },
+    {
+      "scene_dir": "task_0085_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0085"
+    },
+    {
+      "scene_dir": "task_0085_user_0014_scene_0002_cfg_0002",
+      "task_id": "task_0085"
+    },
+    {
+      "scene_dir": "task_0085_user_0014_scene_0003_cfg_0002",
+      "task_id": "task_0085"
+    },
+    {
+      "scene_dir": "task_0085_user_0014_scene_0005_cfg_0002",
+      "task_id": "task_0085"
+    },
+    {
+      "scene_dir": "task_0085_user_0014_scene_0006_cfg_0002",
+      "task_id": "task_0085"
+    },
+    {
+      "scene_dir": "task_0091_user_0007_scene_0001_cfg_0002",
+      "task_id": "task_0091"
+    },
+    {
+      "scene_dir": "task_0091_user_0007_scene_0002_cfg_0002",
+      "task_id": "task_0091"
+    },
+    {
+      "scene_dir": "task_0091_user_0007_scene_0003_cfg_0002",
+      "task_id": "task_0091"
+    },
+    {
+      "scene_dir": "task_0091_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0091"
+    },
+    {
+      "scene_dir": "task_0091_user_0007_scene_0007_cfg_0002",
+      "task_id": "task_0091"
+    },
+    {
+      "scene_dir": "task_0091_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0091"
+    },
+    {
+      "scene_dir": "task_0091_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0091"
+    },
+    {
+      "scene_dir": "task_0094_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0094"
+    },
+    {
+      "scene_dir": "task_0094_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0094"
+    },
+    {
+      "scene_dir": "task_0094_user_0007_scene_0007_cfg_0002",
+      "task_id": "task_0094"
+    },
+    {
+      "scene_dir": "task_0096_user_0007_scene_0006_cfg_0002",
+      "task_id": "task_0096"
+    },
+    {
+      "scene_dir": "task_0096_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0096"
+    },
+    {
+      "scene_dir": "task_0096_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0096"
+    },
+    {
+      "scene_dir": "task_0101_user_0007_scene_0002_cfg_0002",
+      "task_id": "task_0101"
+    },
+    {
+      "scene_dir": "task_0101_user_0007_scene_0018_cfg_0002",
+      "task_id": "task_0101"
+    },
+    {
+      "scene_dir": "task_0103_user_0007_scene_0002_cfg_0002",
+      "task_id": "task_0103"
+    },
+    {
+      "scene_dir": "task_0103_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0103"
+    },
+    {
+      "scene_dir": "task_0103_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0103"
+    },
+    {
+      "scene_dir": "task_0127_user_0007_scene_0001_cfg_0002",
+      "task_id": "task_0127"
+    },
+    {
+      "scene_dir": "task_0127_user_0007_scene_0003_cfg_0002",
+      "task_id": "task_0127"
+    },
+    {
+      "scene_dir": "task_0127_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0127"
+    },
+    {
+      "scene_dir": "task_0200_user_0013_scene_0005_cfg_0002",
+      "task_id": "task_0200"
+    },
+    {
+      "scene_dir": "task_0200_user_0013_scene_0007_cfg_0002",
+      "task_id": "task_0200"
+    },
+    {
+      "scene_dir": "task_0200_user_0013_scene_0008_cfg_0002",
+      "task_id": "task_0200"
+    },
+    {
+      "scene_dir": "task_0201_user_0007_scene_0003_cfg_0002",
+      "task_id": "task_0201"
+    },
+    {
+      "scene_dir": "task_0201_user_0007_scene_0007_cfg_0002",
+      "task_id": "task_0201"
+    },
+    {
+      "scene_dir": "task_0201_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0201"
+    },
+    {
+      "scene_dir": "task_0202_user_0013_scene_0002_cfg_0002",
+      "task_id": "task_0202"
+    },
+    {
+      "scene_dir": "task_0202_user_0013_scene_0003_cfg_0002",
+      "task_id": "task_0202"
+    },
+    {
+      "scene_dir": "task_0202_user_0013_scene_0004_cfg_0002",
+      "task_id": "task_0202"
+    },
+    {
+      "scene_dir": "task_0202_user_0013_scene_0006_cfg_0002",
+      "task_id": "task_0202"
+    },
+    {
+      "scene_dir": "task_0202_user_0013_scene_0009_cfg_0002",
+      "task_id": "task_0202"
+    },
+    {
+      "scene_dir": "task_0202_user_0013_scene_0010_cfg_0002",
+      "task_id": "task_0202"
+    },
+    {
+      "scene_dir": "task_0210_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0210"
+    },
+    {
+      "scene_dir": "task_0214_user_0007_scene_0002_cfg_0002",
+      "task_id": "task_0214"
+    },
+    {
+      "scene_dir": "task_0214_user_0007_scene_0004_cfg_0002",
+      "task_id": "task_0214"
+    },
+    {
+      "scene_dir": "task_0214_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0214"
+    },
+    {
+      "scene_dir": "task_0215_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0215"
+    },
+    {
+      "scene_dir": "task_0215_user_0007_scene_0008_cfg_0002",
+      "task_id": "task_0215"
+    },
+    {
+      "scene_dir": "task_0215_user_0007_scene_0009_cfg_0002",
+      "task_id": "task_0215"
+    },
+    {
+      "scene_dir": "task_0216_user_0007_scene_0005_cfg_0002",
+      "task_id": "task_0216"
+    },
+    {
+      "scene_dir": "task_0216_user_0007_scene_0010_cfg_0002",
+      "task_id": "task_0216"
+    }
+  ]
+}

@@ -26,17 +26,18 @@ configs:
         path: "benchmark_v1_curated.jsonl"
 ---
 
-# BiManip-Bench: Benchmark Card (v1.1 Draft Aligned to Current Root Release)
+# BiManip-Bench: Benchmark Card (v1.2 Draft Aligned to Current Root Release)
 
 ## 1. Overview
 
 **Name:** BiManip-Bench  
-**Version:** v1.1-draft (current root working release)  
-**Release date:** 2026-03-31 (current root release; public release date TBD)  
+**Version:** v1.2-draft (current root working release)  
+**Release date:** 2026-04-14 (`T_progress v2` refresh; public release date TBD)  
 **Primary contribution type:** benchmark suite + evaluation protocol  
 **Primary venue target:** NeurIPS 2026 Datasets & Benchmarks Track  
 **Secondary venue target:** CoRL 2026  
 **Source dataset:** GM-100 (Cobot Magic subset, Lerobot format)  
+**Parallel external-source side release:** REASSEMBLE benchmark-v0 (official `test_split1`, `37` recordings, `hand` view, `17,165` items; scored separately)  
 **Robot platform:** Agilex Cobot Magic  
 **Primary view in v1:** `camera_top`  
 **Codebase root:** `/data/projects/GM-100`  
@@ -62,7 +63,7 @@ v1 therefore emphasizes:
 - coarse manipulation phase understanding
 - motion-state discrimination
 - pairwise temporal discrimination
-- coarse progress estimation from manipulation state
+- local-step progress estimation from short ordered context
 - protocol-stable temporal ordering evaluation
 
 ## 3. Evaluative Role
@@ -77,7 +78,7 @@ BiManip-Bench supports the following specific claim: *VLMs differ systematically
 - bimanual activity-state recognition (`T4`)
 - motion-state recognition (`T6`, binary in current v1)
 - pairwise temporal discrimination (`T_binary`, current root release, protocol caveat)
-- trajectory progress understanding (`T_progress`)
+- within-local-step progress understanding (`T_progress`)
 - temporal ordering from shuffled frame triples (`T_temporal`)
 
 ### 3.3 What the benchmark does NOT claim
@@ -109,14 +110,14 @@ BiManip-Bench supports the following specific claim: *VLMs differ systematically
 ## 6. Dataset Provenance
 
 ### 6.1 Source dataset
-Derived from public GM-100 trajectories in Lerobot format, using locally available Cobot Magic subset.
+The core v1 benchmark is derived from public GM-100 trajectories in Lerobot format, using the locally available Cobot Magic subset. The repository also contains a parallel external-source side release, `REASSEMBLE benchmark-v0`, built from official REASSEMBLE `test_split1` recordings. The two are intentionally scored separately in the current release cycle.
 
 ### 6.2 Collection setting
 - collection mode: human teleoperation
 - environment: controlled lab setup
 - trajectory type: successful demonstrations
 - modality used in v1 benchmark items: top-view RGB frames
-- robot-side signals used for auto-GT: effector effort, arm velocity, action arm position delta, frame index, task metadata
+- robot-side signals used for auto-GT: effector effort, arm velocity, arm position, frame index, task metadata
 
 ### 6.3 Why top view in v1
 Top view gives stable dual-arm visibility and consistent processing. Multi-view sanity checks exist in earlier exploratory work, but are not part of v1 benchmark definition.
@@ -137,12 +138,12 @@ Each item contains:
 |---|---|---|---|---|---|---|
 | `T1` | Phase Recognition | coarse phase state | single frame | auto segmentation (`effort+velocity`) | 25% | main |
 | `T2` | Contact Detection | contact perception | single frame | `effector.effort` contact-event logic | 50% | weak-signal |
-| `T3` | Motion Direction | dominant direction cue | 4-frame ordered context (`-6,-3,0,+3`) | `action.arm.position` delta | 25% | hard |
-| `T4` | Bimanual Coordination | dual-arm activity state | single frame | left/right velocity activity | 25% | main |
+| `T3` | Motion Direction | dominant planar direction cue | 4-frame ordered context (`-10,-5,0,+5`) | calibrated `observation.state.arm.position` planar displacement | 25% | hard |
+| `T4` | Bimanual Coordination | dual-arm activity state | 4-frame ordered context (`-6,-3,0,+3`) | translational velocity activity with EMA+hysteresis | 25% | main |
 | `T6` | Motion State (binary) | moving vs stationary | 5-frame ordered context (`t-6..t+6`) | sequence-mean velocity thresholding | 50% | main (bias caveat) |
 | `T_temporal` | Temporal Ordering | sequence ordering | 3 shuffled frames + `X/Y/Z` labels | frame index ordering | 16.7% | protocol-sensitive |
 | `T_binary` | Binary Frame Ordering | pairwise temporal discrimination | single composite image with two labeled panels (`X`,`Y`) | frame index comparison | 50% | experimental diagnostic |
-| `T_progress` | Task Progress | coarse completion stage | single frame | stage-to-progress mapping | 20% | weak-signal |
+| `T_progress` | Local-Step Progress | within-local-step progress state | 5-frame ordered context (`-6,-3,0,+3,+6`) | signal-native local-step intervals | 33.3% | main |
 
 ### 7.3 Scale (current root release)
 
@@ -160,27 +161,50 @@ Each item contains:
   - `T_binary=1500`
   - `T_progress=2500`
 - extracted frame cache (current main cache): `benchmark_v1_frames_tbinary_20260330`
-  - jpg files: `34,312`
+  - jpg files: `110,529`
   - extraction failures: `0`
-- `T_binary v2` sampled answer distribution: `X=738`, `Y=762`
-- `T_binary v2` difficulty distribution (sampled): `easy_cross_stage=895`, `hard_adjacent_stage=605`
+- `T_binary v2` sampled answer distribution: `X=743`, `Y=757`
+- `T_binary v2` difficulty distribution (sampled): `easy_cross_stage=964`, `hard_adjacent_stage=536`
 - `T_binary v2` coverage after sampling: `106` tasks, `0` shortfall
-- exclusion accounting in current curation pipeline:
-  - raw GT pool before video filter: `1,523,422`
-  - removed by missing `camera_top` video: `1,041,069`
-  - remaining after video filter: `482,353`
-  - removed by per-type target/cap sampling: `466,853`
-  - final curated: `15,500`
+- `T_progress v2` full-pool refresh statistics:
+  - raw candidates: `72,360`
+  - video-available candidates: `23,298`
+  - sampled into root release: `2,500`
+  - sampled answer distribution: `A=894`, `B=809`, `C=797`
 - source snapshot backing the current root release:
-  - `previous_results/manual_checks_20260320/full_gt_task00001_00110_live_20260331_tbinary_v2/benchmark_v1_curated.jsonl`
+  - `previous_results/manual_checks_20260320/root_release_source_20260414_tprogress_v2/benchmark_v1_curated.jsonl`
+  - this source snapshot freezes the current non-`T_progress` families and refreshes only `T_progress` with the v2 full pool
 
-### 7.4 Auxiliary metadata (non-core, ongoing)
-- the repository also contains task-level semantic / affordance annotation work under `benchmark/manual_audit/semantic_affordance_audit/`
-- these files are intended for auxiliary analysis such as primitive-level semantic, coordination-pattern, common-vs-long-tail, or affordance-conditioned breakdowns
-- these taxonomy labels are benchmark-side analytic metadata, not official GM-100 labels
-- if a higher-level family aggregation is introduced later, it should be treated as a benchmark-side layer derived from adjudicated primitive annotations rather than as a core benchmark label
-- they are **not** part of the core v1 benchmark label schema and are not required to run `benchmark_v1_curated.jsonl` or compute official v1 scores
-- current repository status: seed tables and templates exist, but final adjudicated taxonomy metadata is still in progress
+### 7.4 Primitive annotation sidecar (non-core, ongoing)
+- the repository contains a separate primitive-annotation package under `benchmark/manual_audit/semantic_affordance_audit/`
+- this package now follows a minimal two-layer design:
+  - task-level `canonical primitive chain`
+  - episode-level `cluster -> canonical step` adjudication
+- annotation fields are intentionally restricted to `primitive + object`; old affordance and dense segment-trace templates have been retired
+- the shared primitive ontology is defined in `specs/shared_primitives_v2.md` and is benchmark-side metadata rather than official source-dataset labels
+- these sidecar annotations do **not** modify the current v1 benchmark GT and are not required to run `benchmark_v1_curated.jsonl` or compute official v1 scores
+- current repository status:
+  - `GM-100` canonical-chain tables are ready for full-task annotation
+  - `GM-100` cluster-alignment tables are prefilled from `primitive_cluster/runs/one_episode_per_task_v0/cluster_proposals.jsonl`
+  - `RH20T` canonical-chain tables are initialized from the task catalog
+  - `REASSEMBLE` canonical-chain tables are auto-prefilled from official `segments_info`
+  - `REASSEMBLE` raw sidecar indexes are available under `benchmark/manual_audit/semantic_affordance_audit/derived/`
+- `REASSEMBLE` cluster-alignment sheets are still scaffold-only; if episode-level adjudication is needed, the preferred source is official low-level segments rather than a separate proposal builder
+
+### 7.5 Parallel external-source extension: `REASSEMBLE benchmark-v0`
+
+| Field | Status |
+|---|---|
+| Role | Parallel external-source extension; reported separately from the GM-100 root benchmark |
+| Frozen source | Official `test_split1`; `37` extracted `.h5` recordings |
+| Default camera | `hand` |
+| OOD-only cameras | `hama1`, `hama2` |
+| Excluded camera | `capture_node-camera-image` is not part of the default protocol |
+| Supported tasks | `T1/T2/T_progress/T6/T7/T_temporal/T_binary/T10/T11/T12` |
+| Task counts | `T1=2523`, `T2=2523`, `T_progress=2931`, `T6=1260`, `T7=1110`, `T_temporal=907`, `T_binary=1849`, `T10=2438`, `T11=1338`, `T12=286` |
+| Frame cache | `benchmark/reassemble_benchmark_v0_frames/`, `37,884` jpgs, `1.3G` |
+| Canonical artifacts | `benchmark/reassemble_benchmark_v0_curated.jsonl`, `benchmark/reassemble_benchmark_v0_curated_by_type/`, `benchmark/reassemble_benchmark_v0_summary.json` |
+| Eval wrappers | `benchmark/eval_v1/run_reassemble_benchmark_v0_eval.py`, `benchmark/eval_v1/score_reassemble_benchmark_v0.py` |
 
 ## 8. Ground-Truth Construction
 
@@ -190,12 +214,12 @@ All GT labels are automatically constructed from robot-side signals and task met
 ### 8.2 Signal sources by task
 - `T1`: `observation.state.effector.effort` + `observation.state.arm.velocity` via trajectory segmentation
 - `T2`: `observation.state.effector.effort` contact/release event detection
-- `T3`: `action.arm.position` per-step delta (`t -> t+1`) on primary arm (or dominant arm fallback)
+- `T3`: clip-consistent `observation.state.arm.position` planar displacement with explicit `query_arm`, per-arm calibrated linear mapping, and exclusion of unstable `right arm +/-x` buckets
 - `T4`: `observation.state.arm.velocity` left/right norm activity
 - `T6`: `observation.state.arm.velocity` sequence mean over 5-frame context
 - `T_temporal`: frame indices plus stage-aware sampling constraints
 - `T_binary`: frame index comparison for same-episode frame pairs (segmentation used only for difficulty-stratified sampling)
-- `T_progress`: segmented stage label mapped to 5 progress bins
+- `T_progress`: signal-native local-step intervals built from contact events, anchor events, and merged local interaction spans
 
 ### 8.3 Thresholds and heuristics (current defaults in code)
 - shared contact-event detection (`segmentation.py`):
@@ -221,8 +245,11 @@ All GT labels are automatically constructed from robot-side signals and task met
   - visual-direction mapping for `+x/-x/+y/-y/+z/-z`
   - answer-letter balancing across `A/B/C/D` enabled by default
 - `T4`:
-  - left/right velocity norms with moving average window `30`
-  - active threshold `> 0.3`
+  - 4-frame context: offsets `[-6,-3,0,+3]`
+  - use only left/right `xyz` translational velocity norms
+  - causal `EMA(span=9)` with high/low hysteresis `0.35 / 0.15`
+  - transition exclusion: `±6` frames around state switches
+  - stable-run minimum length: `12` frames
   - label set: `both_active / left_only / right_only / both_idle`
 - `T6` (current benchmark-v1 path):
   - 5-frame context: offsets `[-6,-3,0,+3,+6]` (`frame_stride=3`, `half_span=2`)
@@ -243,12 +270,15 @@ All GT labels are automatically constructed from robot-side signals and task met
   - difficulty strata: `hard_adjacent_stage` and `easy_cross_stage`
   - frame-gap guard: `min_gap_frames=60`, `max_gap_frames=240` in the current root release
 - `T_progress`:
-  - stage-to-bin map:
-    - `0 -> 0-20%`
-    - `1 -> 20-40%`
-    - `2,3 -> 40-60%`
-    - `4 -> 60-80%`
-    - `5 -> 80-100%`
+  - 5-frame ordered context: `[-6,-3,0,+3,+6]`
+  - local-step interval source:
+    - `contact events -> raw events -> anchor events -> merged local-step interval`
+  - minimum interval span: `24` rows
+  - progress bins:
+    - `early`: `0.15-0.35`
+    - `middle`: `0.40-0.60`
+    - `late`: `0.65-0.85`
+  - per-interval per-bin export cap: `1`
 
 ### 8.4 Reproducibility scripts
 - segmentation core: `benchmark/gt_build/segmentation.py`
@@ -257,6 +287,18 @@ All GT labels are automatically constructed from robot-side signals and task met
 - frame extraction: `benchmark/gt_build/extract_frames.py`
 - eval: `benchmark/eval_v1/run_benchmark_v1_eval.py` (wrapper over `run_pilot_eval.py`)
 - scoring: `benchmark/eval_v1/score_benchmark_v1.py` (wrapper over `score_pilot.py`)
+- REASSEMBLE GT suite: `benchmark/gt_build/reassemble_utils.py`, `benchmark/gt_build/build_reassemble_gt_suite.py`
+- REASSEMBLE frame/pilot utilities: `benchmark/gt_build/extract_reassemble_frames.py`, `benchmark/gt_build/sample_reassemble_pilot.py`, `benchmark/gt_build/render_reassemble_pilot_cards.py`
+- REASSEMBLE eval/scoring: `benchmark/eval_v1/run_reassemble_benchmark_v0_eval.py`, `benchmark/eval_v1/score_reassemble_benchmark_v0.py`
+
+### 8.5 REASSEMBLE benchmark-v0 GT construction notes
+- source records are official REASSEMBLE `.h5` recordings; the builder reads dataset-native `segments_info` directly rather than reusing GM-100 heuristic segmentation
+- high-level action segments define `T1/T2/T_progress/T6/T7/T_temporal/T_binary`
+- low-level action segments define `T10/T11/T12`
+- `T6` uses relative-progress ordered contexts sampled at `0.15 / 0.325 / 0.50 / 0.675 / 0.85` within a high-level segment
+- `T7` uses early-phase ordered contexts sampled at `0.10 / 0.18 / 0.26 / 0.34` within a high-level segment
+- `T10/T11/T12` remain multi-frame and use the `hand` camera in the current protocol
+- `T3/T4` are intentionally not defined for `REASSEMBLE benchmark-v0`
 
 ## 9. Validation
 
@@ -266,14 +308,28 @@ All GT labels are automatically constructed from robot-side signals and task met
   - missing episode id by type: all `0`
   - per-type answer/label distributions exported
   - per-type zero-task lists exported
-- frame extraction (`extract_summary.json`):
-  - requested `34,312`, success `34,312`, failed `0`
+- frame extraction:
+  - current main cache contains `110,529` jpgs
+  - latest `T_progress v2` refresh requested `41,114` deduped frame reads, wrote `14,730` new jpgs, skipped `26,384` existing files, failed `0`
 - curated exact-line duplicate check:
   - duplicate lines in `benchmark_v1_curated.jsonl`: `0`
 - eval invalid-handling implemented:
   - parser outputs `INVALID` when cannot parse required format
   - runtime returns `ERROR` and `MISSING_FRAME` where applicable
   - scorer ignores `INVALID/ERROR/MISSING_FRAME` by default (`--keep-invalid` to include)
+
+### 9.1b Automatic validation for `REASSEMBLE benchmark-v0`
+- summary exported to `benchmark/reassemble_benchmark_v0_summary.json`
+- total curated items: `17,165` across `10` task types from `37` recordings
+- frame extraction completed into `benchmark/reassemble_benchmark_v0_frames/`
+  - current cache size: `1.3G`
+  - current jpg count: `37,884`
+  - extraction failures: `0`
+- full item/frame consistency check:
+  - items scanned: `17,165`
+  - frame references resolved: `62,471`
+  - missing local frames: `0`
+- pilot package exists under `benchmark/reassemble_test_split1_pilot_v0/`
 
 ### 9.2 Manual audit (current repository status)
 - formal stratified audit package already exists under `benchmark/manual_audit/gt_audit/full_audit_v1/`
@@ -282,6 +338,11 @@ All GT labels are automatically constructed from robot-side signals and task met
   - rendered audit cards: `470`
   - `T_binary` evidence is embedded directly into the reviewer-facing audit cards
   - each audit card now places the task-level meta description, image(s), question, choices, and benchmark GT on the same page for reviewer-facing inspection
+  - the `T_progress` items inside `full_audit_v1` predate `T_progress v2` and should not be treated as the primary audit evidence for the current progress task
+- targeted `T_progress v2` pilot package exists under `benchmark/manual_audit/gt_audit/t_progress_v2_pilot_20260414/`
+  - total selected items: `36`
+  - balanced across `4` arm types and `3` progress answers
+  - rendered audit cards: `36`
 - historical targeted audits are still retained:
   - `T3` directional sanity checks on manually exported samples (`manual_checks_20260318`), including z-direction wrist-view sanity sample
   - `T_temporal` error-pack generation (`manual_checks_20260325/t_temporal_wrong_review_sample_100.csv`)
@@ -303,6 +364,7 @@ All GT labels are automatically constructed from robot-side signals and task met
 - `T6`: measurable signal exists, but model predictions show stationary-prior tendency in diagnostics.
 - `T_temporal`: protocol-sensitive; strong output-order bias observed in Qwen full-run diagnostics, so not recommended as sole headline metric in v1.
 - `T_binary`: included in the current root release via `composite_panel_v2`; automatic balance/coverage checks pass, but Qwen smoke diagnostics still show residual left-panel bias and full multi-model validation is not finalized yet.
+- `T_progress`: current v2 depends on signal-native local-step interval quality; visual readability is improved relative to the old 5-bin design, but semantic boundary validity still needs broader human audit.
 
 ## 10. Evaluation Protocol
 
@@ -330,7 +392,7 @@ All GT labels are automatically constructed from robot-side signals and task met
     - `T6=0.50`
     - `T_temporal=0.167`
     - `T_binary=0.50`
-    - `T_progress=0.20`
+    - `T_progress=0.333`
 
 ### 10.2 Optional task-meta prompt augmentation (non-default)
 - available in `benchmark/eval_v1/run_pilot_eval.py` and inherited by `benchmark/eval_v1/run_benchmark_v1_eval.py`
@@ -364,12 +426,20 @@ Now answer the following question:
 - item-level error taxonomy for `T3` and `T_temporal`
 - common-vs-long-tail breakdown by primitive-level semantic and coordination-pattern slices (where auxiliary metadata is available)
 
+### 10.5 Parallel `REASSEMBLE benchmark-v0` entrypoints
+- runner: `python benchmark/eval_v1/run_reassemble_benchmark_v0_eval.py --model <model_name> --output benchmark/eval_results_v1/<result>.jsonl`
+- scorer: `python benchmark/eval_v1/score_reassemble_benchmark_v0.py benchmark/eval_results_v1/<result>.jsonl`
+- parsing, retry, and invalid-handling behavior inherit from `run_pilot_eval.py` / `score_pilot.py`
+- REASSEMBLE results should be reported separately from the GM-100 root benchmark results
+
 ## 11. Limitations and Threats to Validity
 
 ### 11.1 Data source limitations
-- **Single source dataset**: all items are derived from GM-100 only.  
-  *Mitigation: benchmark reporting is explicitly framed as within-distribution diagnosis rather than cross-dataset generalization.*
-- **Single robot platform subset**: v1 uses the Agilex Cobot Magic subset only.  
+- **Single-source core benchmark**: the main `benchmark_v1_curated.jsonl` release is derived from GM-100 only.  
+  *Mitigation: core benchmark reporting is explicitly framed as within-distribution diagnosis rather than cross-dataset generalization.*
+- **Parallel external-source release is not yet a merged multi-source benchmark**: `REASSEMBLE benchmark-v0` exists, but it is intentionally reported as a separate side release rather than collapsed into one headline score.  
+  *Mitigation: this keeps source shift explicit and avoids mixing different GT-construction logics under one aggregate number.*
+- **Single robot platform subset in the core release**: v1 uses the Agilex Cobot Magic subset only.  
   *Mitigation: task-type diversity and arm-type coverage partially compensate for platform homogeneity; cross-platform extension is reserved for v2.*
 - **Single-lab collection style**: demonstrations come from one collection environment and teleoperation setup.  
   *Mitigation: the benchmark avoids broad transfer claims and requires per-task reporting instead of a single headline number only.*
@@ -405,7 +475,7 @@ Now answer the following question:
 ## 12. Responsible AI and Data Governance
 
 ### 12.1 Data provenance and personal data
-- source: GM-100 Cobot Magic trajectories
+- source: GM-100 Cobot Magic trajectories for the core release; official REASSEMBLE recordings for the parallel `benchmark-v0` side release
 - v1 benchmark artifacts are robot-scene frames and metadata fields for evaluation
 - no explicit personal-identifying fields are used in benchmark JSONL
 - governance/consent obligations inherit from the upstream GM-100 data release terms
@@ -440,11 +510,17 @@ Now answer the following question:
 
 ## 13. Release Notes
 
-### v1.1 (current root working release, 2026-03-31)
-- promoted the root `benchmark_v1_curated.jsonl` to the latest 8-task-type release (`15,500` items)
+### v1.2 (current root working release, 2026-04-14)
+- kept the root release at `15,500` items while replacing legacy `T_progress` with `T_progress v2`
+- redefined `T_progress` as `within-local-step progress` with ordered 5-frame context and `A/B/C = early/middle/late`
+- refreshed the root frame cache reference to `benchmark_v1_frames_tbinary_20260330` (`110,529` jpgs in cache; latest refresh `0` failures)
+- updated default eval/sampling/pipeline entrypoints to `previous_results/manual_checks_20260320/root_release_source_20260414_tprogress_v2/`
+- exported a dedicated `T_progress v2` pilot audit package under `manual_audit/gt_audit/t_progress_v2_pilot_20260414/`
+- added a parallel `REASSEMBLE benchmark-v0` side release from official `test_split1` (`37` recordings, `17,165` items, `hand` view) with dedicated eval/scoring wrappers
+
+### v1.1 (historical root release refresh, 2026-03-31)
+- promoted the root `benchmark_v1_curated.jsonl` to the 8-task-type release (`15,500` items)
 - adopted `T_binary v2` in the root release with `composite_panel_v2` presentation and `X/Y` answer protocol
-- updated the root frame cache reference to `benchmark_v1_frames_tbinary_20260330` (`34,312` images, `0` failures)
-- updated default eval/sampling/pipeline entrypoints to the latest source snapshot under `previous_results/manual_checks_20260320/full_gt_task00001_00110_live_20260331_tbinary_v2/`
 - added optional task-context prompt augmentation to the eval runner via `--prepend-task-meta`
 - exported the formal `manual_audit/gt_audit/full_audit_v1` package (`470` items, including `T_binary=50`) and re-rendered audit cards with task meta on-card
 - archived the former 7-task-type root release under `previous_results/root_release_snapshots/benchmark_v1_root_7family_20260331_before_latest_promotion/`
@@ -477,7 +553,7 @@ Current-status note:
   author       = {TBD},
   year         = {2026},
   howpublished = {\url{TBD}},
-  note         = {Version 1.1-draft}
+  note         = {Version 1.2-draft}
 }
 ```
 

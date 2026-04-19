@@ -19,12 +19,12 @@ BASELINES = {
     "T2": 0.50,
     "T3": 0.25,
     "T4": 0.25,
-    "T5": 0.20,
+    "T5": 0.333,
     "T6": 0.333,
     "T8": 0.167,
     "T_temporal": 0.167,
     "T_binary": 0.50,
-    "T_progress": 0.20,
+    "T_progress": 0.333,
 }
 
 INVALID_PRED = {"MISSING_FRAME", "ERROR", "INVALID"}

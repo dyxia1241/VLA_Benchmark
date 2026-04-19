@@ -1,0 +1,12 @@
+# Current working AIST shortlist.
+# Already-finished tasks can stay in this list; the queue script will skip them.
+task_066
+task_067
+task_089
+task_016
+task_048
+task_004
+task_031
+task_044
+task_070
+task_084

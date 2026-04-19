@@ -9,15 +9,18 @@
 - `legacy_collision_vqa/`：历史探索链路（非当前主线）。
 - `previous_results/manual_checks_20260320/`：当前 latest source snapshot 所在目录（目录名保留为历史归档命名）。
 - `eval_results_v1/`：模型结果输出目录。
+- 论文规划、风险边界与滚动路线图统一见 `NEURIPS_ED_MASTER_PLAN.md`。
 
 ## 当前进展
 
 - root latest benchmark 已收敛到 `8` 题型：`T1/T2/T3/T4/T6/T_temporal/T_binary/T_progress`，总量 `15,500`。
-- 当前默认 source snapshot：`previous_results/manual_checks_20260320/full_gt_task00001_00110_live_20260331_tbinary_v2/`。
+- `T_progress` 当前为 v2：`5` 帧有序上下文 `[-6,-3,0,+3,+6]`，标签为 `early / middle / late`，GT 基于 signal-native local-step intervals。
+- 当前默认 source snapshot：`previous_results/manual_checks_20260320/root_release_source_20260414_tprogress_v2/`。
+  - 该 snapshot 冻结了当前 root release 的 `T1/T2/T3/T4/T6/T_temporal/T_binary`，并用 full-pool `T_progress v2` 替换旧版进度题。
 - 当前默认 frame cache：`benchmark_v1_frames_tbinary_20260330/`。
 - formal item-level manual audit 已落到 `manual_audit/gt_audit/full_audit_v1/`，当前仓库快照包含 `470` 条审计样本与 `annotator_a` 工作簿。
 - task-level taxonomy 工作流已迁到 `manual_audit/semantic_affordance_audit/`，semantic / affordance 主表、guide 和 workbook 导出脚本已对齐到新路径。
-- `README.md`、`ARCHITECTURE_MAP.md`、`NEXT_STEPS.md`、`benchmark_card.md` 已按当前目录结构同步。
+- `README.md`、`ARCHITECTURE_MAP.md`、`NEURIPS_ED_MASTER_PLAN.md`、`benchmark_card.md` 已按当前目录结构同步。
 
 ## 快速开始
 
@@ -67,14 +70,14 @@ python eval_v1/score_benchmark_v1.py \
 
 ## B. 最大链路闭环评测（采样 -> 抽帧 -> 评测 -> 评分）
 
-当前 latest full GT source snapshot 已在：
-`previous_results/manual_checks_20260320/full_gt_task00001_00110_live_20260331_tbinary_v2`
+当前 latest source snapshot 已在：
+`previous_results/manual_checks_20260320/root_release_source_20260414_tprogress_v2`
 
 执行：
 
 ```bash
 ./run_v1_pipeline.sh \
-  --gt-dir previous_results/manual_checks_20260320/full_gt_task00001_00110_live_20260331_tbinary_v2 \
+  --gt-dir previous_results/manual_checks_20260320/root_release_source_20260414_tprogress_v2 \
   --model qwen3-vl-plus
 ```
 
@@ -135,7 +138,14 @@ Now answer the following question:
 - `manual_audit/gt_audit/full_audit_v1/audit_summary.json`
 - `manual_audit/gt_audit/full_audit_v1/audit_cards/`
 
-其中 `full_audit_v1` 是当前主用的人审版本，覆盖 `470` 题，包含 `T1/T2/T3/T4/T6/T_temporal/T_binary/T_progress`。当前检入快照里保留了 `annotator_a` 工作簿；第二位标注者的回收文件需要在双人标注开始后单独放回同目录。
+其中 `full_audit_v1` 是当前通用 formal audit 包，覆盖 `470` 题，包含 `T1/T2/T3/T4/T6/T_temporal/T_binary/T_progress`。当前检入快照里保留了 `annotator_a` 工作簿；第二位标注者的回收文件需要在双人标注开始后单独放回同目录。
+其中 `full_audit_v1` 内的 `T_progress` 条目对应旧版定义，不作为当前 progress 任务的主审计依据；当前 `T_progress v2` 以单独的定向试标包为准。
+
+`T_progress v2` 的定向试标包单独放在：
+
+- `manual_audit/gt_audit/t_progress_v2_pilot_20260414/`
+
+其中包含 `36` 张 audit cards、`audit_items.csv` 与 `huiting_ji.csv`。
 
 如果要从当前 root release 重新导出一个新的试标/审计子集，可以运行：
 

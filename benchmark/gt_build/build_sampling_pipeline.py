@@ -46,9 +46,9 @@ DEFAULT_PER_TASK_CAPS = {
 }
 
 DEFAULT_BOUNDARY_FILTER_TASK_TYPES = ('T3', 'T4', 'T6', 'T_temporal', 'T_binary')
-DEFAULT_HEAD_GUARD_FRAMES = 30
-DEFAULT_TAIL_GUARD_FRAMES = 30
-T3_CONTEXT_OFFSETS = (-6, -3, 0, 3)
+DEFAULT_HEAD_GUARD_FRAMES = 90
+DEFAULT_TAIL_GUARD_FRAMES = 90
+T3_CONTEXT_OFFSETS = (-10, -5, 0, 5)
 T6_CONTEXT_OFFSETS = (-6, -3, 0, 3, 6)
 
 
@@ -223,6 +223,9 @@ def item_boundary_frame_indices(task_type: str, obj: dict) -> list[int]:
         return [center + off for off in T3_CONTEXT_OFFSETS]
 
     if task_type == 'T4':
+        frame_indices = obj.get('frame_indices')
+        if isinstance(frame_indices, list) and frame_indices:
+            return [int(x) for x in frame_indices]
         center = parse_int(obj.get('frame_index'))
         return [center] if center is not None else []
 
@@ -234,6 +237,13 @@ def item_boundary_frame_indices(task_type: str, obj: dict) -> list[int]:
         if center is None:
             return []
         return [center + off for off in T6_CONTEXT_OFFSETS]
+
+    if task_type == 'T_progress':
+        frame_indices = obj.get('frame_indices')
+        if isinstance(frame_indices, list) and frame_indices:
+            return [int(x) for x in frame_indices]
+        center = parse_int(obj.get('frame_index'))
+        return [center] if center is not None else []
 
     if task_type in {'T_temporal', 'T_binary'}:
         frame_indices = obj.get('frame_indices')

@@ -53,7 +53,7 @@ DEFAULT_LIMIT = 0  # 0 = all items
 DEFAULT_FRAME_DIR = str(PILOT_ARTIFACT_DIR / "pilot_frames_filtered")
 DEFAULT_FRAME_DIR_T3 = str(PILOT_ARTIFACT_DIR / "pilot_frames_t3ctx2_filtered")
 DEFAULT_FRAME_DIR_T6 = str(PILOT_ARTIFACT_DIR / "pilot_frames_t6_5ctx_filtered")
-DEFAULT_T3_OFFSETS = "-6,-3,0,3"
+DEFAULT_T3_OFFSETS = "-10,-5,0,5"
 
 T4_CHOICES = {
     "A": "both arms are active",
@@ -211,6 +211,14 @@ def _candidate_single_paths(base: Path, task_id: str, episode_id: int, frame_ind
     if suffix:
         return [base / f"{name_unpadded}_{suffix}.jpg", base / f"{name_padded}_{suffix}.jpg"]
     return [base / f"{name_unpadded}.jpg", base / f"{name_padded}.jpg"]
+
+
+def _candidate_reassemble_single_paths(base: Path, recording_id: str, frame_index: int, camera: str) -> list[Path]:
+    return [base / f"{recording_id}_{frame_index}_{camera}.jpg"]
+
+
+def _uses_recording_id_frame_names(dataset: str) -> bool:
+    return dataset in {"REASSEMBLE", "RH20T", "AIST", "AIST-BIMANUAL"}
 
 
 def _candidate_multi_paths(
@@ -379,12 +387,13 @@ def normalize_item_for_eval(item: dict[str, Any]) -> dict[str, Any]:
     task_type = str(x.get("task_type", ""))
 
     if task_type == "T4":
-        # T4 items currently have no question/choices/answer in source JSONL.
-        x["question"] = (
-            "What is the current bimanual activity state in this frame?"
-        )
-        x["choices"] = dict(T4_CHOICES)
-        if "label_id" in x:
+        if not str(x.get("question", "")).strip():
+            x["question"] = (
+                "Across these time-ordered frames, which bimanual activity state best describes the robot?"
+            )
+        if not isinstance(x.get("choices"), dict) or not x.get("choices"):
+            x["choices"] = dict(T4_CHOICES)
+        if not str(x.get("answer", "")).strip() and "label_id" in x:
             x["answer"] = T4_LABEL_ID_TO_ANSWER.get(int(x["label_id"]), "INVALID")
     return x
 
@@ -394,11 +403,23 @@ def get_frame_paths(item: dict[str, Any], frame_dirs: dict[str, Path], t3_offset
     task_id = str(item["task_id"])
     ep = int(item.get("episode_id", item.get("episode_index", -1)))
     camera = str(item.get("camera", "camera_top"))
+    dataset = normalize_text(item.get("dataset", "")).upper()
+    recording_id = str(item.get("recording_id", task_id))
 
     def single(frame_index: int, suffix: str = "", base_key: str = "default") -> Path:
         base = frame_dirs[base_key]
-        candidates = _candidate_single_paths(base, task_id, ep, int(frame_index), camera, suffix=suffix)
+        if _uses_recording_id_frame_names(dataset):
+            candidates = _candidate_reassemble_single_paths(base, recording_id, int(frame_index), camera)
+        else:
+            candidates = _candidate_single_paths(base, task_id, ep, int(frame_index), camera, suffix=suffix)
         return _pick_first_existing(candidates)
+
+    if _uses_recording_id_frame_names(dataset):
+        if isinstance(item.get("frame_indices"), list) and item.get("frame_indices"):
+            return [single(int(fi)) for fi in item["frame_indices"]]
+        if "frame_index" in item:
+            return [single(int(item["frame_index"]))]
+        raise KeyError(f"{dataset} item missing both frame_index and frame_indices")
 
     if task_type == "T3":
         fi = int(item["frame_index"])
@@ -417,6 +438,9 @@ def get_frame_paths(item: dict[str, Any], frame_dirs: dict[str, Path], t3_offset
             out.append(_pick_first_existing(cands))
         return out
 
+    if task_type == "T4" and isinstance(item.get("frame_indices"), list):
+        return [single(int(fi)) for fi in item["frame_indices"]]
+
     if task_type == "T6":
         fi = int(item["frame_index"])
         t6_offsets = [(-6, "t-6"), (-3, "t-3"), (0, "t0"), (3, "t+3"), (6, "t+6")]
@@ -433,6 +457,9 @@ def get_frame_paths(item: dict[str, Any], frame_dirs: dict[str, Path], t3_offset
             )
             out.append(_pick_first_existing(cands))
         return out
+
+    if task_type == "T_progress" and isinstance(item.get("frame_indices"), list):
+        return [single(int(fi)) for fi in item["frame_indices"]]
 
     if task_type == "T_temporal":
         return [single(int(fi)) for fi in item["frame_indices"]]
@@ -982,7 +1009,7 @@ def build_argparser() -> argparse.ArgumentParser:
     p.add_argument(
         "--t3-offsets",
         default=DEFAULT_T3_OFFSETS,
-        help="Comma-separated T3 offsets, default: -6,-3,0,3",
+        help="Comma-separated T3 offsets, default: -10,-5,0,+5",
     )
     p.add_argument(
         "--t3-randomize-choices",
