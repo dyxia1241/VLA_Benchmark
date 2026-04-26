@@ -1,0 +1,308 @@
+{
+  "manifest": "/data/projects/GM-100/benchmark/splits_v1/eval_manifest.json",
+  "results_dir": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/gpt-4o",
+  "model": "gpt-4o",
+  "model_slug": "gpt-4o",
+  "task_type_aliases": {
+    "T9": "T_binary"
+  },
+  "created_at": "2026-04-21T10:19:53",
+  "keep_invalid": false,
+  "overall_micro_acc": 0.37880143112701253,
+  "dataset_macro_acc": 0.37910102386098304,
+  "task_macro_acc": 0.42108630813142717,
+  "datasets": [
+    {
+      "dataset": "GM100",
+      "slug": "gm100",
+      "num_rows_raw": 2643,
+      "num_rows_valid": 2643,
+      "num_invalid_ignored": 0,
+      "overall_acc": 0.3654937570942111,
+      "macro_task_acc": 0.4202178728483672,
+      "tasks": {
+        "T1": {
+          "n": 597,
+          "correct": 167,
+          "acc": 0.2797319932998325,
+          "baseline": 0.25
+        },
+        "T2": {
+          "n": 150,
+          "correct": 100,
+          "acc": 0.6666666666666666,
+          "baseline": 0.5
+        },
+        "T3": {
+          "n": 483,
+          "correct": 129,
+          "acc": 0.2670807453416149,
+          "baseline": 0.25
+        },
+        "T4": {
+          "n": 225,
+          "correct": 82,
+          "acc": 0.36444444444444446,
+          "baseline": 0.25
+        },
+        "T6": {
+          "n": 223,
+          "correct": 154,
+          "acc": 0.6905829596412556,
+          "baseline": 0.5
+        },
+        "T_binary": {
+          "n": 223,
+          "correct": 123,
+          "acc": 0.5515695067264574,
+          "baseline": 0.5
+        },
+        "T_progress": {
+          "n": 424,
+          "correct": 155,
+          "acc": 0.36556603773584906,
+          "baseline": 0.3333333333333333
+        },
+        "T_temporal": {
+          "n": 318,
+          "correct": 56,
+          "acc": 0.1761006289308176,
+          "baseline": 0.16666666666666666
+        }
+      }
+    },
+    {
+      "dataset": "RH20T",
+      "slug": "rh20t",
+      "num_rows_raw": 2422,
+      "num_rows_valid": 2370,
+      "num_invalid_ignored": 52,
+      "overall_acc": 0.41687763713080167,
+      "macro_task_acc": 0.41342094479062536,
+      "tasks": {
+        "T1": {
+          "n": 303,
+          "correct": 70,
+          "acc": 0.23102310231023102,
+          "baseline": 0.25
+        },
+        "T2": {
+          "n": 223,
+          "correct": 141,
+          "acc": 0.6322869955156951,
+          "baseline": 0.5
+        },
+        "T3": {
+          "n": 268,
+          "correct": 67,
+          "acc": 0.25,
+          "baseline": 0.25
+        },
+        "T6": {
+          "n": 227,
+          "correct": 169,
+          "acc": 0.7444933920704846,
+          "baseline": 0.5
+        },
+        "T7": {
+          "n": 632,
+          "correct": 294,
+          "acc": 0.4651898734177215,
+          "baseline": 0.5
+        },
+        "T_binary": {
+          "n": 222,
+          "correct": 101,
+          "acc": 0.45495495495495497,
+          "baseline": 0.5
+        },
+        "T_progress": {
+          "n": 366,
+          "correct": 120,
+          "acc": 0.32786885245901637,
+          "baseline": 0.3333333333333333
+        },
+        "T_temporal": {
+          "n": 129,
+          "correct": 26,
+          "acc": 0.20155038759689922,
+          "baseline": 0.16666666666666666
+        }
+      }
+    },
+    {
+      "dataset": "REASSEMBLE",
+      "slug": "reassemble",
+      "num_rows_raw": 2562,
+      "num_rows_valid": 2553,
+      "num_invalid_ignored": 9,
+      "overall_acc": 0.3595769682726204,
+      "macro_task_acc": 0.39456150972113346,
+      "tasks": {
+        "T1": {
+          "n": 374,
+          "correct": 133,
+          "acc": 0.35561497326203206,
+          "baseline": 0.25
+        },
+        "T10": {
+          "n": 359,
+          "correct": 115,
+          "acc": 0.3203342618384401,
+          "baseline": 0.25
+        },
+        "T11": {
+          "n": 200,
+          "correct": 89,
+          "acc": 0.445,
+          "baseline": 0.25
+        },
+        "T12": {
+          "n": 46,
+          "correct": 35,
+          "acc": 0.7608695652173914,
+          "baseline": 0.25
+        },
+        "T2": {
+          "n": 374,
+          "correct": 103,
+          "acc": 0.27540106951871657,
+          "baseline": 0.5
+        },
+        "T6": {
+          "n": 206,
+          "correct": 145,
+          "acc": 0.7038834951456311,
+          "baseline": 0.5
+        },
+        "T7": {
+          "n": 161,
+          "correct": 32,
+          "acc": 0.19875776397515527,
+          "baseline": 0.5
+        },
+        "T_binary": {
+          "n": 275,
+          "correct": 132,
+          "acc": 0.48,
+          "baseline": 0.5
+        },
+        "T_progress": {
+          "n": 432,
+          "correct": 117,
+          "acc": 0.2708333333333333,
+          "baseline": 0.3333333333333333
+        },
+        "T_temporal": {
+          "n": 126,
+          "correct": 17,
+          "acc": 0.1349206349206349,
+          "baseline": 0.16666666666666666
+        }
+      }
+    },
+    {
+      "dataset": "AIST",
+      "slug": "aist",
+      "num_rows_raw": 1424,
+      "num_rows_valid": 1378,
+      "num_invalid_ignored": 46,
+      "overall_acc": 0.37445573294629897,
+      "macro_task_acc": 0.41161237761497216,
+      "tasks": {
+        "T3": {
+          "n": 456,
+          "correct": 119,
+          "acc": 0.26096491228070173,
+          "baseline": 0.25
+        },
+        "T4": {
+          "n": 308,
+          "correct": 131,
+          "acc": 0.4253246753246753,
+          "baseline": 0.25
+        },
+        "T6": {
+          "n": 240,
+          "correct": 145,
+          "acc": 0.6041666666666666,
+          "baseline": 0.5
+        },
+        "T_binary": {
+          "n": 90,
+          "correct": 45,
+          "acc": 0.5,
+          "baseline": 0.5
+        },
+        "T_temporal": {
+          "n": 284,
+          "correct": 76,
+          "acc": 0.2676056338028169,
+          "baseline": 0.16666666666666666
+        }
+      }
+    }
+  ],
+  "merged_tasks": {
+    "T1": {
+      "n": 1274,
+      "correct": 370,
+      "acc": 0.2904238618524333
+    },
+    "T10": {
+      "n": 359,
+      "correct": 115,
+      "acc": 0.3203342618384401
+    },
+    "T11": {
+      "n": 200,
+      "correct": 89,
+      "acc": 0.445
+    },
+    "T12": {
+      "n": 46,
+      "correct": 35,
+      "acc": 0.7608695652173914
+    },
+    "T2": {
+      "n": 747,
+      "correct": 344,
+      "acc": 0.4605087014725569
+    },
+    "T3": {
+      "n": 1207,
+      "correct": 315,
+      "acc": 0.2609776304888152
+    },
+    "T4": {
+      "n": 533,
+      "correct": 213,
+      "acc": 0.399624765478424
+    },
+    "T6": {
+      "n": 896,
+      "correct": 613,
+      "acc": 0.6841517857142857
+    },
+    "T7": {
+      "n": 793,
+      "correct": 326,
+      "acc": 0.4110970996216898
+    },
+    "T_binary": {
+      "n": 810,
+      "correct": 401,
+      "acc": 0.49506172839506174
+    },
+    "T_progress": {
+      "n": 1222,
+      "correct": 392,
+      "acc": 0.32078559738134205
+    },
+    "T_temporal": {
+      "n": 857,
+      "correct": 175,
+      "acc": 0.20420070011668612
+    }
+  }
+}

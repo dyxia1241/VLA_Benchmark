@@ -13,10 +13,10 @@ import h5py
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPT_DIR))
-from build_aist_pilot_suite import build_t4, build_t6, build_t9, iter_episodes  # noqa: E402
+from build_aist_pilot_suite import build_t4, build_t6, build_t8, build_t9, iter_episodes  # noqa: E402
 from build_aist_t3_pilot import DEFAULT_DIRECTION_MAPPING, build_t3_items_for_episode, load_direction_mapping  # noqa: E402
 
-TASK_TYPES = ["T3", "T4", "T6", "T9"]
+TASK_TYPES = ["T3", "T4", "T6", "T9", "T_temporal"]
 
 
 def parse_args() -> argparse.Namespace:
@@ -27,6 +27,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--quota", default="all")
     p.add_argument("--max-per-episode-per-type", type=int, default=4)
+    p.add_argument("--t8-target", type=int, default=2200)
     p.add_argument("--direction-mapping", default=str(DEFAULT_DIRECTION_MAPPING))
     return p.parse_args()
 
@@ -94,6 +95,7 @@ def main() -> None:
             rows.extend(build_t4(ep, f, rng, args.camera))
             rows.extend(build_t6(ep, f, rng, args.camera))
             rows.extend(build_t9(ep, f, rng, args.camera))
+            rows.extend(build_t8(ep, f, rng, args.camera))
 
     pool_path = output_dir / "aist_benchmark_v0_pool.jsonl"
     with pool_path.open("w", encoding="utf-8") as fh:
@@ -112,7 +114,16 @@ def main() -> None:
     }
     for task_type in TASK_TYPES:
         subset = [r for r in rows if r["task_type"] == task_type]
-        if quota is None:
+        if task_type == "T_temporal":
+            if quota is None:
+                target = int(max(0, args.t8_target))
+            else:
+                target = int(max(0, quota.get(task_type, args.t8_target)))
+            if target <= 0:
+                picked = []
+            else:
+                picked = diverse_sample(subset, min(target, len(subset)), args.max_per_episode_per_type, rng)
+        elif quota is None:
             picked = subset
         else:
             picked = diverse_sample(subset, quota.get(task_type, 0), args.max_per_episode_per_type, rng)
@@ -127,6 +138,7 @@ def main() -> None:
         for row in curated:
             fh.write(json.dumps(row, ensure_ascii=False) + "\n")
     summary["curated_total"] = len(curated)
+    summary["t8_target"] = int(args.t8_target)
     summary["pool_jsonl"] = str(pool_path)
     summary["curated_jsonl"] = str(curated_path)
     (output_dir / "aist_benchmark_v0_summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")

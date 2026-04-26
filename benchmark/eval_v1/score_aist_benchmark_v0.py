@@ -25,6 +25,7 @@ score_pilot.BASELINES.update(
         "T4": 0.25,
         "T6": 0.50,
         "T9": 0.50,
+        "T_temporal": 1.0 / 6.0,
     }
 )
 

@@ -1,0 +1,33 @@
+{
+  "manifest": "/data/projects/GM-100/benchmark/splits_v1/eval_manifest.json",
+  "results_dir": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/gpt-4o",
+  "model": "gpt-4o",
+  "model_slug": "gpt-4o",
+  "created_at": "2026-04-20T20:24:55",
+  "runs": [
+    {
+      "dataset": "GM100",
+      "slug": "gm100",
+      "returncode": 0,
+      "result_jsonl": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/gpt-4o/gm100_eval_results.jsonl"
+    },
+    {
+      "dataset": "RH20T",
+      "slug": "rh20t",
+      "returncode": 0,
+      "result_jsonl": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/gpt-4o/rh20t_eval_results.jsonl"
+    },
+    {
+      "dataset": "REASSEMBLE",
+      "slug": "reassemble",
+      "returncode": 0,
+      "result_jsonl": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/gpt-4o/reassemble_eval_results.jsonl"
+    },
+    {
+      "dataset": "AIST",
+      "slug": "aist",
+      "returncode": 0,
+      "result_jsonl": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/gpt-4o/aist_eval_results.jsonl"
+    }
+  ]
+}

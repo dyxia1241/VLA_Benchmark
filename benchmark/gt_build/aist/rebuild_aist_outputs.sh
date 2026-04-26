@@ -9,10 +9,11 @@ FULL_FRAME_DIR="${ROOT}/benchmark/aist_benchmark_v0_frames"
 LOG_DIR="${ROOT}/aist-bimanip/logs"
 CAMERA="${AIST_CAMERA:-cam_high}"
 PER_TASK_TYPE="${AIST_PILOT_PER_TYPE:-30}"
+T8_TARGET="${AIST_T8_TARGET:-2200}"
 
 mkdir -p "${LOG_DIR}"
 
-echo "[AIST] rebuild start camera=${CAMERA} pilot_per_type=${PER_TASK_TYPE} $(date -Is)"
+echo "[AIST] rebuild start camera=${CAMERA} pilot_per_type=${PER_TASK_TYPE} t8_target=${T8_TARGET} $(date -Is)"
 
 rm -rf "${PILOT_DIR}/frames" "${PILOT_DIR}/cards" "${PILOT_DIR}/gt"
 rm -f "${PILOT_DIR}/aist_pilot_v0.jsonl" "${PILOT_DIR}/aist_pilot_v0_summary.json"
@@ -37,7 +38,8 @@ python "${ROOT}/benchmark/gt_build/aist/build_aist_curated_benchmark.py" \
   --selected-root "${SELECTED_ROOT}" \
   --output-dir "${FULL_DIR}" \
   --camera "${CAMERA}" \
-  --quota all
+  --quota all \
+  --t8-target "${T8_TARGET}"
 
 python "${ROOT}/benchmark/gt_build/aist/extract_aist_frames.py" \
   --input-jsonl "${FULL_DIR}/aist_benchmark_v0_curated.jsonl" \

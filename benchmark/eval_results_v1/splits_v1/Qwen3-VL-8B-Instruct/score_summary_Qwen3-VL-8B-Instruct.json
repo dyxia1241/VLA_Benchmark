@@ -1,0 +1,302 @@
+{
+  "manifest": "/data/projects/GM-100/benchmark/splits_v1/eval_manifest.json",
+  "results_dir": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/Qwen3-VL-8B-Instruct",
+  "model": "Qwen3-VL-8B-Instruct",
+  "model_slug": "Qwen3-VL-8B-Instruct",
+  "task_type_aliases": {
+    "T9": "T_binary"
+  },
+  "created_at": "2026-04-20T14:22:23",
+  "keep_invalid": false,
+  "overall_micro_acc": 0.4064033652722599,
+  "dataset_macro_acc": 0.40140313338572153,
+  "task_macro_acc": 0.45570710369707923,
+  "datasets": [
+    {
+      "dataset": "GM100",
+      "slug": "gm100",
+      "num_rows_raw": 2643,
+      "num_rows_valid": 2160,
+      "num_invalid_ignored": 483,
+      "overall_acc": 0.38333333333333336,
+      "macro_task_acc": 0.41376259660017906,
+      "tasks": {
+        "T1": {
+          "n": 597,
+          "correct": 231,
+          "acc": 0.3869346733668342,
+          "baseline": 0.25
+        },
+        "T2": {
+          "n": 150,
+          "correct": 82,
+          "acc": 0.5466666666666666,
+          "baseline": 0.5
+        },
+        "T4": {
+          "n": 225,
+          "correct": 78,
+          "acc": 0.3466666666666667,
+          "baseline": 0.25
+        },
+        "T6": {
+          "n": 223,
+          "correct": 136,
+          "acc": 0.6098654708520179,
+          "baseline": 0.5
+        },
+        "T_binary": {
+          "n": 223,
+          "correct": 122,
+          "acc": 0.547085201793722,
+          "baseline": 0.5
+        },
+        "T_progress": {
+          "n": 424,
+          "correct": 132,
+          "acc": 0.3113207547169811,
+          "baseline": 0.3333333333333333
+        },
+        "T_temporal": {
+          "n": 318,
+          "correct": 47,
+          "acc": 0.14779874213836477,
+          "baseline": 0.16666666666666666
+        }
+      }
+    },
+    {
+      "dataset": "RH20T",
+      "slug": "rh20t",
+      "num_rows_raw": 2422,
+      "num_rows_valid": 2422,
+      "num_invalid_ignored": 0,
+      "overall_acc": 0.435177539223782,
+      "macro_task_acc": 0.4262086119080863,
+      "tasks": {
+        "T1": {
+          "n": 303,
+          "correct": 86,
+          "acc": 0.2838283828382838,
+          "baseline": 0.25
+        },
+        "T2": {
+          "n": 223,
+          "correct": 129,
+          "acc": 0.57847533632287,
+          "baseline": 0.5
+        },
+        "T3": {
+          "n": 268,
+          "correct": 68,
+          "acc": 0.2537313432835821,
+          "baseline": 0.25
+        },
+        "T6": {
+          "n": 227,
+          "correct": 167,
+          "acc": 0.73568281938326,
+          "baseline": 0.5
+        },
+        "T7": {
+          "n": 632,
+          "correct": 337,
+          "acc": 0.5332278481012658,
+          "baseline": 0.5
+        },
+        "T_binary": {
+          "n": 222,
+          "correct": 113,
+          "acc": 0.509009009009009,
+          "baseline": 0.5
+        },
+        "T_progress": {
+          "n": 366,
+          "correct": 120,
+          "acc": 0.32786885245901637,
+          "baseline": 0.3333333333333333
+        },
+        "T_temporal": {
+          "n": 181,
+          "correct": 34,
+          "acc": 0.1878453038674033,
+          "baseline": 0.16666666666666666
+        }
+      }
+    },
+    {
+      "dataset": "REASSEMBLE",
+      "slug": "reassemble",
+      "num_rows_raw": 2562,
+      "num_rows_valid": 2562,
+      "num_invalid_ignored": 0,
+      "overall_acc": 0.4207650273224044,
+      "macro_task_acc": 0.48944076478397125,
+      "tasks": {
+        "T1": {
+          "n": 374,
+          "correct": 117,
+          "acc": 0.31283422459893045,
+          "baseline": 0.25
+        },
+        "T10": {
+          "n": 359,
+          "correct": 118,
+          "acc": 0.3286908077994429,
+          "baseline": 0.25
+        },
+        "T11": {
+          "n": 200,
+          "correct": 118,
+          "acc": 0.59,
+          "baseline": 0.25
+        },
+        "T12": {
+          "n": 46,
+          "correct": 39,
+          "acc": 0.8478260869565217,
+          "baseline": 0.25
+        },
+        "T2": {
+          "n": 374,
+          "correct": 105,
+          "acc": 0.2807486631016043,
+          "baseline": 0.5
+        },
+        "T6": {
+          "n": 206,
+          "correct": 130,
+          "acc": 0.6310679611650486,
+          "baseline": 0.5
+        },
+        "T7": {
+          "n": 161,
+          "correct": 144,
+          "acc": 0.8944099378881988,
+          "baseline": 0.5
+        },
+        "T_binary": {
+          "n": 275,
+          "correct": 137,
+          "acc": 0.49818181818181817,
+          "baseline": 0.5
+        },
+        "T_progress": {
+          "n": 432,
+          "correct": 147,
+          "acc": 0.3402777777777778,
+          "baseline": 0.3333333333333333
+        },
+        "T_temporal": {
+          "n": 135,
+          "correct": 23,
+          "acc": 0.17037037037037037,
+          "baseline": 0.16666666666666666
+        }
+      }
+    },
+    {
+      "dataset": "AIST",
+      "slug": "aist",
+      "num_rows_raw": 1424,
+      "num_rows_valid": 1414,
+      "num_invalid_ignored": 10,
+      "overall_acc": 0.36633663366336633,
+      "macro_task_acc": 0.41084358623832307,
+      "tasks": {
+        "T3": {
+          "n": 456,
+          "correct": 150,
+          "acc": 0.32894736842105265,
+          "baseline": 0.25
+        },
+        "T4": {
+          "n": 308,
+          "correct": 122,
+          "acc": 0.3961038961038961,
+          "baseline": 0.25
+        },
+        "T6": {
+          "n": 240,
+          "correct": 147,
+          "acc": 0.6125,
+          "baseline": 0.5
+        },
+        "T_binary": {
+          "n": 90,
+          "correct": 51,
+          "acc": 0.5666666666666667,
+          "baseline": 0.5
+        },
+        "T_temporal": {
+          "n": 320,
+          "correct": 48,
+          "acc": 0.15,
+          "baseline": 0.16666666666666666
+        }
+      }
+    }
+  ],
+  "merged_tasks": {
+    "T1": {
+      "n": 1274,
+      "correct": 434,
+      "acc": 0.34065934065934067
+    },
+    "T10": {
+      "n": 359,
+      "correct": 118,
+      "acc": 0.3286908077994429
+    },
+    "T11": {
+      "n": 200,
+      "correct": 118,
+      "acc": 0.59
+    },
+    "T12": {
+      "n": 46,
+      "correct": 39,
+      "acc": 0.8478260869565217
+    },
+    "T2": {
+      "n": 747,
+      "correct": 316,
+      "acc": 0.42302543507362783
+    },
+    "T3": {
+      "n": 724,
+      "correct": 218,
+      "acc": 0.3011049723756906
+    },
+    "T4": {
+      "n": 533,
+      "correct": 200,
+      "acc": 0.37523452157598497
+    },
+    "T6": {
+      "n": 896,
+      "correct": 580,
+      "acc": 0.6473214285714286
+    },
+    "T7": {
+      "n": 793,
+      "correct": 481,
+      "acc": 0.6065573770491803
+    },
+    "T_binary": {
+      "n": 810,
+      "correct": 423,
+      "acc": 0.5222222222222223
+    },
+    "T_progress": {
+      "n": 1222,
+      "correct": 399,
+      "acc": 0.3265139116202946
+    },
+    "T_temporal": {
+      "n": 954,
+      "correct": 152,
+      "acc": 0.15932914046121593
+    }
+  }
+}

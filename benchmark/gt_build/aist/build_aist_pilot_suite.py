@@ -35,6 +35,7 @@ T9_CHOICES = {
     "A": "Frame X happens before Frame Y",
     "B": "Frame Y happens before Frame X",
 }
+TEMPORAL_DISPLAY_LABELS = ["X", "Y", "Z"]
 
 
 def parse_args() -> argparse.Namespace:
@@ -224,9 +225,47 @@ def build_t9(path: Path, f: h5py.File, rng: random.Random, camera: str) -> list[
     return rows
 
 
+def build_t8(path: Path, f: h5py.File, rng: random.Random, camera: str) -> list[dict[str, Any]]:
+    n = int(f["observations/qpos"].shape[0])
+    if n < 80:
+        return []
+    base = item_base(path, f, camera)
+    rows: list[dict[str, Any]] = []
+    anchors = [int(round(x)) for x in np.linspace(0.05 * (n - 1), 0.95 * (n - 1), num=18)]
+    anchors = sorted({max(0, min(n - 1, a)) for a in anchors})
+    if len(anchors) < 3:
+        return rows
+
+    for i in range(len(anchors) - 2):
+        triplet = [int(anchors[i]), int(anchors[i + 1]), int(anchors[i + 2])]
+        if len(set(triplet)) < 3:
+            continue
+        if (triplet[1] - triplet[0]) < 8 or (triplet[2] - triplet[1]) < 8:
+            continue
+        order = [0, 1, 2]
+        rng.shuffle(order)
+        frames_shuf = [triplet[idx] for idx in order]
+        labels = list(TEMPORAL_DISPLAY_LABELS)
+        rng.shuffle(labels)
+        time_rank = sorted(range(3), key=lambda idx: frames_shuf[idx])
+        answer = "".join(labels[idx] for idx in time_rank)
+        rows.append(
+            {
+                **base,
+                "task_type": "T_temporal",
+                "question": "Order these three frames from earliest to latest in the manipulation sequence.",
+                "frame_indices": frames_shuf,
+                "shuffled_labels": labels,
+                "answer": answer,
+                "chronological_frame_indices": triplet,
+            }
+        )
+    return rows
+
+
 def cap_rows(rows: list[dict[str, Any]], per_type: int, rng: random.Random) -> list[dict[str, Any]]:
     out: list[dict[str, Any]] = []
-    for task_type in ["T4", "T6", "T9"]:
+    for task_type in ["T4", "T6", "T9", "T_temporal"]:
         subset = [r for r in rows if r.get("task_type") == task_type]
         rng.shuffle(subset)
         out.extend(subset[:per_type])
@@ -248,6 +287,7 @@ def main() -> None:
             rows.extend(build_t4(ep, f, rng, args.camera))
             rows.extend(build_t6(ep, f, rng, args.camera))
             rows.extend(build_t9(ep, f, rng, args.camera))
+            rows.extend(build_t8(ep, f, rng, args.camera))
 
     all_path = gt_dir / "aist_pilot_pool.jsonl"
     with all_path.open("w", encoding="utf-8") as fh:

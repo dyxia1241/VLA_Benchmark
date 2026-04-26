@@ -1,0 +1,33 @@
+{
+  "manifest": "/data/projects/GM-100/benchmark/splits_v1/eval_manifest.json",
+  "results_dir": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/qwen2-5-vl-7b-instruct",
+  "model": "qwen2.5-vl-7b-instruct",
+  "model_slug": "qwen2-5-vl-7b-instruct",
+  "created_at": "2026-04-25T11:37:36",
+  "runs": [
+    {
+      "dataset": "GM100",
+      "slug": "gm100",
+      "returncode": 0,
+      "result_jsonl": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/qwen2-5-vl-7b-instruct/gm100_eval_results.jsonl"
+    },
+    {
+      "dataset": "RH20T",
+      "slug": "rh20t",
+      "returncode": 0,
+      "result_jsonl": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/qwen2-5-vl-7b-instruct/rh20t_eval_results.jsonl"
+    },
+    {
+      "dataset": "REASSEMBLE",
+      "slug": "reassemble",
+      "returncode": 0,
+      "result_jsonl": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/qwen2-5-vl-7b-instruct/reassemble_eval_results.jsonl"
+    },
+    {
+      "dataset": "AIST",
+      "slug": "aist",
+      "returncode": 0,
+      "result_jsonl": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/qwen2-5-vl-7b-instruct/aist_eval_results.jsonl"
+    }
+  ]
+}

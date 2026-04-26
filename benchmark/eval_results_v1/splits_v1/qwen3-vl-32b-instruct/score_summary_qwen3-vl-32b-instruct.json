@@ -1,0 +1,308 @@
+{
+  "manifest": "/data/projects/GM-100/benchmark/splits_v1/eval_manifest.json",
+  "results_dir": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/qwen3-vl-32b-instruct",
+  "model": "qwen3-vl-32b-instruct",
+  "model_slug": "qwen3-vl-32b-instruct",
+  "task_type_aliases": {
+    "T9": "T_binary"
+  },
+  "created_at": "2026-04-25T13:37:38",
+  "keep_invalid": false,
+  "overall_micro_acc": 0.42695749440715886,
+  "dataset_macro_acc": 0.4221868135052494,
+  "task_macro_acc": 0.4592179007827159,
+  "datasets": [
+    {
+      "dataset": "GM100",
+      "slug": "gm100",
+      "num_rows_raw": 2643,
+      "num_rows_valid": 2643,
+      "num_invalid_ignored": 0,
+      "overall_acc": 0.47029890276201286,
+      "macro_task_acc": 0.48866682824675545,
+      "tasks": {
+        "T1": {
+          "n": 597,
+          "correct": 198,
+          "acc": 0.3316582914572864,
+          "baseline": 0.25
+        },
+        "T2": {
+          "n": 150,
+          "correct": 95,
+          "acc": 0.6333333333333333,
+          "baseline": 0.5
+        },
+        "T3": {
+          "n": 483,
+          "correct": 379,
+          "acc": 0.7846790890269151,
+          "baseline": 0.25
+        },
+        "T4": {
+          "n": 225,
+          "correct": 86,
+          "acc": 0.38222222222222224,
+          "baseline": 0.25
+        },
+        "T6": {
+          "n": 223,
+          "correct": 148,
+          "acc": 0.6636771300448431,
+          "baseline": 0.5
+        },
+        "T_binary": {
+          "n": 223,
+          "correct": 126,
+          "acc": 0.5650224215246636,
+          "baseline": 0.5
+        },
+        "T_progress": {
+          "n": 424,
+          "correct": 146,
+          "acc": 0.3443396226415094,
+          "baseline": 0.3333333333333333
+        },
+        "T_temporal": {
+          "n": 318,
+          "correct": 65,
+          "acc": 0.20440251572327045,
+          "baseline": 0.16666666666666666
+        }
+      }
+    },
+    {
+      "dataset": "RH20T",
+      "slug": "rh20t",
+      "num_rows_raw": 2422,
+      "num_rows_valid": 2419,
+      "num_invalid_ignored": 3,
+      "overall_acc": 0.4398511781727987,
+      "macro_task_acc": 0.437472027093983,
+      "tasks": {
+        "T1": {
+          "n": 303,
+          "correct": 80,
+          "acc": 0.264026402640264,
+          "baseline": 0.25
+        },
+        "T2": {
+          "n": 223,
+          "correct": 138,
+          "acc": 0.6188340807174888,
+          "baseline": 0.5
+        },
+        "T3": {
+          "n": 268,
+          "correct": 79,
+          "acc": 0.2947761194029851,
+          "baseline": 0.25
+        },
+        "T6": {
+          "n": 227,
+          "correct": 169,
+          "acc": 0.7444933920704846,
+          "baseline": 0.5
+        },
+        "T7": {
+          "n": 632,
+          "correct": 324,
+          "acc": 0.5126582278481012,
+          "baseline": 0.5
+        },
+        "T_binary": {
+          "n": 222,
+          "correct": 115,
+          "acc": 0.5180180180180181,
+          "baseline": 0.5
+        },
+        "T_progress": {
+          "n": 366,
+          "correct": 120,
+          "acc": 0.32786885245901637,
+          "baseline": 0.3333333333333333
+        },
+        "T_temporal": {
+          "n": 178,
+          "correct": 39,
+          "acc": 0.21910112359550563,
+          "baseline": 0.16666666666666666
+        }
+      }
+    },
+    {
+      "dataset": "REASSEMBLE",
+      "slug": "reassemble",
+      "num_rows_raw": 2562,
+      "num_rows_valid": 2562,
+      "num_invalid_ignored": 0,
+      "overall_acc": 0.38953942232630756,
+      "macro_task_acc": 0.4351798871414646,
+      "tasks": {
+        "T1": {
+          "n": 374,
+          "correct": 84,
+          "acc": 0.22459893048128343,
+          "baseline": 0.25
+        },
+        "T10": {
+          "n": 359,
+          "correct": 101,
+          "acc": 0.28133704735376047,
+          "baseline": 0.25
+        },
+        "T11": {
+          "n": 200,
+          "correct": 94,
+          "acc": 0.47,
+          "baseline": 0.25
+        },
+        "T12": {
+          "n": 46,
+          "correct": 35,
+          "acc": 0.7608695652173914,
+          "baseline": 0.25
+        },
+        "T2": {
+          "n": 374,
+          "correct": 167,
+          "acc": 0.446524064171123,
+          "baseline": 0.5
+        },
+        "T6": {
+          "n": 206,
+          "correct": 147,
+          "acc": 0.7135922330097088,
+          "baseline": 0.5
+        },
+        "T7": {
+          "n": 161,
+          "correct": 77,
+          "acc": 0.4782608695652174,
+          "baseline": 0.5
+        },
+        "T_binary": {
+          "n": 275,
+          "correct": 141,
+          "acc": 0.5127272727272727,
+          "baseline": 0.5
+        },
+        "T_progress": {
+          "n": 432,
+          "correct": 130,
+          "acc": 0.30092592592592593,
+          "baseline": 0.3333333333333333
+        },
+        "T_temporal": {
+          "n": 135,
+          "correct": 22,
+          "acc": 0.16296296296296298,
+          "baseline": 0.16666666666666666
+        }
+      }
+    },
+    {
+      "dataset": "AIST",
+      "slug": "aist",
+      "num_rows_raw": 1424,
+      "num_rows_valid": 1316,
+      "num_invalid_ignored": 108,
+      "overall_acc": 0.3890577507598784,
+      "macro_task_acc": 0.43639233391359217,
+      "tasks": {
+        "T3": {
+          "n": 438,
+          "correct": 145,
+          "acc": 0.3310502283105023,
+          "baseline": 0.25
+        },
+        "T4": {
+          "n": 281,
+          "correct": 126,
+          "acc": 0.4483985765124555,
+          "baseline": 0.25
+        },
+        "T6": {
+          "n": 213,
+          "correct": 137,
+          "acc": 0.6431924882629108,
+          "baseline": 0.5
+        },
+        "T_binary": {
+          "n": 81,
+          "correct": 46,
+          "acc": 0.5679012345679012,
+          "baseline": 0.5
+        },
+        "T_temporal": {
+          "n": 303,
+          "correct": 58,
+          "acc": 0.19141914191419143,
+          "baseline": 0.16666666666666666
+        }
+      }
+    }
+  ],
+  "merged_tasks": {
+    "T1": {
+      "n": 1274,
+      "correct": 362,
+      "acc": 0.28414442700156983
+    },
+    "T10": {
+      "n": 359,
+      "correct": 101,
+      "acc": 0.28133704735376047
+    },
+    "T11": {
+      "n": 200,
+      "correct": 94,
+      "acc": 0.47
+    },
+    "T12": {
+      "n": 46,
+      "correct": 35,
+      "acc": 0.7608695652173914
+    },
+    "T2": {
+      "n": 747,
+      "correct": 400,
+      "acc": 0.535475234270415
+    },
+    "T3": {
+      "n": 1189,
+      "correct": 603,
+      "acc": 0.5071488645920942
+    },
+    "T4": {
+      "n": 506,
+      "correct": 212,
+      "acc": 0.4189723320158103
+    },
+    "T6": {
+      "n": 869,
+      "correct": 601,
+      "acc": 0.6915995397008056
+    },
+    "T7": {
+      "n": 793,
+      "correct": 401,
+      "acc": 0.5056746532156369
+    },
+    "T_binary": {
+      "n": 801,
+      "correct": 428,
+      "acc": 0.5343320848938826
+    },
+    "T_progress": {
+      "n": 1222,
+      "correct": 396,
+      "acc": 0.32405891980360063
+    },
+    "T_temporal": {
+      "n": 934,
+      "correct": 184,
+      "acc": 0.19700214132762311
+    }
+  }
+}

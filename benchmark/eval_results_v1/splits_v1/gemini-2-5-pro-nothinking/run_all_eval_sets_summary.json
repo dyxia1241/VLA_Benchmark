@@ -1,0 +1,33 @@
+{
+  "manifest": "/data/projects/GM-100/benchmark/splits_v1/eval_manifest.json",
+  "results_dir": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/gemini-2-5-pro-nothinking",
+  "model": "gemini-2.5-pro-nothinking",
+  "model_slug": "gemini-2-5-pro-nothinking",
+  "created_at": "2026-04-25T20:19:36",
+  "runs": [
+    {
+      "dataset": "GM100",
+      "slug": "gm100",
+      "returncode": 0,
+      "result_jsonl": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/gemini-2-5-pro-nothinking/gm100_eval_results.jsonl"
+    },
+    {
+      "dataset": "RH20T",
+      "slug": "rh20t",
+      "returncode": 0,
+      "result_jsonl": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/gemini-2-5-pro-nothinking/rh20t_eval_results.jsonl"
+    },
+    {
+      "dataset": "REASSEMBLE",
+      "slug": "reassemble",
+      "returncode": 0,
+      "result_jsonl": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/gemini-2-5-pro-nothinking/reassemble_eval_results.jsonl"
+    },
+    {
+      "dataset": "AIST",
+      "slug": "aist",
+      "returncode": 0,
+      "result_jsonl": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/gemini-2-5-pro-nothinking/aist_eval_results.jsonl"
+    }
+  ]
+}

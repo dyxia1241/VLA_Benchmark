@@ -1,0 +1,279 @@
+{
+  "manifest": "/data/projects/GM-100/benchmark/splits_v1/eval_manifest.json",
+  "results_dir": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/claude-haiku-4-5-20251001",
+  "model": "claude-haiku-4-5-20251001",
+  "model_slug": "claude-haiku-4-5-20251001",
+  "task_type_aliases": {
+    "T9": "T_binary"
+  },
+  "created_at": "2026-04-21T13:12:07",
+  "keep_invalid": false,
+  "overall_micro_acc": 0.3818249813014211,
+  "dataset_macro_acc": 0.389262826225766,
+  "task_macro_acc": 0.4260486957875344,
+  "datasets": [
+    {
+      "dataset": "GM100",
+      "slug": "gm100",
+      "num_rows_raw": 2643,
+      "num_rows_valid": 2320,
+      "num_invalid_ignored": 323,
+      "overall_acc": 0.3331896551724138,
+      "macro_task_acc": 0.3819569053702043,
+      "tasks": {
+        "T1": {
+          "n": 597,
+          "correct": 156,
+          "acc": 0.2613065326633166,
+          "baseline": 0.25
+        },
+        "T2": {
+          "n": 150,
+          "correct": 77,
+          "acc": 0.5133333333333333,
+          "baseline": 0.5
+        },
+        "T3": {
+          "n": 478,
+          "correct": 122,
+          "acc": 0.25523012552301255,
+          "baseline": 0.25
+        },
+        "T4": {
+          "n": 225,
+          "correct": 79,
+          "acc": 0.3511111111111111,
+          "baseline": 0.25
+        },
+        "T6": {
+          "n": 223,
+          "correct": 115,
+          "acc": 0.515695067264574,
+          "baseline": 0.5
+        },
+        "T_binary": {
+          "n": 223,
+          "correct": 117,
+          "acc": 0.5246636771300448,
+          "baseline": 0.5
+        },
+        "T_progress": {
+          "n": 424,
+          "correct": 107,
+          "acc": 0.25235849056603776,
+          "baseline": 0.3333333333333333
+        }
+      }
+    },
+    {
+      "dataset": "RH20T",
+      "slug": "rh20t",
+      "num_rows_raw": 2422,
+      "num_rows_valid": 2217,
+      "num_invalid_ignored": 205,
+      "overall_acc": 0.4298601714027966,
+      "macro_task_acc": 0.43709438177965465,
+      "tasks": {
+        "T1": {
+          "n": 301,
+          "correct": 59,
+          "acc": 0.19601328903654486,
+          "baseline": 0.25
+        },
+        "T2": {
+          "n": 221,
+          "correct": 120,
+          "acc": 0.5429864253393665,
+          "baseline": 0.5
+        },
+        "T3": {
+          "n": 264,
+          "correct": 65,
+          "acc": 0.24621212121212122,
+          "baseline": 0.25
+        },
+        "T6": {
+          "n": 224,
+          "correct": 163,
+          "acc": 0.7276785714285714,
+          "baseline": 0.5
+        },
+        "T7": {
+          "n": 623,
+          "correct": 313,
+          "acc": 0.5024077046548957,
+          "baseline": 0.5
+        },
+        "T_binary": {
+          "n": 218,
+          "correct": 112,
+          "acc": 0.5137614678899083,
+          "baseline": 0.5
+        },
+        "T_progress": {
+          "n": 366,
+          "correct": 121,
+          "acc": 0.33060109289617484,
+          "baseline": 0.3333333333333333
+        }
+      }
+    },
+    {
+      "dataset": "REASSEMBLE",
+      "slug": "reassemble",
+      "num_rows_raw": 2562,
+      "num_rows_valid": 2427,
+      "num_invalid_ignored": 135,
+      "overall_acc": 0.36299958796868564,
+      "macro_task_acc": 0.4153790996757062,
+      "tasks": {
+        "T1": {
+          "n": 374,
+          "correct": 101,
+          "acc": 0.2700534759358289,
+          "baseline": 0.25
+        },
+        "T10": {
+          "n": 359,
+          "correct": 84,
+          "acc": 0.233983286908078,
+          "baseline": 0.25
+        },
+        "T11": {
+          "n": 200,
+          "correct": 112,
+          "acc": 0.56,
+          "baseline": 0.25
+        },
+        "T12": {
+          "n": 46,
+          "correct": 31,
+          "acc": 0.6739130434782609,
+          "baseline": 0.25
+        },
+        "T2": {
+          "n": 374,
+          "correct": 106,
+          "acc": 0.28342245989304815,
+          "baseline": 0.5
+        },
+        "T6": {
+          "n": 206,
+          "correct": 117,
+          "acc": 0.5679611650485437,
+          "baseline": 0.5
+        },
+        "T7": {
+          "n": 161,
+          "correct": 49,
+          "acc": 0.30434782608695654,
+          "baseline": 0.5
+        },
+        "T_binary": {
+          "n": 275,
+          "correct": 147,
+          "acc": 0.5345454545454545,
+          "baseline": 0.5
+        },
+        "T_progress": {
+          "n": 432,
+          "correct": 134,
+          "acc": 0.3101851851851852,
+          "baseline": 0.3333333333333333
+        }
+      }
+    },
+    {
+      "dataset": "AIST",
+      "slug": "aist",
+      "num_rows_raw": 1424,
+      "num_rows_valid": 1058,
+      "num_invalid_ignored": 366,
+      "overall_acc": 0.43100189035916825,
+      "macro_task_acc": 0.477549206655448,
+      "tasks": {
+        "T3": {
+          "n": 454,
+          "correct": 137,
+          "acc": 0.30176211453744495,
+          "baseline": 0.25
+        },
+        "T4": {
+          "n": 274,
+          "correct": 118,
+          "acc": 0.4306569343065693,
+          "baseline": 0.25
+        },
+        "T6": {
+          "n": 240,
+          "correct": 152,
+          "acc": 0.6333333333333333,
+          "baseline": 0.5
+        },
+        "T_binary": {
+          "n": 90,
+          "correct": 49,
+          "acc": 0.5444444444444444,
+          "baseline": 0.5
+        }
+      }
+    }
+  ],
+  "merged_tasks": {
+    "T1": {
+      "n": 1272,
+      "correct": 316,
+      "acc": 0.24842767295597484
+    },
+    "T10": {
+      "n": 359,
+      "correct": 84,
+      "acc": 0.233983286908078
+    },
+    "T11": {
+      "n": 200,
+      "correct": 112,
+      "acc": 0.56
+    },
+    "T12": {
+      "n": 46,
+      "correct": 31,
+      "acc": 0.6739130434782609
+    },
+    "T2": {
+      "n": 745,
+      "correct": 303,
+      "acc": 0.40671140939597317
+    },
+    "T3": {
+      "n": 1196,
+      "correct": 324,
+      "acc": 0.2709030100334448
+    },
+    "T4": {
+      "n": 499,
+      "correct": 197,
+      "acc": 0.39478957915831664
+    },
+    "T6": {
+      "n": 893,
+      "correct": 547,
+      "acc": 0.6125419932810751
+    },
+    "T7": {
+      "n": 784,
+      "correct": 362,
+      "acc": 0.461734693877551
+    },
+    "T_binary": {
+      "n": 806,
+      "correct": 425,
+      "acc": 0.5272952853598015
+    },
+    "T_progress": {
+      "n": 1222,
+      "correct": 362,
+      "acc": 0.29623567921440264
+    }
+  }
+}

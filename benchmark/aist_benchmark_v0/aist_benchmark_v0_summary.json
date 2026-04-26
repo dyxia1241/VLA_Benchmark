@@ -4,19 +4,22 @@
   "num_episodes": 200,
   "pool_counts": {
     "T3": 3041,
-    "T4": 1977,
-    "T6": 1595,
-    "T9": 600
+    "T4": 1989,
+    "T6": 1597,
+    "T9": 600,
+    "T_temporal": 3200
   },
   "quota": "all",
   "curated_counts": {
     "T3": 3041,
-    "T4": 1977,
-    "T6": 1595,
-    "T9": 600
+    "T4": 1989,
+    "T6": 1597,
+    "T9": 600,
+    "T_temporal": 2200
   },
   "direction_mapping": "/data/projects/GM-100/benchmark/gt_build/aist/aist_t3_direction_mapping_cam_high.json",
-  "curated_total": 7213,
+  "curated_total": 9427,
+  "t8_target": 2200,
   "pool_jsonl": "/data/projects/GM-100/benchmark/aist_benchmark_v0/aist_benchmark_v0_pool.jsonl",
   "curated_jsonl": "/data/projects/GM-100/benchmark/aist_benchmark_v0/aist_benchmark_v0_curated.jsonl"
 }

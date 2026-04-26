@@ -113,6 +113,11 @@ def resolve_frame_paths(item: dict[str, Any], frame_dir: Path) -> list[Path]:
 
 
 def frame_labels(item: dict[str, Any], num_frames: int) -> list[str]:
+    explicit = item.get("display_labels")
+    if isinstance(explicit, list):
+        labels = [str(x) for x in explicit]
+        if labels:
+            return labels[:num_frames]
     task_type = str(item.get("task_type", ""))
     if task_type == "T_temporal":
         labels = [str(x) for x in item.get("shuffled_labels", [])]

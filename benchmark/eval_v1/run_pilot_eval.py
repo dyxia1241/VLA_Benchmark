@@ -18,6 +18,7 @@ import os
 import random
 import re
 import time
+from collections import OrderedDict
 from io import BytesIO
 from pathlib import Path
 from typing import Any
@@ -44,7 +45,7 @@ DEFAULT_MODEL = "gpt-4o"
 DEFAULT_API_KEY = "sk-LIBwaAEBArGfoun34xCXZqDaPYog9imwTx3ZTN1u88p5fFY9"
 
 DEFAULT_CONCURRENCY = 8
-DEFAULT_MAX_TOKENS = 16
+DEFAULT_MAX_TOKENS = 96
 DEFAULT_TEMPERATURE = 0.0
 DEFAULT_RETRIES = 3
 DEFAULT_TIMEOUT_SEC = 60.0
@@ -54,6 +55,8 @@ DEFAULT_FRAME_DIR = str(PILOT_ARTIFACT_DIR / "pilot_frames_filtered")
 DEFAULT_FRAME_DIR_T3 = str(PILOT_ARTIFACT_DIR / "pilot_frames_t3ctx2_filtered")
 DEFAULT_FRAME_DIR_T6 = str(PILOT_ARTIFACT_DIR / "pilot_frames_t6_5ctx_filtered")
 DEFAULT_T3_OFFSETS = "-10,-5,0,5"
+GM100_FALLBACK_CACHE_DIR = BENCHMARK_DIR / "eval_results_v1" / "_frame_fallback_cache" / "gm100"
+GM100_VIDEO_READER_CACHE_SIZE = 2
 
 T4_CHOICES = {
     "A": "both arms are active",
@@ -63,6 +66,8 @@ T4_CHOICES = {
 }
 T4_LABEL_ID_TO_ANSWER = {0: "A", 1: "B", 2: "C", 3: "D"}
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)+$")
+ANSWER_TAG_RE = re.compile(r"<\s*ANSWER\s*>(.*?)<\s*/\s*ANSWER\s*>", flags=re.IGNORECASE | re.DOTALL)
+_GM100_VIDEO_READERS: OrderedDict[str, Any] = OrderedDict()
 
 
 def img_to_b64(path: Path) -> str:
@@ -219,6 +224,222 @@ def _candidate_reassemble_single_paths(base: Path, recording_id: str, frame_inde
 
 def _uses_recording_id_frame_names(dataset: str) -> bool:
     return dataset in {"REASSEMBLE", "RH20T", "AIST", "AIST-BIMANUAL"}
+
+
+def _gm100_video_path(task_id: str, episode_id: int, camera: str) -> Path:
+    return (
+        DATASET_ROOT
+        / task_id
+        / "videos"
+        / "chunk-000"
+        / f"observation.images.{camera}"
+        / f"episode_{episode_id:06d}.mp4"
+    )
+
+
+def _gm100_video_reader(vpath: Path) -> Any:
+    import decord
+
+    decord.bridge.set_bridge("native")
+    key = str(vpath)
+    vr = _GM100_VIDEO_READERS.pop(key, None)
+    if vr is None:
+        vr = decord.VideoReader(str(vpath), ctx=decord.cpu(0))
+    _GM100_VIDEO_READERS[key] = vr
+    while len(_GM100_VIDEO_READERS) > GM100_VIDEO_READER_CACHE_SIZE:
+        _GM100_VIDEO_READERS.popitem(last=False)
+    return vr
+
+
+def _extract_gm100_frame(task_id: str, episode_id: int, frame_index: int, camera: str, out_path: Path) -> Path:
+    vpath = _gm100_video_path(task_id=task_id, episode_id=episode_id, camera=camera)
+    if not vpath.exists():
+        raise FileNotFoundError(f"gm100 video missing: {vpath}")
+    vr = _gm100_video_reader(vpath)
+    if frame_index < 0 or frame_index >= len(vr):
+        raise IndexError(f"frame_index out of range: {frame_index} (len={len(vr)}) for {vpath}")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    img = Image.fromarray(vr[frame_index].asnumpy())
+    img.save(out_path, format="JPEG", quality=95)
+    return out_path
+
+
+def _clear_gm100_video_reader_cache() -> None:
+    _GM100_VIDEO_READERS.clear()
+
+
+def _requested_gm100_frames(item: dict[str, Any], t3_offsets: list[int]) -> list[tuple[int, int]]:
+    ep = item.get("episode_id", None)
+    task_type = str(item.get("task_type", ""))
+
+    if task_type == "T2" and "frame_A" in item and "frame_B" in item:
+        fa = item["frame_A"]
+        fb = item["frame_B"]
+        return [
+            (int(fa["episode_id"]), int(fa["frame_index"])),
+            (int(fb["episode_id"]), int(fb["frame_index"])),
+        ]
+
+    if ep is None:
+        return []
+
+    ep_int = int(ep)
+    if task_type == "T3":
+        frame_indices = item.get("frame_indices")
+        if isinstance(frame_indices, list) and frame_indices:
+            return [(ep_int, int(fi)) for fi in frame_indices]
+        if "frame_index" in item:
+            center = int(item["frame_index"])
+            return [(ep_int, int(center + off)) for off in t3_offsets]
+        return []
+
+    if task_type == "T6" and "frame_index" in item:
+        center = int(item["frame_index"])
+        return [(ep_int, int(center + off)) for off in (-6, -3, 0, 3, 6)]
+
+    frame_indices = item.get("frame_indices")
+    if isinstance(frame_indices, list) and frame_indices:
+        return [(ep_int, int(fi)) for fi in frame_indices]
+
+    if "frame_index" in item:
+        return [(ep_int, int(item["frame_index"]))]
+
+    return []
+
+
+def resolve_missing_frame_paths(item: dict[str, Any], frame_paths: list[Path], t3_offsets: list[int]) -> list[Path]:
+    dataset = normalize_text(item.get("dataset", "")).upper()
+    if dataset != "GM100":
+        return frame_paths
+
+    task_id = normalize_text(item.get("task_id", ""))
+    camera = normalize_text(item.get("camera", "")) or "camera_top"
+    requests = _requested_gm100_frames(item, t3_offsets)
+    if not task_id or len(requests) != len(frame_paths):
+        return frame_paths
+
+    resolved: list[Path] = []
+    for (episode_id, frame_index), frame_path in zip(requests, frame_paths):
+        if frame_path.exists():
+            resolved.append(frame_path)
+            continue
+
+        fallback_path = GM100_FALLBACK_CACHE_DIR / frame_path.name
+        if fallback_path.exists():
+            resolved.append(fallback_path)
+            continue
+
+        try:
+            resolved.append(
+                _extract_gm100_frame(
+                    task_id=task_id,
+                    episode_id=int(episode_id),
+                    frame_index=int(frame_index),
+                    camera=camera,
+                    out_path=fallback_path,
+                )
+            )
+        except Exception:
+            resolved.append(frame_path)
+
+    return resolved
+
+
+def _gm100_missing_frame_requests(
+    item: dict[str, Any],
+    frame_paths: list[Path],
+    t3_offsets: list[int],
+) -> list[tuple[str, int, int, str, Path]]:
+    dataset = normalize_text(item.get("dataset", "")).upper()
+    if dataset != "GM100":
+        return []
+
+    task_id = normalize_text(item.get("task_id", ""))
+    camera = normalize_text(item.get("camera", "")) or "camera_top"
+    requests = _requested_gm100_frames(item, t3_offsets)
+    if not task_id or len(requests) != len(frame_paths):
+        return []
+
+    out: list[tuple[str, int, int, str, Path]] = []
+    for (episode_id, frame_index), frame_path in zip(requests, frame_paths):
+        if frame_path.exists():
+            continue
+        fallback_path = GM100_FALLBACK_CACHE_DIR / frame_path.name
+        if fallback_path.exists():
+            continue
+        out.append((task_id, int(episode_id), int(frame_index), camera, fallback_path))
+    return out
+
+
+def prewarm_gm100_missing_frames(
+    items: list[dict[str, Any]],
+    frame_dirs: dict[str, Path],
+    t3_offsets: list[int],
+) -> dict[str, Any]:
+    unique_requests: dict[str, tuple[str, int, int, str, Path]] = {}
+    gm100_items = 0
+    skipped_items = 0
+
+    for item in items:
+        x = normalize_item_for_eval(item)
+        if normalize_text(x.get("dataset", "")).upper() != "GM100":
+            continue
+        gm100_items += 1
+        try:
+            frame_paths = get_frame_paths(x, frame_dirs=frame_dirs, t3_offsets=t3_offsets)
+        except Exception:
+            skipped_items += 1
+            continue
+        for request in _gm100_missing_frame_requests(x, frame_paths, t3_offsets=t3_offsets):
+            unique_requests.setdefault(str(request[-1]), request)
+
+    planned = sorted(unique_requests.values(), key=lambda x: (x[0], x[1], x[3], x[2]))
+    if not planned:
+        return {
+            "gm100_items": gm100_items,
+            "skipped_items": skipped_items,
+            "planned_frames": 0,
+            "extracted_frames": 0,
+            "failed_frames": 0,
+        }
+
+    print(
+        f"[INFO] Prewarming {len(planned)} missing GM100 frame(s) into "
+        f"{GM100_FALLBACK_CACHE_DIR}"
+    )
+    extracted = 0
+    failed = 0
+    for idx, (task_id, episode_id, frame_index, camera, out_path) in enumerate(planned, start=1):
+        try:
+            _extract_gm100_frame(
+                task_id=task_id,
+                episode_id=episode_id,
+                frame_index=frame_index,
+                camera=camera,
+                out_path=out_path,
+            )
+            extracted += 1
+        except Exception as e:  # noqa: BLE001
+            failed += 1
+            if failed <= 5:
+                print(
+                    "[WARN] GM100 prewarm failed "
+                    f"(task={task_id}, episode={episode_id}, frame={frame_index}, camera={camera}): {e}"
+                )
+        if idx % 200 == 0 or idx == len(planned):
+            print(
+                f"[INFO] GM100 prewarm progress {idx}/{len(planned)} "
+                f"(ok={extracted}, failed={failed})"
+            )
+
+    _clear_gm100_video_reader_cache()
+    return {
+        "gm100_items": gm100_items,
+        "skipped_items": skipped_items,
+        "planned_frames": len(planned),
+        "extracted_frames": extracted,
+        "failed_frames": failed,
+    }
 
 
 def _candidate_multi_paths(
@@ -422,6 +643,13 @@ def get_frame_paths(item: dict[str, Any], frame_dirs: dict[str, Path], t3_offset
         raise KeyError(f"{dataset} item missing both frame_index and frame_indices")
 
     if task_type == "T3":
+        # Prefer explicit multi-frame indices when the benchmark item already
+        # carries them. This is the current GM100/AIST/RH20T canonical format.
+        if isinstance(item.get("frame_indices"), list) and item.get("frame_indices"):
+            return [single(int(fi)) for fi in item["frame_indices"]]
+
+        # Backward-compatible fallback for older T3 frame dumps that encoded
+        # offsets through suffixed filenames around a center frame.
         fi = int(item["frame_index"])
         out: list[Path] = []
         for off in t3_offsets:
@@ -464,6 +692,9 @@ def get_frame_paths(item: dict[str, Any], frame_dirs: dict[str, Path], t3_offset
     if task_type == "T_temporal":
         return [single(int(fi)) for fi in item["frame_indices"]]
 
+    if task_type == "T9":
+        return [single(int(fi)) for fi in item["frame_indices"]]
+
     if task_type == "T_binary":
         return [single(int(fi)) for fi in item["frame_indices"]]
 
@@ -501,10 +732,53 @@ def get_frame_paths(item: dict[str, Any], frame_dirs: dict[str, Path], t3_offset
     return [single(fi)]
 
 
+def _answer_protocol_text(item: dict[str, Any]) -> str:
+    task_type = str(item.get("task_type", ""))
+    if task_type == "T_temporal":
+        labels = [str(x).upper() for x in item.get("shuffled_labels", ["X", "Y", "Z"])]
+        example = "".join(labels)
+        return (
+            "Output protocol:\n"
+            "- You may include brief reasoning before the final answer.\n"
+            f"- The final line must be exactly: <ANSWER>{example}</ANSWER>\n"
+            "- Do not output anything after </ANSWER>."
+        )
+
+    if task_type == "T_binary":
+        choice_keys = {str(k).upper() for k in item.get("choices", {}).keys()}
+        if choice_keys == {"YES", "NO"}:
+            example = "YES"
+        else:
+            labels = sorted(set(_t_binary_display_labels(item, num_panels=2)))
+            example = labels[0] if labels else "X"
+        return (
+            "Output protocol:\n"
+            "- You may include brief reasoning before the final answer.\n"
+            f"- The final line must be exactly: <ANSWER>{example}</ANSWER>\n"
+            "- Do not output anything after </ANSWER>."
+        )
+
+    choices = item.get("choices", {})
+    if isinstance(choices, dict) and choices:
+        valid = [str(k).upper() for k in choices.keys()]
+    elif task_type == "T4":
+        valid = ["A", "B", "C", "D"]
+    else:
+        valid = []
+    example = valid[0] if valid else "A"
+    return (
+        "Output protocol:\n"
+        "- You may include brief reasoning before the final answer.\n"
+        f"- The final line must be exactly: <ANSWER>{example}</ANSWER>\n"
+        "- Do not output anything after </ANSWER>."
+    )
+
+
 def format_prompt(item: dict[str, Any]) -> str:
     task_type = str(item["task_type"])
     question = str(item.get("question", "")).strip()
     choices = item.get("choices", {})
+    answer_protocol = _answer_protocol_text(item)
 
     prompt_body = ""
     if task_type == "T_binary":
@@ -517,14 +791,14 @@ def format_prompt(item: dict[str, Any]) -> str:
                 "A single comparison image shows two labeled robot-manipulation panels from the same episode.\n"
                 "The left-right placement of the panels and the labels are arbitrary identifiers and do not indicate temporal order.\n"
                 f"Is the following statement true: Image {first} happened earlier than Image {second}?\n"
-                "Answer with only YES or NO."
+                "Choose exactly one of YES or NO."
             )
         else:
             prompt_body = (
                 "A single comparison image shows two labeled robot-manipulation panels from the same episode.\n"
                 "The left-right placement of the panels and the labels are arbitrary identifiers and do not indicate temporal order.\n"
                 f"Which labeled panel happened earlier in the real manipulation sequence, {first} or {second}?\n"
-                f"Answer with only one letter: {first} or {second}."
+                f"Choose exactly one label: {first} or {second}."
             )
 
     elif task_type == "T_temporal":
@@ -536,16 +810,18 @@ def format_prompt(item: dict[str, Any]) -> str:
             "(these labels are arbitrary identifiers, not positional, and not time-ordered).\n"
             "Determine the correct chronological order of these frames "
             "(from earliest to latest).\n"
-            f"Answer with exactly 3 letters, for example: {ex} means "
+            f"Choose exactly one 3-letter permutation, for example: {ex} means "
             f"{labels[1]} happened first, then {labels[0]}, then {labels[2]}."
         )
 
     elif isinstance(choices, dict) and choices:
         choices_text = "\n".join(f"{k}: {v}" for k, v in choices.items())
-        prompt_body = f"{question}\n\n{choices_text}\n\nAnswer with only the letter."
+        prompt_body = f"{question}\n\n{choices_text}\n\nChoose exactly one option label."
 
     else:
-        prompt_body = f"{question}\n\nAnswer briefly."
+        prompt_body = f"{question}\n\nChoose exactly one answer."
+
+    prompt_body = f"{prompt_body}\n\n{answer_protocol}"
 
     task_meta = normalize_text(item.get("task_meta_description", ""))
     if not task_meta:
@@ -564,82 +840,108 @@ def parse_answer(raw: str, item: dict[str, Any]) -> str:
     task_type = str(item["task_type"])
     raw_u = raw.strip().upper().replace("。", ".")
 
-    if task_type == "T_binary":
-        choice_keys = {str(k).upper() for k in item.get("choices", {}).keys()}
-        if choice_keys == {"YES", "NO"}:
-            valid_set = {"YES", "NO"}
-            alt = "|".join(sorted((re.escape(v) for v in valid_set), key=len, reverse=True))
+    def _extract_tag_payload(text: str) -> str:
+        matches = list(ANSWER_TAG_RE.finditer(text))
+        if not matches:
+            return ""
+        return str(matches[-1].group(1)).strip()
 
-            raw_compact = re.sub(r"[\s\.\:\-\(\)\[\]\{\}]+", "", raw_u)
-            if raw_compact in valid_set:
-                return raw_compact
-
-            cue_pat = rf"(?:ANSWER|OPTION|CHOICE|FINAL)\s*(?:IS|:|=)?\s*\(?({alt})\)?(?![A-Z0-9])"
-            m = re.search(cue_pat, raw_u)
-            if m:
-                return m.group(1)
-
-            tok_pat = rf"(?<![A-Z0-9])({alt})(?![A-Z0-9])"
-            m = re.search(tok_pat, raw_u)
-            if m:
-                return m.group(1)
-
+    def _parse_from_valid_set(text: str, valid_set: set[str]) -> str:
+        if not valid_set:
             return "INVALID"
-
-        label_to_answer = _t_binary_label_to_answer(item)
-        valid_set = set(label_to_answer)
+        text_u = str(text).strip().upper().replace("。", ".")
         alt = "|".join(sorted((re.escape(v) for v in valid_set), key=len, reverse=True))
 
-        raw_compact = re.sub(r"[\s\.\:\-\(\)\[\]\{\}]+", "", raw_u)
-        if raw_compact in valid_set:
-            return label_to_answer[raw_compact]
+        text_compact = re.sub(r"[\s\.\:\-\(\)\[\]\{\}<>/]+", "", text_u)
+        if text_compact in valid_set:
+            return text_compact
 
-        cue_pat = rf"(?:ANSWER|OPTION|CHOICE|FINAL)\s*(?:IS|:|=)?\s*\(?({alt})\)?(?![A-Z0-9])"
-        m = re.search(cue_pat, raw_u)
-        if m:
-            return label_to_answer[m.group(1)]
+        cue_pat = rf"(?:FINAL\s+ANSWER|ANSWER|OPTION|CHOICE|FINAL)\s*(?:IS|:|=)?\s*\(?({alt})\)?(?![A-Z0-9])"
+        cue_matches = list(re.finditer(cue_pat, text_u))
+        if cue_matches:
+            return cue_matches[-1].group(1)
 
         tok_pat = rf"(?<![A-Z0-9])({alt})(?![A-Z0-9])"
-        m = re.search(tok_pat, raw_u)
-        if m:
-            return label_to_answer[m.group(1)]
+        tok_matches = list(re.finditer(tok_pat, text_u))
+        if tok_matches:
+            return tok_matches[-1].group(1)
 
         return "INVALID"
 
-    if task_type == "T_temporal":
-        labels = [str(x).upper() for x in item.get("shuffled_labels", ["X", "Y", "Z"])]
+    def _parse_temporal_text(text: str, labels: list[str]) -> str:
+        text_u = str(text).strip().upper().replace("。", ".")
         label_set = set(labels)
         perms = {"".join(p) for p in itertools.permutations(labels, 3)}
         chars = "".join(sorted(label_set))
 
-        # 1) Prefer exact 3-letter permutation token anywhere in response.
-        for m in re.finditer(rf"(?<![A-Z])([{chars}]{{3}})(?![A-Z])", raw_u):
+        exact_hits = []
+        for m in re.finditer(rf"(?<![A-Z])([{chars}]{{3}})(?![A-Z])", text_u):
             cand = m.group(1)
             if cand in perms:
-                return cand
+                exact_hits.append(cand)
+        if exact_hits:
+            return exact_hits[-1]
 
-        # 2) Handle separated forms like "A, C, B" / "A -> C -> B".
+        sep_hits = []
         sep_pat = rf"(?<![A-Z])([{chars}])(?:\s*[,>\-\/|]+\s*|\s+)([{chars}])(?:\s*[,>\-\/|]+\s*|\s+)([{chars}])(?![A-Z])"
-        for m in re.finditer(sep_pat, raw_u):
+        for m in re.finditer(sep_pat, text_u):
             cand = "".join(m.groups())
             if cand in perms:
-                return cand
+                sep_hits.append(cand)
+        if sep_hits:
+            return sep_hits[-1]
 
-        # 3) Fallback: first 3 standalone label tokens in order.
-        standalone = re.findall(rf"(?<![A-Z])([{chars}])(?![A-Z])", raw_u)
+        standalone = re.findall(rf"(?<![A-Z])([{chars}])(?![A-Z])", text_u)
         if len(standalone) >= 3:
+            window_hits = []
             for i in range(len(standalone) - 2):
                 cand = "".join(standalone[i : i + 3])
                 if cand in perms:
-                    return cand
+                    window_hits.append(cand)
+            if window_hits:
+                return window_hits[-1]
 
-        # 4) Last-resort legacy behavior.
-        filtered = "".join(ch for ch in raw_u if ch in label_set)
+        filtered = "".join(ch for ch in text_u if ch in label_set)
         if len(filtered) >= 3:
+            cand = filtered[-3:]
+            if cand in perms:
+                return cand
             cand = filtered[:3]
             if cand in perms:
                 return cand
         return "INVALID"
+
+    if task_type == "T_binary":
+        choice_keys = {str(k).upper() for k in item.get("choices", {}).keys()}
+        if choice_keys == {"YES", "NO"}:
+            valid_set = {"YES", "NO"}
+            tagged = _extract_tag_payload(raw)
+            if tagged:
+                tagged_pred = _parse_from_valid_set(tagged, valid_set)
+                if tagged_pred != "INVALID":
+                    return tagged_pred
+            return _parse_from_valid_set(raw_u, valid_set)
+
+        label_to_answer = _t_binary_label_to_answer(item)
+        valid_set = set(label_to_answer)
+        tagged = _extract_tag_payload(raw)
+        if tagged:
+            tagged_pred = _parse_from_valid_set(tagged, valid_set)
+            if tagged_pred != "INVALID":
+                return label_to_answer[tagged_pred]
+        pred = _parse_from_valid_set(raw_u, valid_set)
+        if pred != "INVALID":
+            return label_to_answer[pred]
+        return "INVALID"
+
+    if task_type == "T_temporal":
+        labels = [str(x).upper() for x in item.get("shuffled_labels", ["X", "Y", "Z"])]
+        tagged = _extract_tag_payload(raw)
+        if tagged:
+            tagged_pred = _parse_temporal_text(tagged, labels)
+            if tagged_pred != "INVALID":
+                return tagged_pred
+        return _parse_temporal_text(raw_u, labels)
 
     valid = [str(k).upper() for k in item.get("choices", {}).keys()]
     if not valid and task_type == "T4":
@@ -648,24 +950,15 @@ def parse_answer(raw: str, item: dict[str, Any]) -> str:
         return "INVALID"
 
     valid_set = set(valid)
-    alt = "|".join(sorted((re.escape(v) for v in valid_set), key=len, reverse=True))
+    tagged = _extract_tag_payload(raw)
+    if tagged:
+        tagged_pred = _parse_from_valid_set(tagged, valid_set)
+        if tagged_pred != "INVALID":
+            return tagged_pred
 
-    # Fast path for direct outputs like "A" / "(B)" / "C.".
-    raw_compact = re.sub(r"[\s\.\:\-\(\)\[\]\{\}]+", "", raw_u)
-    if raw_compact in valid_set:
-        return raw_compact
-
-    # Prefer explicit answer cues in natural language outputs.
-    cue_pat = rf"(?:ANSWER|OPTION|CHOICE|FINAL)\s*(?:IS|:|=)?\s*\(?({alt})\)?(?![A-Z0-9])"
-    m = re.search(cue_pat, raw_u)
-    if m:
-        return m.group(1)
-
-    # Then fall back to the first standalone valid label token.
-    tok_pat = rf"(?<![A-Z0-9])({alt})(?![A-Z0-9])"
-    m = re.search(tok_pat, raw_u)
-    if m:
-        return m.group(1)
+    pred = _parse_from_valid_set(raw_u, valid_set)
+    if pred != "INVALID":
+        return pred
 
     # Last fallback: map textual choice content back to its label.
     choices = item.get("choices", {})
@@ -684,7 +977,7 @@ def parse_answer(raw: str, item: dict[str, Any]) -> str:
                 hits.append((pos, kk))
         if hits:
             hits.sort(key=lambda x: x[0])
-            return hits[0][1]
+            return hits[-1][1]
 
     return "INVALID"
 
@@ -710,6 +1003,39 @@ def build_request_content(item: dict[str, Any], frame_paths: list[Path]) -> list
     return content
 
 
+def assistant_message_text(message: dict[str, Any]) -> str:
+    content = message.get("content", "")
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        parts: list[str] = []
+        for chunk in content:
+            if isinstance(chunk, dict) and chunk.get("type") == "text":
+                parts.append(str(chunk.get("text", "")))
+            elif isinstance(chunk, str):
+                parts.append(chunk)
+        return "".join(parts)
+    return str(content or "")
+
+
+def assistant_reasoning_text(message: dict[str, Any]) -> str:
+    reasoning = message.get("reasoning_content", "")
+    if isinstance(reasoning, str):
+        return reasoning
+    if isinstance(reasoning, list):
+        return "".join(str(x) for x in reasoning)
+    return str(reasoning or "")
+
+
+def effective_completion_max_tokens(model: str, requested: int) -> int:
+    model_l = str(model).lower().strip()
+    if model_l.startswith("gpt-5") and requested < 256:
+        return 256
+    if model_l.startswith("glm-") and requested < 64:
+        return 64
+    return requested
+
+
 async def call_one(
     session: aiohttp.ClientSession,
     sem: asyncio.Semaphore,
@@ -725,6 +1051,7 @@ async def call_one(
     t3_offsets: list[int],
 ) -> dict[str, Any]:
     x = normalize_item_for_eval(item)
+    completion_max_tokens = effective_completion_max_tokens(model, max_tokens)
 
     async with sem:
         try:
@@ -741,6 +1068,7 @@ async def call_one(
                 "raw_response": "",
                 "error": f"frame_path_build_error: {e}",
             }
+        frame_paths = resolve_missing_frame_paths(x, frame_paths, t3_offsets=t3_offsets)
         missing = [str(p) for p in frame_paths if not p.exists()]
         if missing:
             return {
@@ -773,7 +1101,7 @@ async def call_one(
         payload = {
             "model": model,
             "messages": [{"role": "user", "content": content}],
-            "max_tokens": max_tokens,
+            "max_tokens": completion_max_tokens,
             "temperature": temperature,
         }
 
@@ -790,7 +1118,15 @@ async def call_one(
                     data = await resp.json()
                     if resp.status >= 400:
                         raise RuntimeError(f"HTTP {resp.status}: {data}")
-                    raw = str(data["choices"][0]["message"]["content"])
+                    message = data["choices"][0]["message"]
+                    raw = assistant_message_text(message)
+                    reasoning = assistant_reasoning_text(message)
+                    if not str(raw).strip() and str(reasoning).strip():
+                        raise RuntimeError(
+                            "empty_content_with_reasoning_only: "
+                            f"finish_reason={data['choices'][0].get('finish_reason', '')}, "
+                            f"reasoning_prefix={reasoning[:160]!r}"
+                        )
                     pred = parse_answer(raw, x)
                     gt = str(x.get("answer", ""))
                     return {
@@ -833,27 +1169,44 @@ def preferred_api_key_envs(model: str, api_base: str) -> list[str]:
     return ["OPENAI_API_KEY", "DASHSCOPE_API_KEY", "ANTHROPIC_API_KEY"]
 
 
-async def auth_preflight(api_base: str, api_key: str, model: str, timeout_sec: float) -> None:
+async def auth_preflight(
+    api_base: str,
+    api_key: str,
+    model: str,
+    timeout_sec: float,
+    max_tokens: int,
+    retries: int,
+) -> None:
     url = f"{api_base.rstrip('/')}/chat/completions"
     payload = {
         "model": model,
         "messages": [{"role": "user", "content": [{"type": "text", "text": "Reply with A."}]}],
-        "max_tokens": 1,
+        "max_tokens": effective_completion_max_tokens(model, max_tokens),
         "temperature": 0.0,
     }
 
+    status = 0
+    body: dict[str, Any] = {}
     async with aiohttp.ClientSession() as session:
-        async with session.post(
-            url,
-            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-            json=payload,
-            timeout=aiohttp.ClientTimeout(total=timeout_sec),
-        ) as resp:
-            status = int(resp.status)
+        for attempt in range(retries):
             try:
-                body = await resp.json()
-            except Exception:  # noqa: BLE001
-                body = {"raw": await resp.text()}
+                async with session.post(
+                    url,
+                    headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+                    json=payload,
+                    timeout=aiohttp.ClientTimeout(total=timeout_sec),
+                ) as resp:
+                    status = int(resp.status)
+                    try:
+                        body = await resp.json()
+                    except Exception:  # noqa: BLE001
+                        body = {"raw": await resp.text()}
+                if status < 500:
+                    break
+            except Exception as e:  # noqa: BLE001
+                body = {"raw": str(e)}
+            if attempt < retries - 1:
+                await asyncio.sleep(2**attempt)
 
     if status in {401, 403}:
         raise RuntimeError(
@@ -864,6 +1217,166 @@ async def auth_preflight(api_base: str, api_key: str, model: str, timeout_sec: f
         raise RuntimeError(f"Server error in preflight (HTTP {status}): {body}")
     if status >= 400:
         print(f"[WARN] Preflight returned HTTP {status}; continue anyway. Body: {body}")
+
+
+async def vision_preflight(
+    api_base: str,
+    api_key: str,
+    model: str,
+    timeout_sec: float,
+    max_tokens: int,
+    retries: int,
+) -> None:
+    sample_path = next(
+        iter(sorted((BENCHMARK_DIR / "benchmark_v1_frames_tbinary_20260330").glob("*.jpg"))),
+        None,
+    )
+    if sample_path is None:
+        raise RuntimeError("Vision preflight could not find any local sample image.")
+
+    effective_tokens = effective_completion_max_tokens(model, max_tokens)
+    payload = {
+        "model": model,
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": f"data:image/jpeg;base64,{img_to_b64(sample_path)}"},
+                    },
+                    {"type": "text", "text": "Reply with only A."},
+                ],
+            }
+        ],
+        "max_tokens": effective_tokens,
+        "temperature": 0.0,
+    }
+    url = f"{api_base.rstrip('/')}/chat/completions"
+
+    last_err = ""
+    async with aiohttp.ClientSession() as session:
+        for attempt in range(retries):
+            try:
+                async with session.post(
+                    url,
+                    headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+                    json=payload,
+                    timeout=aiohttp.ClientTimeout(total=timeout_sec),
+                ) as resp:
+                    status = int(resp.status)
+                    try:
+                        body = await resp.json()
+                    except Exception:  # noqa: BLE001
+                        body = {"raw": await resp.text()}
+
+                if status >= 400:
+                    last_err = (
+                        "Vision preflight failed. "
+                        f"Model={model}, HTTP {status}, body={body}. "
+                        "This usually means the selected model or route does not accept image inputs on the current gateway."
+                    )
+                    if status < 500:
+                        raise RuntimeError(last_err)
+                else:
+                    try:
+                        message = body["choices"][0]["message"]
+                    except Exception as e:  # noqa: BLE001
+                        raise RuntimeError(f"Vision preflight returned an unexpected response shape: {body}") from e
+
+                    content = assistant_message_text(message).strip()
+                    reasoning = assistant_reasoning_text(message).strip()
+                    finish_reason = str(body["choices"][0].get("finish_reason", "")).strip()
+                    if content:
+                        return
+                    last_err = (
+                        "Vision preflight produced no final answer content. "
+                        f"Model={model}, finish_reason={finish_reason}, "
+                        f"reasoning_prefix={reasoning[:160]!r}. "
+                        "This model is not compatible with the current benchmark protocol on this gateway."
+                    )
+            except Exception as e:  # noqa: BLE001
+                last_err = str(e)
+                if "HTTP 4" in last_err:
+                    raise
+            if attempt < retries - 1:
+                await asyncio.sleep(2**attempt)
+    raise RuntimeError(last_err)
+
+
+async def benchmark_item_preflight(
+    api_base: str,
+    api_key: str,
+    model: str,
+    timeout_sec: float,
+    max_tokens: int,
+    retries: int,
+    item: dict[str, Any],
+    frame_dirs: dict[str, Path],
+    t3_offsets: list[int],
+) -> None:
+    x = normalize_item_for_eval(item)
+    frame_paths = get_frame_paths(x, frame_dirs=frame_dirs, t3_offsets=t3_offsets)
+    frame_paths = resolve_missing_frame_paths(x, frame_paths, t3_offsets=t3_offsets)
+    missing = [str(p) for p in frame_paths if not p.exists()]
+    if missing:
+        raise RuntimeError(f"Benchmark preflight missing frames: {missing[:3]}")
+
+    payload = {
+        "model": model,
+        "messages": [{"role": "user", "content": build_request_content(x, frame_paths)}],
+        "max_tokens": effective_completion_max_tokens(model, max_tokens),
+        "temperature": 0.0,
+    }
+    url = f"{api_base.rstrip('/')}/chat/completions"
+
+    last_err = ""
+    async with aiohttp.ClientSession() as session:
+        for attempt in range(retries):
+            try:
+                async with session.post(
+                    url,
+                    headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+                    json=payload,
+                    timeout=aiohttp.ClientTimeout(total=timeout_sec),
+                ) as resp:
+                    status = int(resp.status)
+                    try:
+                        body = await resp.json()
+                    except Exception:  # noqa: BLE001
+                        body = {"raw": await resp.text()}
+
+                if status >= 400:
+                    last_err = (
+                        "Benchmark-item preflight failed. "
+                        f"Model={model}, HTTP {status}, body={body}."
+                    )
+                    if status < 500:
+                        raise RuntimeError(last_err)
+                else:
+                    try:
+                        message = body["choices"][0]["message"]
+                    except Exception as e:  # noqa: BLE001
+                        raise RuntimeError(f"Benchmark-item preflight returned an unexpected response shape: {body}") from e
+
+                    content = assistant_message_text(message).strip()
+                    reasoning = assistant_reasoning_text(message).strip()
+                    finish_reason = str(body["choices"][0].get("finish_reason", "")).strip()
+                    if content:
+                        return
+                    last_err = (
+                        "Benchmark-item preflight produced no final answer content. "
+                        f"Model={model}, finish_reason={finish_reason}, "
+                        f"reasoning_prefix={reasoning[:200]!r}. "
+                        "This model is not suitable for the current benchmark protocol on this gateway."
+                    )
+            except Exception as e:  # noqa: BLE001
+                last_err = str(e)
+                if "HTTP 4" in last_err:
+                    raise
+            if attempt < retries - 1:
+                await asyncio.sleep(2**attempt)
+    raise RuntimeError(last_err)
 
 async def run_eval(args: argparse.Namespace) -> None:
     api_key = str(args.api_key).strip()
@@ -887,6 +1400,16 @@ async def run_eval(args: argparse.Namespace) -> None:
         api_key=api_key,
         model=args.model,
         timeout_sec=args.timeout_sec,
+        max_tokens=max(32, int(args.max_tokens)),
+        retries=max(1, int(args.retries)),
+    )
+    await vision_preflight(
+        api_base=args.api_base,
+        api_key=api_key,
+        model=args.model,
+        timeout_sec=args.timeout_sec,
+        max_tokens=max(64, int(args.max_tokens)),
+        retries=max(1, int(args.retries)),
     )
 
     frame_dirs = {
@@ -917,6 +1440,25 @@ async def run_eval(args: argparse.Namespace) -> None:
     t3_offsets = parse_offsets_csv(args.t3_offsets)
     if args.t3_randomize_choices:
         items = [shuffled_t3_item(x, seed=args.t3_randomize_seed) for x in items]
+
+    if items:
+        await benchmark_item_preflight(
+            api_base=args.api_base,
+            api_key=api_key,
+            model=args.model,
+            timeout_sec=args.timeout_sec,
+            max_tokens=int(args.max_tokens),
+            retries=max(1, int(args.retries)),
+            item=items[0],
+            frame_dirs=frame_dirs,
+            t3_offsets=t3_offsets,
+        )
+
+    prewarm_summary = prewarm_gm100_missing_frames(
+        items=items,
+        frame_dirs=frame_dirs,
+        t3_offsets=t3_offsets,
+    )
 
     sem = asyncio.Semaphore(args.concurrency)
     start = time.time()
@@ -967,6 +1509,9 @@ async def run_eval(args: argparse.Namespace) -> None:
         "t3_offsets": t3_offsets,
         "t3_randomize_choices": bool(args.t3_randomize_choices),
         "t3_randomize_seed": int(args.t3_randomize_seed),
+        "requested_max_tokens": int(args.max_tokens),
+        "effective_max_tokens": int(effective_completion_max_tokens(args.model, args.max_tokens)),
+        "gm100_prewarm": prewarm_summary,
         "elapsed_sec": time.time() - start,
     }
     print(json.dumps(summary, ensure_ascii=False, indent=2))

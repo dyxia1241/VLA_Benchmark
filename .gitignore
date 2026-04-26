@@ -6,16 +6,21 @@ aist-bimanip/
 
 
 # files
+human_audit/
 benchmark/legacy_collision_vqa/
 benchmark/previous_results/
 benchmark/benchmark_v1_frames_t6binary_20260324/
 benchmark/benchmark_v1_frames_tbinary_20260330/
 benchmark/manual_audit/
-benchmark/primitive_cluster/runs/
+benchmark/primitive_cluster/
 benchmark/aist_benchmark_v0_frames/
 benchmark/reassemble_benchmark_v0_frames/
 benchmark/rh20t_benchmark_v0_frames/
 benchmark/rh20t_cfg2_expanded_v0/
+benchmark/eval_results_v1/_frame_fallback_cache/
+benchmark/eval_results_v1/gm-100/
+benchmark/eval_v1/
+benchmark/splits_v1/
 
 # cache
 __pycache__/
