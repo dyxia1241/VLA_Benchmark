@@ -1,15 +1,16 @@
 # Benchmark Architecture Map
 
-更新时间：2026-04-19  
+更新时间：2026-04-26  
 适用范围：`/data/projects/GM-100/benchmark`
 
 定位说明：
 
-- 本文件记录当前稳定主线的目录结构、数据流和默认入口。
-- `NEURIPS_ED_MASTER_PLAN.md` 负责记录论文主线、数据源角色、split 策略和投稿边界。
-- `README.md` 只保留最高频的运行方式。
+- 本文件记录当前稳定主线的目录结构、最小运行闭环、默认入口和历史兼容链路。
+- `NEURIPS_ED_MASTER_PLAN.md` 负责记录论文主线、任务定义、数据源角色和投稿边界。
+- `benchmark_card.md` 负责对外叙述 benchmark 定义、可靠性和 caveats。
+- `README.md` 只保留一个简短入口说明，避免和本文件重复维护。
 
-## 1. Current Scope
+## 1. Current Mainline
 
 当前稳定主线已经收敛到四个数据源：
 
@@ -18,251 +19,179 @@
 - `REASSEMBLE`
 - `AIST`
 
-当前冻结全量题库总数：`57,892`
+当前冻结 benchmark 总量：
 
-当前冻结 split：
+- Full benchmark：`57,892`
+- Eval split：`9,051`
+- SFT split：`48,841`
 
-- `SFT`: `48,841`
-- `Eval`: `9,051`
+当前默认 protocol：
 
-## 2. Directory Layout
+- 四源分别维护各自 eval jsonl 与 frame cache
+- `splits_v1` 是当前默认 `SFT / Eval` protocol
+- 默认 one-click eval 入口是 `run_all_eval_sets.py`
+- 默认汇总入口是 `score_all_eval_sets.py`
+
+## 2. Minimal Runtime Closure
+
+如果你的目标只是“跑当前主线 eval 并汇总结果”，最小闭环只依赖下面这些文件和目录。
+
+### 2.1 Code
+
+- `benchmark/eval_v1/run_all_eval_sets.py`
+- `benchmark/eval_v1/run_pilot_eval.py`
+- `benchmark/eval_v1/score_all_eval_sets.py`
+
+### 2.2 Manifest And Splits
+
+- `benchmark/splits_v1/eval_manifest.json`
+- `benchmark/splits_v1/gm100_eval.jsonl`
+- `benchmark/splits_v1/rh20t_eval.jsonl`
+- `benchmark/splits_v1/reassemble_eval.jsonl`
+- `benchmark/splits_v1/aist_eval.jsonl`
+
+### 2.3 Frame Caches
+
+- `benchmark/benchmark_v1_frames_tbinary_20260330/`
+- `benchmark/rh20t_benchmark_v0_frames/`
+- `benchmark/reassemble_benchmark_v0_frames/`
+- `benchmark/aist_benchmark_v0_frames/`
+
+### 2.4 Runtime Outputs
+
+默认输出目录：
+
+- `benchmark/eval_results_v1/splits_v1/<model_slug>/`
+
+运行后会生成：
+
+- `gm100_eval_results.jsonl`
+- `rh20t_eval_results.jsonl`
+- `reassemble_eval_results.jsonl`
+- `aist_eval_results.jsonl`
+- `run_all_eval_sets_summary.json`
+- `score_summary_<model_slug>.json` 或 `score_all_eval_sets_summary.json`
+
+### 2.5 Non-core But Relevant
+
+- `benchmark/eval_results_v1/_frame_fallback_cache/gm100/`  
+  这是 GM100 缺帧时的 fallback 缓存目录。当前主线 eval 已可直接复用其中已抽出的缓存帧。
+- `raw_data/gm100-cobotmagic-lerobot/`  
+  只有当 GM100 主 frame cache 和 fallback cache 都缺帧时，`run_pilot_eval.py` 才会回源到这里抽帧。
+- `raw_data/aist-bimanip/`、`raw_data/reassemble-tuwien-researchdata/`  
+  当前不属于主线 runtime-core。
+
+## 3. Directory Layout
 
 ```text
 GM-100/
-├── gm100-cobotmagic-lerobot/                        # GM-100 原始数据
-├── reassemble-tuwien-researchdata/                 # REASSEMBLE 官方 recording 目录
-├── aist-bimanip/                                   # AIST 选定 task 与 selected20 episodes
-├── benchmark/
-│   ├── GM100 List.xlsx
-│   ├── benchmark_card.md
-│   ├── NEURIPS_ED_MASTER_PLAN.md
-│   ├── ARCHITECTURE_MAP.md
-│   ├── eval_v1/
-│   │   ├── run_pilot_eval.py
-│   │   ├── run_benchmark_v1_eval.py
-│   │   ├── run_rh20t_benchmark_v0_eval.py
-│   │   ├── run_reassemble_benchmark_v0_eval.py
-│   │   ├── run_aist_benchmark_v0_eval.py
-│   │   ├── run_all_eval_sets.py
-│   │   ├── score_pilot.py
-│   │   ├── score_benchmark_v1.py
-│   │   ├── score_rh20t_benchmark_v0.py
-│   │   ├── score_reassemble_benchmark_v0.py
-│   │   ├── score_aist_benchmark_v0.py
-│   │   └── score_all_eval_sets.py
-│   ├── gt_build/
-│   │   ├── build_sampling_pipeline.py
-│   │   ├── extract_frames.py
-│   │   ├── build_reassemble_gt_suite.py
-│   │   ├── extract_reassemble_frames.py
-│   │   ├── build_multisource_sft_eval_split.py
-│   │   ├── reassemble_utils.py
-│   │   ├── render_reassemble_pilot_cards.py
-│   │   ├── aist/
-│   │   └── rh20t/
-│   ├── manual_audit/
-│   │   ├── gt_audit/
-│   │   └── semantic_affordance_audit/
-│   ├── benchmark_v1_curated.jsonl
-│   ├── benchmark_v1_curated_by_type/
-│   ├── benchmark_v1_frames_tbinary_20260330/
-│   ├── rh20t_benchmark_v0_curated.jsonl
-│   ├── rh20t_benchmark_v0_curated_by_type/
-│   ├── rh20t_benchmark_v0_frames/
-│   ├── reassemble_benchmark_v0_curated.jsonl
-│   ├── reassemble_benchmark_v0_curated_by_type/
-│   ├── reassemble_benchmark_v0_frames/
-│   ├── aist_benchmark_v0/
-│   │   ├── aist_benchmark_v0_curated.jsonl
-│   │   ├── aist_benchmark_v0_summary.json
-│   │   └── curated_by_type/
-│   ├── aist_benchmark_v0_frames/
-│   ├── splits_v1/
-│   │   ├── gm100_sft.jsonl
-│   │   ├── gm100_eval.jsonl
-│   │   ├── rh20t_sft.jsonl
-│   │   ├── rh20t_eval.jsonl
-│   │   ├── reassemble_sft.jsonl
-│   │   ├── reassemble_eval.jsonl
-│   │   ├── aist_sft.jsonl
-│   │   ├── aist_eval.jsonl
-│   │   ├── all_sft_merged.jsonl
-│   │   ├── all_eval_merged.jsonl
-│   │   ├── split_summary.json
-│   │   └── eval_manifest.json
-│   └── eval_results_v1/
-│       └── splits_v1/
-└── README.md
+├── raw_data/
+│   ├── gm100-cobotmagic-lerobot/                  # GM-100 原始视频源；仅 GM100 fallback 抽帧时需要
+│   ├── reassemble-tuwien-researchdata/            # REASSEMBLE 原始 recording 源
+│   └── aist-bimanip/                              # AIST 原始数据源
+└── benchmark/
+    ├── README.md
+    ├── ARCHITECTURE_MAP.md
+    ├── NEURIPS_ED_MASTER_PLAN.md
+    ├── benchmark_card.md
+    ├── eval_v1/
+    │   ├── run_pilot_eval.py
+    │   ├── run_all_eval_sets.py
+    │   ├── score_pilot.py
+    │   ├── score_all_eval_sets.py
+    │   └── run_eval_by_dataset/                   # 单源兼容入口；不是当前 paper 主线
+    ├── gt_build/
+    │   ├── build_multisource_sft_eval_split.py
+    │   ├── extract_frames.py
+    │   ├── build_sampling_pipeline.py
+    │   ├── rh20t/
+    │   └── aist/
+    ├── benchmark_v1_frames_tbinary_20260330/
+    ├── rh20t_benchmark_v0_frames/
+    ├── reassemble_benchmark_v0_frames/
+    ├── aist_benchmark_v0_frames/
+    ├── splits_v1/
+    │   ├── gm100_eval.jsonl
+    │   ├── rh20t_eval.jsonl
+    │   ├── reassemble_eval.jsonl
+    │   ├── aist_eval.jsonl
+    │   ├── all_sft_merged.jsonl
+    │   ├── all_eval_merged.jsonl
+    │   ├── split_summary.json
+    │   └── eval_manifest.json
+    ├── eval_results_v1/
+    │   ├── _frame_fallback_cache/
+    │   └── splits_v1/
+    ├── previous_results/
+    └── run_v1_pipeline.sh                         # GM100 单源历史兼容链路
 ```
-
-## 3. Core Artifacts
-
-### 3.1 Curated Benchmark Inputs
-
-| Source | JSONL | Frame Cache |
-| --- | --- | --- |
-| GM-100 | `benchmark/benchmark_v1_curated.jsonl` | `benchmark/benchmark_v1_frames_tbinary_20260330/` |
-| RH20T | `benchmark/rh20t_benchmark_v0_curated.jsonl` | `benchmark/rh20t_benchmark_v0_frames/` |
-| REASSEMBLE | `benchmark/reassemble_benchmark_v0_curated.jsonl` | `benchmark/reassemble_benchmark_v0_frames/` |
-| AIST | `benchmark/aist_benchmark_v0/aist_benchmark_v0_curated.jsonl` | `benchmark/aist_benchmark_v0_frames/` |
-
-### 3.2 Split Artifacts
-
-| File | Meaning |
-| --- | --- |
-| `benchmark/splits_v1/gm100_sft.jsonl` | GM-100 SFT split |
-| `benchmark/splits_v1/gm100_eval.jsonl` | GM-100 Eval split |
-| `benchmark/splits_v1/rh20t_sft.jsonl` | RH20T SFT split |
-| `benchmark/splits_v1/rh20t_eval.jsonl` | RH20T Eval split |
-| `benchmark/splits_v1/reassemble_sft.jsonl` | REASSEMBLE SFT split |
-| `benchmark/splits_v1/reassemble_eval.jsonl` | REASSEMBLE Eval split |
-| `benchmark/splits_v1/aist_sft.jsonl` | AIST SFT split |
-| `benchmark/splits_v1/aist_eval.jsonl` | AIST Eval split |
-| `benchmark/splits_v1/all_sft_merged.jsonl` | 四源合并 SFT 集 |
-| `benchmark/splits_v1/all_eval_merged.jsonl` | 四源合并 Eval 集 |
-| `benchmark/splits_v1/split_summary.json` | split 统计摘要 |
-| `benchmark/splits_v1/eval_manifest.json` | one-click eval manifest |
 
 ## 4. Data Flow
 
-### 4.1 Per-source GT Build
+### 4.1 Four-source Build Flow
 
 ```text
-raw dataset
+raw datasets
     |
     v
 dataset-specific GT builders
     |
     v
-curated jsonl
+per-source curated jsonl
     |
     v
 frame extraction
     |
     v
-frame cache
-```
-
-对应关系：
-
-- GM-100：`gt_build/build_sampling_pipeline.py` -> `benchmark_v1_curated.jsonl`
-- RH20T：`benchmark/gt_build/rh20t/*` -> `rh20t_benchmark_v0_curated.jsonl`
-- REASSEMBLE：`gt_build/build_reassemble_gt_suite.py` -> `reassemble_benchmark_v0_curated.jsonl`
-- AIST：`benchmark/gt_build/aist/*` -> `aist_benchmark_v0/aist_benchmark_v0_curated.jsonl`
-
-### 4.2 Split Build
-
-```text
-four curated jsonl files
+per-source frame caches
     |
     v
-gt_build/build_multisource_sft_eval_split.py
+build_multisource_sft_eval_split.py
     |
     v
 benchmark/splits_v1/
-  - per-source sft/eval jsonl
-  - merged sft/eval jsonl
-  - split_summary.json
-  - eval_manifest.json
+    |
+    v
+run_all_eval_sets.py
+    |
+    v
+score_all_eval_sets.py
 ```
 
-split 规则：
+### 4.2 Split Build
 
-- `episode-level` 隔离
-- 同一 `episode / recording / scene` 只属于一个 split
-- `REASSEMBLE T10/T11/T12` 在 eval 选择时加权提高
+`benchmark/gt_build/build_multisource_sft_eval_split.py` 负责：
+
+- 从四个 per-source curated jsonl 构建 `85/15` SFT/Eval split
+- 保证 `episode / recording / scene` 级别隔离
+- 生成 `benchmark/splits_v1/eval_manifest.json`
 
 ### 4.3 Unified Eval
 
-```text
-benchmark/splits_v1/eval_manifest.json
-    |
-    v
-eval_v1/run_all_eval_sets.py
-    |
-    +--> run_pilot_eval.py on GM-100 eval split
-    +--> run_pilot_eval.py on RH20T eval split
-    +--> run_pilot_eval.py on REASSEMBLE eval split
-    +--> run_pilot_eval.py on AIST eval split
-    |
-    v
-benchmark/eval_results_v1/splits_v1/*.jsonl
-    |
-    v
-eval_v1/score_all_eval_sets.py
-    |
-    v
-score_all_eval_sets_summary.json
-```
+`benchmark/eval_v1/run_all_eval_sets.py` 负责：
 
-设计原因：
+- 读取 `eval_manifest.json`
+- 顺序调用 `run_pilot_eval.py`
+- 为四个数据集分别写出结果 JSONL
 
-- 四个数据集分属四个 frame cache
-- 当前统一执行器 `run_pilot_eval.py` 仍以单套 frame-dir 参数工作
-- 最稳的主线是 manifest + 顺序调度四个 dataset eval
+`benchmark/eval_v1/score_all_eval_sets.py` 负责：
 
-## 5. Key Script Index
+- 读取 `eval_manifest.json`
+- 根据 `slug` 找到各数据集结果 JSONL
+- 用 manifest 内 baseline 汇总整体结果
 
-| Script | Role | Main Output |
-| --- | --- | --- |
-| `benchmark/gt_build/build_multisource_sft_eval_split.py` | 构建四源 `85/15` SFT/Eval split | `benchmark/splits_v1/*` |
-| `benchmark/eval_v1/run_all_eval_sets.py` | 一键运行四个 eval split | `benchmark/eval_results_v1/splits_v1/*_eval_results.jsonl` |
-| `benchmark/eval_v1/score_all_eval_sets.py` | 汇总四个 eval split 结果 | `score_all_eval_sets_summary.json` |
-| `benchmark/eval_v1/run_pilot_eval.py` | 通用推理执行器 | per-item result jsonl |
-| `benchmark/eval_v1/score_pilot.py` | 通用评分器 | console summary |
+## 5. Entrypoints
 
-## 6. Current Counts
+### 5.1 Default Mainline
 
-### 6.1 Full Benchmark
-
-| Source | Items |
-| --- | ---: |
-| GM-100 | `15,500` |
-| RH20T | `15,800` |
-| REASSEMBLE | `17,165` |
-| AIST | `9,427` |
-| Total | `57,892` |
-
-### 6.2 Eval Split
-
-| Source | Eval Items | Eval Groups |
-| --- | ---: | ---: |
-| GM-100 | `2,643` | `628` |
-| RH20T | `2,422` | `89` |
-| REASSEMBLE | `2,562` | `6` |
-| AIST | `1,424` | `30` |
-| Total | `9,051` | - |
-
-### 6.3 SFT Split
-
-| Source | SFT Items |
-| --- | ---: |
-| GM-100 | `12,857` |
-| RH20T | `13,378` |
-| REASSEMBLE | `14,603` |
-| AIST | `8,003` |
-| Total | `48,841` |
-
-## 7. Current Conventions
-
-1. 论文命名使用 `T5/T8/T9`，工程兼容 `T_progress/T_temporal/T_binary`。
-2. AIST 当前包含 `T3/T4/T6/T8/T9`。其中工程文件中 `T8` 落成 `T_temporal`，`T9` 保持两帧先后判别。
-3. `run_pilot_eval.py` 已兼容 AIST `T9` 双帧读取。
-4. `REASSEMBLE` 默认视角固定为 `hand`。
-5. `RH20T` 默认视角固定为当前选定主相机。
-6. `splits_v1` 是当前默认 SFT/Eval protocol。
-
-## 8. Default Entrypoints
-
-### 8.1 Rebuild Split
+重建 split：
 
 ```bash
 cd /data/projects/GM-100
-
 python3 benchmark/gt_build/build_multisource_sft_eval_split.py
 ```
 
-### 8.2 Run All Eval Sets
+运行四源 eval：
 
 ```bash
 cd /data/projects/GM-100
@@ -273,17 +202,47 @@ python3 benchmark/eval_v1/run_all_eval_sets.py \
   --api-key YOUR_KEY
 ```
 
-### 8.3 Score All Eval Sets
+汇总结果：
 
 ```bash
 cd /data/projects/GM-100
-
-python3 benchmark/eval_v1/score_all_eval_sets.py
+python3 benchmark/eval_v1/score_all_eval_sets.py --model Qwen/Qwen2.5-VL-32B-Instruct
 ```
 
-## 9. Document Responsibilities
+### 5.2 GM100 Legacy Single-source Pipeline
 
-1. `README.md`：只保留最高频命令。
-2. `ARCHITECTURE_MAP.md`：记录当前稳定目录、数据流、默认入口。
-3. `NEURIPS_ED_MASTER_PLAN.md`：记录论文主线、数据源角色、当前闭环与风险边界。
-4. `benchmark_card.md`：对外叙述 benchmark 定义、可靠性与 caveats。
+`benchmark/run_v1_pipeline.sh` 现在的定位是：
+
+- 只服务于旧的 GM100 `benchmark_v1` 单源链路
+- 不属于当前四源 paper mainline
+- 适用于从一个 GM100 GT snapshot 重新走一遍 `采样 -> 抽帧 -> eval -> score`
+
+它的默认用途不是跑当前 paper 主线，而是：
+
+- 复现旧的单源 GM100 release
+- 检查某个历史 `GT_DIR` 是否还能产出 `benchmark_v1`
+- 为兼容旧实验保留一个一键脚本
+
+如果你在整理仓库，它应该被归类为：
+
+- `legacy-compatible`
+
+而不是：
+
+- `runtime-core`
+
+## 6. Current Conventions
+
+1. 论文命名使用 `T5/T8/T9`，工程兼容 `T_progress/T_temporal/T_binary`。
+2. AIST 当前包含 `T3/T4/T6/T8/T9`，其中工程里 `T8` 落成 `T_temporal`。
+3. `run_pilot_eval.py` 已兼容 AIST `T9` 双帧读取。
+4. `REASSEMBLE` 默认视角固定为 `hand`。
+5. `RH20T` 默认视角固定为当前选定主相机。
+6. 当前四源主线读取帧都来自各自 `*_frames` 目录；只有 GM100 仍保留原始视频 fallback。
+
+## 7. Document Responsibilities
+
+1. `README.md`：简短入口页，只告诉读者主线文档在哪里。
+2. `ARCHITECTURE_MAP.md`：记录当前稳定目录、运行闭环、默认入口和兼容链路。
+3. `NEURIPS_ED_MASTER_PLAN.md`：记录论文主线、任务定义、边界和风险。
+4. `benchmark_card.md`：对外定义 benchmark、协议、可靠性和 caveats。

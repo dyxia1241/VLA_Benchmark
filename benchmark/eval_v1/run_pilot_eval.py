@@ -32,7 +32,7 @@ from tqdm.asyncio import tqdm_asyncio
 # You can edit these defaults directly in-file, and still override via CLI args.
 BENCHMARK_DIR = Path(__file__).resolve().parent.parent
 REPO_ROOT = BENCHMARK_DIR.parent
-DATASET_ROOT = REPO_ROOT / "gm100-cobotmagic-lerobot"
+DATASET_ROOT = REPO_ROOT / "raw_data" / "gm100-cobotmagic-lerobot"
 PILOT_ARTIFACT_DIR = BENCHMARK_DIR / "previous_results" / "manual_checks_20260319"
 
 DEFAULT_INPUT_JSONL = str(PILOT_ARTIFACT_DIR / "pilot_qa_raw_filtered.jsonl")
@@ -42,7 +42,7 @@ DEFAULT_TASK_META_XLSX = str(BENCHMARK_DIR / "GM100 List.xlsx")
 DEFAULT_API_BASE = "http://35.220.164.252:3888/v1/"
 DEFAULT_MODEL = "gpt-4o"
 # Leave empty by default. Pass --api-key or set provider env vars.
-DEFAULT_API_KEY = "sk-LIBwaAEBArGfoun34xCXZqDaPYog9imwTx3ZTN1u88p5fFY9"
+DEFAULT_API_KEY = ""
 
 DEFAULT_CONCURRENCY = 8
 DEFAULT_MAX_TOKENS = 96
