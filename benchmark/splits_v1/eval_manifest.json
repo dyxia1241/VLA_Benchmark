@@ -1,0 +1,104 @@
+{
+  "split_version": "splits_v1",
+  "created_at": "2026-04-19T20:41:13",
+  "summary_json": "/data/projects/GM-100/benchmark/splits_v1/split_summary.json",
+  "merged_sft_jsonl": "/data/projects/GM-100/benchmark/splits_v1/all_sft_merged.jsonl",
+  "merged_eval_jsonl": "/data/projects/GM-100/benchmark/splits_v1/all_eval_merged.jsonl",
+  "datasets": [
+    {
+      "dataset": "GM100",
+      "slug": "gm100",
+      "eval_jsonl": "/data/projects/GM-100/benchmark/splits_v1/gm100_eval.jsonl",
+      "sft_jsonl": "/data/projects/GM-100/benchmark/splits_v1/gm100_sft.jsonl",
+      "frame_dir_default": "/data/projects/GM-100/benchmark/benchmark_v1_frames_tbinary_20260330",
+      "frame_dir_t3_multi": "/data/projects/GM-100/benchmark/benchmark_v1_frames_tbinary_20260330",
+      "frame_dir_t6_multi": "/data/projects/GM-100/benchmark/benchmark_v1_frames_tbinary_20260330",
+      "result_jsonl": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/gm100_eval_results.jsonl",
+      "baselines": {
+        "T1": 0.25,
+        "T2": 0.5,
+        "T3": 0.25,
+        "T4": 0.25,
+        "T6": 0.5,
+        "T_temporal": 0.16666666666666666,
+        "T_binary": 0.5,
+        "T_progress": 0.3333333333333333
+      },
+      "num_items_eval": 2643,
+      "num_items_sft": 12857,
+      "num_groups_eval": 628,
+      "num_groups_sft": 3558
+    },
+    {
+      "dataset": "RH20T",
+      "slug": "rh20t",
+      "eval_jsonl": "/data/projects/GM-100/benchmark/splits_v1/rh20t_eval.jsonl",
+      "sft_jsonl": "/data/projects/GM-100/benchmark/splits_v1/rh20t_sft.jsonl",
+      "frame_dir_default": "/data/projects/GM-100/benchmark/rh20t_benchmark_v0_frames",
+      "frame_dir_t3_multi": "/data/projects/GM-100/benchmark/rh20t_benchmark_v0_frames",
+      "frame_dir_t6_multi": "/data/projects/GM-100/benchmark/rh20t_benchmark_v0_frames",
+      "result_jsonl": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/rh20t_eval_results.jsonl",
+      "baselines": {
+        "T1": 0.25,
+        "T2": 0.5,
+        "T3": 0.25,
+        "T6": 0.5,
+        "T7": 0.5,
+        "T_temporal": 0.16666666666666666,
+        "T_binary": 0.5,
+        "T_progress": 0.3333333333333333
+      },
+      "num_items_eval": 2422,
+      "num_items_sft": 13378,
+      "num_groups_eval": 89,
+      "num_groups_sft": 507
+    },
+    {
+      "dataset": "REASSEMBLE",
+      "slug": "reassemble",
+      "eval_jsonl": "/data/projects/GM-100/benchmark/splits_v1/reassemble_eval.jsonl",
+      "sft_jsonl": "/data/projects/GM-100/benchmark/splits_v1/reassemble_sft.jsonl",
+      "frame_dir_default": "/data/projects/GM-100/benchmark/reassemble_benchmark_v0_frames",
+      "frame_dir_t3_multi": "/data/projects/GM-100/benchmark/reassemble_benchmark_v0_frames",
+      "frame_dir_t6_multi": "/data/projects/GM-100/benchmark/reassemble_benchmark_v0_frames",
+      "result_jsonl": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/reassemble_eval_results.jsonl",
+      "baselines": {
+        "T1": 0.25,
+        "T2": 0.5,
+        "T6": 0.5,
+        "T7": 0.5,
+        "T_temporal": 0.16666666666666666,
+        "T_binary": 0.5,
+        "T_progress": 0.3333333333333333,
+        "T10": 0.25,
+        "T11": 0.25,
+        "T12": 0.25
+      },
+      "num_items_eval": 2562,
+      "num_items_sft": 14603,
+      "num_groups_eval": 6,
+      "num_groups_sft": 31
+    },
+    {
+      "dataset": "AIST",
+      "slug": "aist",
+      "eval_jsonl": "/data/projects/GM-100/benchmark/splits_v1/aist_eval.jsonl",
+      "sft_jsonl": "/data/projects/GM-100/benchmark/splits_v1/aist_sft.jsonl",
+      "frame_dir_default": "/data/projects/GM-100/benchmark/aist_benchmark_v0_frames",
+      "frame_dir_t3_multi": "/data/projects/GM-100/benchmark/aist_benchmark_v0_frames",
+      "frame_dir_t6_multi": "/data/projects/GM-100/benchmark/aist_benchmark_v0_frames",
+      "result_jsonl": "/data/projects/GM-100/benchmark/eval_results_v1/splits_v1/aist_eval_results.jsonl",
+      "baselines": {
+        "T3": 0.25,
+        "T4": 0.25,
+        "T6": 0.5,
+        "T9": 0.5,
+        "T_temporal": 0.16666666666666666
+      },
+      "num_items_eval": 1424,
+      "num_items_sft": 8003,
+      "num_groups_eval": 30,
+      "num_groups_sft": 170
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 # raw data
 raw_data/
+RoboPulse/
 
 # files
 human_audit/
@@ -13,7 +14,15 @@ benchmark/rh20t_benchmark_v0_frames/
 benchmark/eval_results_v1/_frame_fallback_cache/
 benchmark/eval_results_v1/gm-100/
 benchmark/eval_v1/run_eval_by_dataset/
-benchmark/splits_v1/
+benchmark/splits_v1/sharegpt_export_v1/
+benchmark/splits_v1/aist_*.jsonl
+benchmark/splits_v1/gm100_*.jsonl
+benchmark/splits_v1/reassemble_*.jsonl
+benchmark/splits_v1/rh20t_*.jsonl
+benchmark/splits_v1/all_*.jsonl
+
+
+benchmark/robopulse/
 
 # cache
 __pycache__/
